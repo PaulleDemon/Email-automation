@@ -1,0 +1,74 @@
+{% extends './base.html' %} 
+{% load static %} 
+{% block fullpage %}
+    <div class="tw-bg-black tw-bg-opacity-70 tw-fixed tw-top-0 tw-z-[5000] tw-flex tw-place-content-center tw-items-center tw-h-full tw-w-full">
+        <div id="form-toast" class="toast tw-h-max tw-z-20 tw-absolute tw-top-[25%] tw-right-[2%] align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+            <div class="toast-body" id="form-toast-body">
+            
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+        <div class="tw-w-[350px] tw-min-h-[250px] tw-h-max tw-bg-[#212529]
+                     tw-rounded-lg tw-p-3 tw-text-center tw-flex tw-flex-col tw-gap-3"
+                id="create-account-form"
+        
+        >   
+            <a type="button" class="btn-close" aria-label="Close" href="{% url "home" %}"></a>
+            <div class="tw-text-xl tw-m-2">
+                Create Account
+            </div>
+            <div class="alert alert-warning" role="alert">
+                Create account to claim your free 15 credit worth 5$. 
+            </div>
+            <input type="text" class="form-control" 
+                placeholder="email" maxlength="350" autofocus>
+            <input type="password" class="form-control" 
+                placeholder="password" maxlength="30">
+
+            <div class="form-check tw-text-sm tw-text-left tw-mt-2">
+                <input class="form-check-input" type="checkbox" value="" id="server-save">
+                <label class="form-check-label" for="server-save">
+                    You agree to <a href="" class="tw-text-blue-600">terms and conditions</a> 
+                </label>
+            </div>
+
+            <button class="btn btn-success tw-m-3">
+                Create account
+            </button>
+
+            <label class="form-check-label" for="server-save">
+                Already a member <a href="{% url "login" %}" class="tw-text-blue-600 tw-underline">Login</a> 
+            </label>
+
+        </div>
+
+        <div class="tw-hidden tw-w-[350px] tw-min-h-[200px] tw-h-max tw-bg-[#212529]
+                     tw-rounded-lg tw-p-3 tw-text-center tw-flex tw-flex-col tw-gap-3"
+                id="create-account-form"
+        >   
+            <div class="tw-text-xl tw-m-2">
+                Submit OTP
+            </div>
+            <div class="tw-text-sm">
+                An OTP has been sent to <d id="otp-email"></d>, if you cannot find it please check your spam.
+            </div>
+
+            <input type="text" class="form-control" 
+                placeholder="OTP" maxlength="6"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*?)\..*/g, '$1');"
+                >
+    
+            <div>
+                <button class="btn btn-outline-danger">
+                    Back
+                </button>
+                <button class="btn btn-success tw-m-3">
+                    Submit
+                </button>
+            </div>
+
+        </div>
+    </div>
+{% endblock fullpage %}

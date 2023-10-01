@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="tw-min-h-[100vh] tw-w-full tw-flex tw-flex-col tw-items-center">
+
+        <div class="tw-text-3xl tw-font-bold tw-m-5">
+            Instagram Email finder
+        </div>
+    
+        <div class="modal fade" id="credit-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="modal-title">Low Credits - Buy more</h5>
+                  <button type="button" class="close btn btn-outline-secondary" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                    <div class="modal-body tw-place-content-center tw-flex tw-flex-col tw-text-center" id="modal-body">
+                        {% if not user.is_authenticated %}
+                    
+                            <div class="alert alert-warning tw-m-2">Claim your free 15 credits worth 5$ by creating account</div>
+
+                            <a href="{% url "signup" %}" class="btn btn-success">
+                                Claim free credits
+                            </a>
+
+                        {% endif %}
+
+                        <div class="tw-w-full tw-flex tw-flex-col
+                         tw-p-3 tw-place-items-center tw-text-center
+                         ">
+
+                            <div class="tw-text-lg">
+                                Buy credits
+                            </div>
+
+                            <div class="tw-text-2xl tw-font-semibold tw-m-2">
+                                $ {{package.price}}
+                            </div>
+
+                            <div class="tw-text-lg tw-text-[#f4c529] tw-m-2 
+                                        tw-text-justify 
+                                        tw-rounded-lg tw-p-1">
+                                <i class="bi bi-coin tw-text-xl tw-m-1"></i>
+                                {{package.credit}}
+                                credits
+                            </div>
+                        
+                            <button class="btn btn-warning">Buy Credits</button>
+                        </div>
+
+                    </div>
+
+              </div>
+            </div>
+          </div>
+
+        <div class="tw-w-full tw-p-3">
+
+            <p>
+                <button class="btn btn-dark" type="button" 
+                        data-bs-toggle="collapse" 
+                        data-bs-target="#filter-insta" 
+                        aria-expanded="false" 
+                        aria-controls="filter"
+                        >
+                    Filter
+                    <i class="bi bi-caret-right-fill expand_caret" id="caret-icon"></i>
+                </button>
+            </p>
+            <div class="collapse show" id="filter-insta">
+                <div class="card card-body tw-place-content-center">
+                    <div class="tw-flex tw-flex-wrap tw-justify-around tw-place-content-start tw-place-items-center">
+                        
+                        <div class="input-group mb-3 tw-m-2">
+                            <span class="input-group-text">Search Username</span>
+                            <input type="text" class="form-control tw-max-w-[250px]" 
+                                placeholder="Search Username" max-length="30">
+                        </div>
+                        <div class="input-group mb-3 tw-m-2">
+                            <span class="input-group-text">Minimum Follower count</span>
+                            <input type="number" class="form-control  tw-max-w-[250px]" 
+                                placeholder="Minimum follower count" value="1000" min="0" oninput="validity.valid||(value='');">
+                        </div>
+
+                        <div class="input-group mb-3 tw-m-2">
+                            <span class="input-group-text">Minimum following count</span>
+                            <input type="number" class="form-control tw-max-w-[250px]" 
+                                placeholder="Minimum following count"  min="0" oninput="validity.valid||(value='');">
+                        </div>
+                        
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="server-save">
+                            <label class="form-check-label" for="server-save">
+                                Verified
+                            </label>
+                        </div>
+
+                    </div>
+                    <br>
+                    <button button type="submit" onclick="getInfluencerData()" id="find-instagram-influncer" class="btn btn-primary tw-max-w-sm">
+                        Apply
+                    </button>
+                </div>
+            </div>
+        
+
+            <div class="tw-w-full">
+                <div class="tw-ml-[auto] tw-flex tw-m-2 tw-text-2xl tw-max-w-max tw-rounded-lg">
+                    <select class="form-select tw-m-2" aria-label="Default select example">
+                        <option value="10" selected>10</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                        <option value="40">40</option>
+                    </select>
+                    <i class="bi bi-download tw-m-2"></i>
+                </div>
+            </div>
+
+            <div class="table-responsive tw-w-full">
+                <table class="table table-striped ">
+                    <thead class="sm:tw-text-sm sm:tw-font-medium">
+                        <tr class="md:tw-text-lg">
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Follower count</th>
+                            <th scope="col">Following count</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Verified</th>
+                            <th scope="col">External link</th>
+                            <th scope="col">Bio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        {% comment %} <th scope="row">{{}}</th>
+                        <td>{{}}</td>
+                        <td>{{}}</td>
+                        <td>{{}}</td> {% endcomment %}
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    
+{% endblock content %}
