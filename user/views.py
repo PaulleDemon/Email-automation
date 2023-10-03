@@ -1,11 +1,18 @@
+import jwt
+import json
+
+from django.urls import reverse
+from django.conf import settings
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.http import require_http_methods
 
-
 from .models import User
-
+from .forms import CustomUserCreationForm
+from utils.token_generator import send_token
 
 def login_view(request):
 
@@ -17,11 +24,11 @@ def login_view(request):
     user = authenticate(request, username=email, password=password)
     if user is not None:
         login(request, user)
-        # Redirect to a success page.
-        ...
+        return redirect('email-templates')
+
     else:
-        # Return an 'invalid login' error message.
-        ...
+         return render(request, 'login.html', {'error': f'Invalid email or password'})
+
     return render(request, 'login.html')
 
 
@@ -34,14 +41,75 @@ def signup_view(request):
     if request.method == "GET":
         return render(request, 'signup.html')
     
-    else:
-       
-        form = UserCreationForm(request.POST)
+    else:   
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+            
             username = form.cleaned_data.get('email')
             raw_password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=raw_password)
-            login(request, user)
-            return redirect('home')
-        
+            # login(request, user) # don't login user unless the user has verified their email
+
+            url = reverse('search_results') + f'?email={username}'
+            return redirect(url)
+
+        error = form.errors.as_data()
+
+        errors = [f'{list(error[x][0])[0]}' for x in error]
+       
+        return render(request, 'signup.html', context={'errors': errors})
+
+
+def verification_alert(request):
+    """
+        alert that the user has to verify their email
+    """
+    email = request.GET.get('email') or ''
+    return render(request, 'verification-alert.html', context={'from_email': settings.EMAIL_HOST,
+                                                                'to_email': email   
+                                                            })
+
+
+@require_http_methods(["GET", "POST"])
+def verification_resend(request):
+    """
+        resend the confirmation email
+    """
+    print("Method: ", request.method)
+    if request.method == "POST":
+
+        email = request.POST.get('email')
+
+        user = User.objects.filter(email=email)
+
+        if not user.exists():
+
+            return render(request, 'resend-confirmation.html', {'error': f'The email {email} is not registered'})
+
+        return redirect('verification-alert')
+
+    return render(request, 'resend-confirmation.html')
+
+
+def verify_email(request):
+    token = request.GET.get('token')
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+        email = payload['email']
+
+        user = get_user_model().objects.get(email=email)
+        user.is_active = True
+        user.save()
+
+        send_token(email)
+
+        return redirect('login')  # Redirect to a success page
+
+    except jwt.ExpiredSignatureError:
+        return render(request, 'email-verification.html', context={'error': 'Token expired, request another'})
+
+    except (jwt.DecodeError, Exception):
+        return render(request, 'email-verification.html', context={'error': 'Unknown error occurred, request a new token'})

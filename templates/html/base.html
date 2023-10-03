@@ -46,7 +46,7 @@
           </a>
           <div class="tw-justify-self-center collapse navbar-collapse" id="navbarTogglerDemo01">
             <div class="navbar-nav">
-                <a class="nav-link hover:tw-text-blue-400" href="{% url 'email-template-create' %}">Email Templates</a>
+                <a class="nav-link hover:tw-text-blue-400" href="{% url 'email-templates' %}">Email Templates</a>
             </div>
             <div class="navbar-nav tw-ml-auto">
                 {% if user.is_authenticated %}
@@ -58,7 +58,10 @@
                         Create Account
                     </a>
                 {% endif %}
+                
             </div>
+            <a href="http://" class="tw-m-2"><i class="tw-text-3xl bi bi-github"></i></a>
+            
         </div>
         </div>
         
@@ -66,7 +69,7 @@
 
 
     <div id="error-toast" class="toast tw-h-max tw-z-[5000] tw-fixed tw-top-[2%] tw-left-[50%] tw-translate-x-[-50%] align-items-center text-bg-danger border-0" 
-    role="alert" aria-live="assertive" aria-atomic="true">
+        role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
           <div class="toast-body" id="error-toast-body">
            
@@ -89,6 +92,8 @@
             {% comment %} <a href="{% url 'contact-us' %}" class="tw-underline tw-underline-offset-2">Contact us</a> {% endcomment %}
         </div>
     </footer>
+
+    <script src="{% static "./js/utils/common.js" %}"></script>
 
 </body>
 </html>

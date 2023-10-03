@@ -74,7 +74,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     date_joined = models.DateTimeField(default=timezone.now) # you can also use auto_add_now=True
 
-    objects = CustomUserManager()
+    objects = BaseUserManager()
     activeusers_manager = ActiveUsersManager()
 
 

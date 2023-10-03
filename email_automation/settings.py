@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import base64
 import environ
 from pathlib import Path
+from email.headerregistry import Address
+
 
 env = environ.Env()
 environ.Env.read_env()
@@ -105,12 +107,33 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'email_automation.urls'
 
+
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # This is only for development
+    # EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' # for production
+
+    EMAIL_HOST = env('EMAIL_HOST')
+    EMAIL_PORT = 465
+
+    EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+
+    DEFAULT_FROM_EMAIL = Address(display_name="AdoStrings - Creators", addr_spec=EMAIL_HOST_USER)
+
+    # EMAIL_USE_TLS = True
+    EMAIL_USE_SSL = True
+
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             BASE_DIR.joinpath("templates"),
             BASE_DIR.joinpath("templates", "html", ),
+            BASE_DIR.joinpath("templates", "html", "authentication"),
             BASE_DIR.joinpath("templates", "html", "email-product"),
         ],
         'APP_DIRS': True,

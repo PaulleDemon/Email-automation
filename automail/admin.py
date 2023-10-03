@@ -4,7 +4,14 @@ from django.contrib import admin
 from django.contrib import admin
 
 # Register your models here.
-from .models import EmailCampaign, EmailConfiguration, EmailTemplate, EmailCampaignTemplate
+from .models import (EmailCampaign, EmailConfiguration, EmailTemplate, 
+                    EmailTemplateAttachment, EmailCampaignTemplate)
+
+
+class AttachmentInline(admin.StackedInline):
+
+    model = EmailTemplateAttachment
+    extra = 0
 
 
 @admin.register(EmailConfiguration)
@@ -18,7 +25,9 @@ class EmailServerAdmin(admin.ModelAdmin):
 class EmailTemplateAdmin(admin.ModelAdmin):
 
     search_fields = ['id', 'user', ]
-    list_display = ['id', 'user', 'template', 'datetime']
+    list_display = ['id', 'user', 'body', 'datetime']
+
+    inlines = [AttachmentInline]
 
 
 @admin.register(EmailCampaign)

@@ -15,17 +15,32 @@ class EmailConfiguration(models.Model):
     email = EncryptedEmailField()
     password = EncryptedCharField(max_length=100)
 
+    signature = models.TextField(null=True, blank=True, max_length=400)
 
 
 class EmailTemplate(models.Model):
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
 
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
     subject = models.CharField(max_length=250, null=True, blank=True)
 
-    template = models.TextField(max_length=10000)
-    attachment = models.FileField(upload_to='attachments/', null=True, blank=True)
+    body = models.TextField(max_length=10000)
     datetime = models.DateTimeField(auto_now=True)
+
+    variables = models.TextField(max_length=2000) # variables in the email structure, stored seperated by a comma
+
+    public = models.BooleanField(default=False) # is this template public template
+
+    def __str__(self) -> str:
+        return self.template[:30]
+    
+
+class EmailTemplateAttachment(models.Model):
+
+    template = models.ForeignKey(EmailTemplate, on_delete=models.CASCADE)
+    attachment = models.FileField(upload_to='attachments/')
 
     def __str__(self) -> str:
         return self.template[:30]
@@ -34,6 +49,8 @@ class EmailTemplate(models.Model):
 class EmailCampaign(models.Model):
 
     name = models.CharField(max_length=30, default='campaign', null=True, blank=True)
+
+    email_lookup = models.CharField(default='Email', max_length=150) # this is the field lookup upon uploading xls sheet
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 

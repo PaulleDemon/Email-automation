@@ -1,0 +1,8 @@
+{
+    
+    "emmet.includeLanguages": {
+        "django-html": "html",
+    },
+    "prettier.configPath": "./.prettierrc.json",
+
+}
