@@ -29,7 +29,7 @@ class EmailTemplate(models.Model):
     body = models.TextField(max_length=10000)
     datetime = models.DateTimeField(auto_now=True)
 
-    variables = models.TextField(max_length=2000) # variables in the email structure, stored seperated by a comma
+    variables = models.TextField(max_length=2000, null=True, blank=True) # variables in the email structure, stored seperated by a comma
 
     public = models.BooleanField(default=False) # is this template public template
 

@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
+from .models import EmailTemplate, EmailCampaign
+
 
 @require_http_methods(['GET', 'POST'])
 def email_template_create(request):
@@ -13,8 +15,15 @@ def email_template_create(request):
 
 @require_http_methods(['GET'])
 def email_templates(request):
-    
-    return render(request, 'email-templates.html')
+
+    private_templates = EmailTemplate.objects.filter(user=request.user)
+
+    public_templates = EmailTemplate.objects.filter(public=True)
+
+
+    return render(request, 'email-templates.html', context={'private_templates': private_templates,
+                                                            'public_templates': public_templates
+                                                            })
 
 
 

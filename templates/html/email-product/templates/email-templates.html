@@ -1,0 +1,62 @@
+{% extends './html/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="tw-flex tw-flex-col tw-min-h-[100vh] tw-p-3 tw-place-items-center tw-gap-4">
+
+    <div class="tw-text-3xl tw-font-semibold tw-text-center tw-mt-[2%]">
+       My Templates
+    </div>
+
+    <div class="tw-flex tw-mt-[5%] tw-w-full tw-flex-wrap tw-gap-4 tw-mx-[30%]">
+
+        <a class="tw-flex tw-flex-col tw-border-solid 
+                    tw-text-center tw-justify-items-center 
+                    tw-place-content-center 
+                    tw-w-[250px] tw-g-[150px] 
+                    tw-rounded-lg tw-shadow-xl tw-p-5"
+                    href="{% url "email-template-create" %}"
+                    >
+            <i class="bi bi-plus-lg tw-text-3xl"></i>
+            <p>Create template</p>
+        </a>  
+
+        {% for template in private_templates %}
+            <div class="tw-flex tw-flex-col tw-border-solid 
+                        tw-text-center tw-justify-items-center 
+                        tw-place-content-center 
+                        tw-w-[250px] tw-g-[150px] 
+                        tw-rounded-lg tw-shadow-xl tw-p-5"
+                        href="/create"
+                        >
+                <p>{{template.name}}</p>
+                <div class="tw-flex tw-gap-1">
+                    <button type="submit" class="btn btn-danger tw-w-full"><i class="bi bi-trash"></i></button>
+                    <button class="btn btn-primary tw-w-full"><i class="bi bi-pencil-fill"></i></button>
+                </div>
+            </div>
+        {% endfor %}
+    </div>  
+    <hr>
+    <div class="tw-text-2xl">
+        Public templates
+    </div>
+    <div class="tw-flex tw-mt-[5%] tw-w-full tw-flex-wrap tw-gap-4 tw-mx-[30%]">
+        {% for template in public_templates %}
+            <div class="tw-flex tw-flex-col tw-border-solid 
+                        tw-text-center tw-justify-items-center 
+                        tw-place-content-center 
+                        tw-w-[250px] tw-g-[150px] 
+                        tw-rounded-lg tw-shadow-xl tw-p-5"
+                        href="/create"
+                        >
+                <p>{{template.name}}</p>
+                <div class="tw-flex tw-gap-1">
+                    <button class="btn btn-primary tw-w-full"><i class="bi bi-pencil-fill"></i></button>
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>  
+</div>
+{% endblock content %}

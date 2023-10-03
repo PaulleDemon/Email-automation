@@ -26,10 +26,7 @@ def login_view(request):
         login(request, user)
         return redirect('email-templates')
 
-    else:
-         return render(request, 'login.html', {'error': f'Invalid email or password'})
-
-    return render(request, 'login.html')
+    return render(request, 'login.html', {'error': f'Invalid email or password'})
 
 
 def logout_view(request):
@@ -88,6 +85,11 @@ def verification_resend(request):
         if not user.exists():
 
             return render(request, 'resend-confirmation.html', {'error': f'The email {email} is not registered'})
+
+        if user.filter(is_active=True):
+            return render(request, 'resend-confirmation.html', {'error': f'The email {email} is already active'})
+
+        send_token(email)
 
         return redirect('verification-alert')
 
