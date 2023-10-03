@@ -283,6 +283,10 @@ button[aria-expanded='false'] > .expand_caret {
   position: fixed;
 }
 
+.tw-relative {
+  position: relative;
+}
+
 .tw-left-\[50\%\] {
   left: 50%;
 }
@@ -688,6 +692,18 @@ button[aria-expanded='false'] > .expand_caret {
   color: rgb(96 165 250 / var(--tw-text-opacity));
 }
 
+@media not all and (min-width: 768px) {
+  .max-md\:tw-flex-col {
+    flex-direction: column;
+  }
+}
+
+@media not all and (min-width: 640px) {
+  .max-sm\:tw-flex-col {
+    flex-direction: column;
+  }
+}
+
 @media (min-width: 640px) {
   .sm\:tw-m-\[2\%\] {
     margin: 2%;
@@ -704,6 +720,22 @@ button[aria-expanded='false'] > .expand_caret {
 }
 
 @media (min-width: 768px) {
+  .md\:tw-fixed {
+    position: fixed;
+  }
+
+  .md\:tw-absolute {
+    position: absolute;
+  }
+
+  .md\:tw-top-\[20\%\] {
+    top: 20%;
+  }
+
+  .md\:tw-right-\[5\%\] {
+    right: 5%;
+  }
+
   .md\:tw-m-\[10\%\] {
     margin: 10%;
   }
@@ -713,9 +745,35 @@ button[aria-expanded='false'] > .expand_caret {
     margin-right: 30%;
   }
 
+  .md\:tw-ml-\[5\%\] {
+    margin-left: 5%;
+  }
+
+  .md\:tw-flex-col {
+    flex-direction: column;
+  }
+
   .md\:tw-text-lg {
     font-size: 1.125rem;
     line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lg\:tw-absolute {
+    position: absolute;
+  }
+
+  .lg\:tw-right-\[5\%\] {
+    right: 5%;
+  }
+
+  .lg\:tw-top-\[20\%\] {
+    top: 20%;
+  }
+
+  .lg\:tw-flex-col {
+    flex-direction: column;
   }
 }
 

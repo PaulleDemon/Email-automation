@@ -8,29 +8,79 @@
             <div class="tw-text-3xl tw-font-semibold tw-text-center tw-mt-[5%]">
                 Create email template
             </div>
-            <form class="tw-flex tw-flex-col tw-gap-3 tw-mt-[5%]">
 
-                <input type="text" class="form-control" placeholder="subject" maxlength="200" autofocus>
-
-                <input id="body" value="" placeholder="write your draft" type="hidden" name="content">
+            <div id="error-toast" class="toast tw-h-max tw-z-[5000] tw-fixed tw-top-[2%] tw-left-[50%] tw-translate-x-[-50%] align-items-center text-bg-danger border-0" 
+                role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body" id="error-toast-body">
+                    
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
             
-                <trix-editor input="body" id="trix-editor" class="form-control tw-max-h-[450px] tw-overflow-auto [&>a]:tw-text-blue-700" 
-                                                placeholder="Enter the mail body"></trix-editor>
-                <div id="file-previewContainer" class="tw-flex tw-flex-wrap tw-gap-2 tw-grid-cols-2">
-                   
+            <form  action="{% url "email-templates" %}" enctype="multipart/form-data" method="POST" class="tw-flex tw-flex-col tw-gap-3 tw-mt-[5%]">
+                {% csrf_token %}
+
+                <div class="alert alert-danger tw-hidden" id="template-alert">
+                    {% for x in errors %}
+                        {{x}}
+                    {% endfor %}
                 </div>
 
-                <div class="tw-flex tw-mt-[2%] tw-place-content-end ">
-                    <label class="btn btn-warning tw-ml-auto ">
-                        <input type="file" class="tw-hidden" id="file-upload" />
-                        <span>Attach file</span>  
-                        <i class="bi bi-paperclip"></i>
-                    </label>
-                </div>
+                <div class="tw-flex tw-flex-col tw-gap-3">
+                    <input type="text" class="form-control" name="subject" 
+                            placeholder="subject" value="{{subject}}" required maxlength="200" autofocus>
+                    
+                    <div class="editor-container tw-relative">
+                        <input id="content" value="{{body}}" placeholder="write your draft" 
+                                type="hidden" name="content" required>
+                    
+                        <trix-editor input="body" id="trix-editor" class="form-control tw-max-h-[450px] tw-overflow-auto [&>a]:tw-text-blue-700" 
+                                                        placeholder="Enter the mail body"></trix-editor>
+                        <div id="autoCompleteDropDown"></div>
+                    </div>
 
-                <div class="tw-flex tw-mt-[2%]">
-                    <button type="button" class="btn btn-primary">Send Test mail</button>
-                    <button type="submit" class="btn btn-success tw-ml-auto">Save Template</button>
+                    <div id="file-previewContainer" class="tw-flex tw-flex-wrap tw-gap-2 tw-grid-cols-2">
+                    
+                    </div>
+
+                    <div class="tw-flex tw-mt-[2%] tw-place-content-end ">
+                        <label class="btn btn-warning tw-ml-auto ">
+                            <input type="file" class="tw-hidden" id="file-upload" />
+                            <span>Attach file</span>  
+                            <i class="bi bi-paperclip" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Tooltip on bottom"></i>
+                        </label>
+                    </div>
+
+                    <div class="form-check tw-ml-auto tw-mt-[5%]">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Public template
+                        </label>
+                        <i class="bi bi-info-circle-fill" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Make this template public for anyone on the internet"></i>
+                    </div>
+
+                    <div class="tw-flex tw-mt-[2%]">
+                        <button type="button" class="btn btn-primary">Send Test mail</button>
+                        <button type="submit" class="btn btn-success tw-ml-auto">Save Template</button>
+                    </div>
+                </div>
+                <div class="lg:tw-absolute lg:tw-top-[20%] lg:tw-right-[5%] tw-flex-col tw-flex tw-gap-2">
+                    <div class="tw-text-sm">
+                        Add fields seperated by comma for error check eg: name, age
+                    </div>
+                    <textarea name="variables" class="form-control" placeholder="Add email variables" 
+                                id="variables" value="{{variables}}" cols="30" rows="10"></textarea>
+                    
+                    <div class="tw-flex tw-mt-[2%] tw-place-content-end ">
+                        <label class="btn btn-warning tw-ml-auto ">
+                            <input type="file" class="tw-hidden" accept=".xlsx, .xls, .csv" id="variables-upload" />
+                            <span>Upload Excel file</span>  
+                            <i class="bi bi-upload" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Tooltip on bottom"></i>
+                        </label>
+                    </div>
+                    
                 </div>
             </form>
             <hr class="tw-mt-[5%]">
@@ -46,6 +96,14 @@
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.0/dist/trix.css">
     <script type="text/javascript" src="https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"></script>
 
+    <script src="{% static "./js/utils/trix-autocomplete.js" %}"></script>
     <script src="{% static "./js/email-product/email-template-create.js" %}"></script>
+
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
 
 {% endblock content %}

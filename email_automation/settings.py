@@ -136,6 +136,7 @@ TEMPLATES = [
             BASE_DIR.joinpath("templates", "html", "authentication"),
             BASE_DIR.joinpath("templates", "html", "email-product"),
             BASE_DIR.joinpath("templates", "html", "email-product", "templates"),
+            BASE_DIR.joinpath("templates", "html", "email-product", "campaign"),
         ],
         'APP_DIRS': True,
         'OPTIONS': {

@@ -10,19 +10,19 @@ function checkSignUp(){
 
 
     if (!isValidEmail(email.value)){
-        formError(alert, "Invalid email")
+        alertError(alert, "Invalid email")
         disableBtn(createAccbtn)
         return
     }else{
-        hideError(alert)
+        hideAlertError(alert)
     } 
 
     if (password.value.trim().length < 6){
-        formError(alert, "Password too short")
+        alertError(alert, "Password too short")
         disableBtn(createAccbtn)
         return
     }else{
-        hideError(alert)
+        hideAlertError(alert)
     }
 
     if (termsConditions.checked){
@@ -42,17 +42,17 @@ function checkLogin(){
     const alert = document.getElementById("login-alert")
 
     if (!isValidEmail(email)){
-        formError(alert, "Invalid email")
+        alertError(alert, "Invalid email")
         disableBtn(loginBtn)
         return
     }
     console.log("Password: ", password)
     if (password.length < 6){
-        formError(alert, "Invalid password")
+        alertError(alert, "Invalid password")
         disableBtn(loginBtn)
         return
     }
-    hideError(alert)
+    hideAlertError(alert)
     enableBtn(loginBtn)
 
 }
@@ -67,10 +67,10 @@ function checkEmailResend(){
 
 
     if (!isValidEmail(email)){
-        formError(alert, "Invalid email")
+        alertError(alert, "Invalid email")
         disableBtn(submitBtn)
     }else{
-        hideError(alert)
+        hideAlertError(alert)
         enableBtn(submitBtn)
     }
 
