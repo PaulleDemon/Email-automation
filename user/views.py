@@ -75,7 +75,7 @@ def verification_resend(request):
     """
         resend the confirmation email
     """
-    print("Method: ", request.method)
+
     if request.method == "POST":
 
         email = request.POST.get('email')

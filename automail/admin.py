@@ -19,16 +19,26 @@ class EmailServerAdmin(admin.ModelAdmin):
 
     list_display = ['id', 'user', 'host']
     search_fields = ['user']
+    autocomplete_fields = ['user']
 
 
 @admin.register(EmailTemplate)
 class EmailTemplateAdmin(admin.ModelAdmin):
 
-    search_fields = ['id', 'user', ]
+    search_fields = ['id', 'user', 'public']
     list_display = ['id', 'user', 'body', 'datetime']
+    list_filter = ['public']
 
     inlines = [AttachmentInline]
+    autocomplete_fields = ['user']
 
+
+@admin.register(EmailTemplateAttachment)
+class EmailTemplateAttachmentAdmin(admin.ModelAdmin):
+
+    list_display = ['id', 'template', 'attachment']
+    autocomplete_fields = ['template']
+    
 
 @admin.register(EmailCampaign)
 class EmailCampaignAdmin(admin.ModelAdmin):
@@ -37,6 +47,8 @@ class EmailCampaignAdmin(admin.ModelAdmin):
 
     list_display = ['id', 'name', 'scheduled']
     list_filter = ['created_datetime', 'scheduled']
+
+    autocomplete_fields = ['user']
 
 
 @admin.register(EmailCampaignTemplate)

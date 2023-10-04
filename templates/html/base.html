@@ -60,6 +60,17 @@
                 <a class="nav-link hover:tw-text-blue-400" href="{% url 'email-templates' %}">Email Templates</a>
             </div>
             <div class="navbar-nav tw-ml-auto">
+
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle " type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="bi bi-plus tw-text-3xl"></i>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="{% url "email-template-create" %}">Create template</a>
+                      <a class="dropdown-item" href="{% url "email-campaign-create" %}">Create campaign</a>
+                    </div>
+                  </div>
+
                 {% if user.is_authenticated %}
                     <div class="m-2">
                         {{user.name}}

@@ -8,6 +8,8 @@ class EmailConfiguration(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    name = models.CharField(max_length=40)
+
     host = models.CharField(max_length=350)
     use_ssl = models.BooleanField(default=True)
     port = models.SmallIntegerField(default=465) # use ssl port
@@ -20,7 +22,7 @@ class EmailConfiguration(models.Model):
 
 class EmailTemplate(models.Model):
 
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, default="Sample Template")
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
@@ -34,7 +36,7 @@ class EmailTemplate(models.Model):
     public = models.BooleanField(default=False) # is this template public template
 
     def __str__(self) -> str:
-        return self.template[:30]
+        return self.subject[:30]
     
 
 class EmailTemplateAttachment(models.Model):
@@ -43,7 +45,7 @@ class EmailTemplateAttachment(models.Model):
     attachment = models.FileField(upload_to='attachments/')
 
     def __str__(self) -> str:
-        return self.template[:30]
+        return self.template.subject[:30]
 
 
 class EmailCampaign(models.Model):

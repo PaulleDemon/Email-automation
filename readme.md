@@ -6,7 +6,7 @@ or
 
 clone the repo
 ```
-git clone repo_name
+git clone https://github.com/PaulleDemon/Email-automation
 ```
 
 Install dependencies

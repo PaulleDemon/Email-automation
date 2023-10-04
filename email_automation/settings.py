@@ -133,6 +133,7 @@ TEMPLATES = [
         'DIRS': [
             BASE_DIR.joinpath("templates"),
             BASE_DIR.joinpath("templates", "html", ),
+            BASE_DIR.joinpath("templates", "html", "error"),
             BASE_DIR.joinpath("templates", "html", "authentication"),
             BASE_DIR.joinpath("templates", "html", "email-product"),
             BASE_DIR.joinpath("templates", "html", "email-product", "templates"),
