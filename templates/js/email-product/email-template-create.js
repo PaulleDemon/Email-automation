@@ -132,3 +132,15 @@ document.getElementById('variables-upload').addEventListener('change', function(
         }
     }
 });
+
+function warnUserOnPublic(){
+    // show warning when the user make the template public
+    if (event.target.checked){
+        templateAlert.innerText = "Warning: Upon submission this tempate is made public, including the file attachments."
+        templateAlert.classList.remove('tw-hidden', 'alert-danger')
+        templateAlert.classList.add('alert-warning')
+    }else{
+        templateAlert.classList.add('tw-hidden')
+    }
+
+}

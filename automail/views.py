@@ -1,3 +1,4 @@
+from django.urls import reverse
 from django.forms import model_to_dict
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
@@ -14,6 +15,7 @@ def email_template_create(request):
     if request.method == 'GET':
         
         edit = request.GET.get('edit')
+        copy = request.GET.get('copy')
 
         context = {
             'subject': '',
@@ -38,28 +40,50 @@ def email_template_create(request):
 
             if template.filter(user=request.user).exists():
                 
-                template_get = template.get(user=request.user)
+                user_template = template.get(user=request.user)
                 context = {
-                    'id': template_get.id,
-                    'subject': template_get.subject,
-                    'body': template_get.body,
-                    'variables': template_get.variables,
-                    'attachments': template_get,
+                    'template': user_template
                 }
 
             elif template.filter(public=True).exists():
                 
                 dup_temp = template.last()
 
-                kwargs = model_to_dict(dup_temp, exclude=['user', 'name', 'public'])
+                kwargs = model_to_dict(dup_temp, exclude=['id', 'user', 'name', 'public'])
 
-                EmailTemplate.objects.create(user=request.user, name=f'{dup_temp.name} (copy)', public=False, **kwargs)
+                temp = EmailTemplate.objects.create(id=None, user=request.user, name=f'{dup_temp.name} (copy)', public=False, **kwargs)
+                modified_url = reverse('email-template-create') + f'?edit={temp.id}'
 
+                return redirect(modified_url)
+
+            else:
+                return render(request, '404.html')
+
+
+        if copy:
+            try:
+                int(copy)
+            except ValueError:
+                return render(request, '404.html') 
+
+
+            template = EmailTemplate.objects.filter(id=copy)
+
+            if not template.exists():
+                return render(request, '404.html')
+
+            dup_temp = template.last()
+
+            kwargs = model_to_dict(dup_temp, exclude=['id', 'user', 'name', 'public'])
+
+            temp = EmailTemplate.objects.create(id=None, user=request.user, name=f'{dup_temp.name} (copy)', public=False, **kwargs)
+            modified_url = reverse('email-template-create') + f'?edit={temp.id}'
+
+            return redirect(modified_url)
 
         return render(request, 'email-template-create.html', context=context)
     
     if request.method == 'POST':
-
 
         edit = request.GET.get('edit')
 
@@ -158,4 +182,10 @@ def campaign_view(request):
     return render(request, 'email-campaign.html')
 
 
+@require_http_methods(['GET', 'POST'])
+def configuration_view(request):
 
+    """
+        used to configure the server
+    """
+    return render(request, 'configure-server.html')

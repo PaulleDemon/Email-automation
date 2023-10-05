@@ -1,0 +1,68 @@
+{% extends './html/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="tw-flex tw-flex-col tw-min-h-[100vh] tw-p-3 tw-place-items-center tw-gap-4">
+    <div class="tw-text-3xl tw-font-semibold tw-text-center tw-mt-[2%]">
+        Configure Email
+    </div>
+    <div class="tw-mt-[5%] tw-flex tw-w-full tw-place-content-center">
+        <div class="tw-max-w-lg tw-w-full tw-shadow-xl tw-p-5">
+
+            <form action="" method="post">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="">Display Name</span>
+                    <input type="text" class="form-control" name="name" id="basic-url" autofocus 
+                            value="{{congfiguration.name}}" placeholder="Name (optional)">
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="">Email</span>
+                    <input type="text" class="form-control" maxlength="450" name="name" id="basic-url" autofocus 
+                            value="{{congfiguration.email}}" placeholder="name@yourdomain.com">
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="">Password</span>
+                    <input type="password" class="form-control" maxlength="450" name="name" id="" autofocus 
+                            value="{{congfiguration.password}}" placeholder="">
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="">Host</span>
+                    <input type="text" class="form-control" name="name" id="" value="{{congfiguration.host}}" 
+                            placeholder="Host">
+                    <select class="form-select">
+                        <option value="">Select host</option>
+                        <option value="smtp.gmail.com">Gmail</option>
+                        <option value="smtp-mail.outlook.com">Outlook</option>
+                        <option value="smtp.protonmail.com">Proton Mail</option>
+                    </select>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="">Port</span>
+                    <input type="text" class="form-control" name="port" id="basic-url" value="{{congfiguration.port}}" 
+                            placeholder="Port">
+                    <select class="form-select">
+                        <option value="">Select Port (default 465)</option>
+                        <option value="587">Gmail</option>
+                        <option value="587">Outlook</option>
+                        <option value="1025">Proton Mail</option>
+                    </select>
+                </div>
+
+                <div class="tw-flex tw-flex-col">
+                    <span class="tw-m-2" id="">Signature</span>
+                    <textarea class="form-control" 
+                            name="signature" id="" value="{{congfiguration.signature}}" 
+                            placeholder="Email signature">{{congfiguration.signature}}</textarea>
+                </div>
+
+
+            </form>
+
+        </div>
+    </div>
+</div>
+{%endblock content%}

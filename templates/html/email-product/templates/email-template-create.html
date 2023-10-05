@@ -31,15 +31,15 @@
 
                 
                 <input type="text" class="tw-appearance-none tw-bg-transparent tw-border-none tw-border-b-4 tw-w-full tw-text-gray-700 tw-leading-tight focus:tw-outline-none"
-                         name="name" value="{% if name %}{{name}}{% else %}Sample Template{% endif %}" placeholder="Template name" required maxlength="35">
+                         name="name" value="{% if template.name %}{{template.name}}{% else %}Sample Template{% endif %}" placeholder="Template name" required maxlength="35">
 
 
                 <div class="tw-flex tw-flex-col tw-gap-3 tw-z-[1]">
                     <input type="text" class="form-control" name="subject" 
-                            placeholder="subject" value="{{subject}}" required maxlength="200" autofocus>
+                            placeholder="subject" value="{{template.subject}}" required maxlength="200" autofocus>
                     
                     <div class="editor-container tw-relative">
-                        <input id="content" value="{{body}}" placeholder="write your draft" 
+                        <input id="content" value="{{template.body}}" placeholder="write your draft" 
                                 type="hidden" name="body" required>
                     
                         <trix-editor input="content" id="trix-editor" class="form-control tw-max-h-[450px] tw-overflow-auto [&>a]:tw-text-blue-700" 
@@ -59,9 +59,8 @@
                         </label>
                     </div>
 
-                    {{template.public}}
                     <div class="form-check tw-ml-auto tw-mt-[5%]">
-                        <input class="form-check-input" type="checkbox" name="public" value="public" {% if template.public %}checked{% endif %} id="flexCheckDefault">
+                        <input class="form-check-input" type="checkbox" onclick="warnUserOnPublic()" name="public" value="public" {% if template.public %}checked{% endif %} id="flexCheckDefault">
                         <label class="form-check-label" for="flexCheckDefault">
                             Public template
                         </label>
@@ -78,7 +77,7 @@
                         Add fields seperated by comma for error check eg: name, age
                     </div>
                     <textarea name="variables" class="form-control" placeholder="Add email variables" 
-                                id="variables" value="{{variables}}" cols="30" rows="10"></textarea>
+                                id="variables" value="{{template.variables}}" cols="30" rows="10">{{template.variables}}</textarea>
                     
                     <div class="tw-flex tw-mt-[2%] tw-place-content-end ">
                         <label class="btn btn-warning tw-ml-auto ">
@@ -105,12 +104,5 @@
 
     <script src="{% static "./js/utils/trix-autocomplete.js" %}"></script>
     <script src="{% static "./js/email-product/email-template-create.js" %}"></script>
-
-    <script>
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
-        })
-    </script>
 
 {% endblock content %}
