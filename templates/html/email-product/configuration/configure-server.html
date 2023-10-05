@@ -6,10 +6,17 @@
     <div class="tw-text-3xl tw-font-semibold tw-text-center tw-mt-[2%]">
         Configure Email
     </div>
-    <div class="tw-mt-[5%] tw-flex tw-w-full tw-place-content-center">
+    <div class="tw-mt-[2%] tw-flex tw-w-full tw-place-content-center">
         <div class="tw-max-w-lg tw-w-full tw-shadow-xl tw-p-5">
-
-            <form action="" method="post">
+            
+            <div class="alert alert-danger tw-text-center {% if not errors %}tw-hidden{% endif %}" id="configuration-alert">
+                {% for x in errors %}
+                    {{x}}
+                {% endfor %}
+            </div>
+            <form action="" id="configuration-form" method="post" 
+                class="tw-flex tw-flex-col tw-gap-2" onsubmit="return checkSubmition();">
+                {% csrf_token %}
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="">Display Name</span>
                     <input type="text" class="form-control" name="name" id="basic-url" autofocus 
@@ -18,21 +25,21 @@
 
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="">Email</span>
-                    <input type="text" class="form-control" maxlength="450" name="name" id="basic-url" autofocus 
+                    <input type="email" class="form-control" maxlength="450" name="email" id="basic-url" 
                             value="{{congfiguration.email}}" placeholder="name@yourdomain.com">
                 </div>
 
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="">Password</span>
-                    <input type="password" class="form-control" maxlength="450" name="name" id="" autofocus 
-                            value="{{congfiguration.password}}" placeholder="">
+                    <input type="password" class="form-control" maxlength="80" name="password" id="" 
+                            value="{{congfiguration.password}}" >
                 </div>
 
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="">Host</span>
-                    <input type="text" class="form-control" name="name" id="" value="{{congfiguration.host}}" 
+                    <input type="text" class="form-control" maxlength="200" name="host" id="host-input" value="{{congfiguration.host}}" 
                             placeholder="Host">
-                    <select class="form-select">
+                    <select class="form-select" onchange="updateHost()">
                         <option value="">Select host</option>
                         <option value="smtp.gmail.com">Gmail</option>
                         <option value="smtp-mail.outlook.com">Outlook</option>
@@ -42,10 +49,11 @@
 
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="">Port</span>
-                    <input type="text" class="form-control" name="port" id="basic-url" value="{{congfiguration.port}}" 
+                    <input type="number" class="form-control" name="port" id="port-input" min="0" oninput="validity.valid||(value='');"
+                             value="{{congfiguration.port}}" 
                             placeholder="Port">
-                    <select class="form-select">
-                        <option value="">Select Port (default 465)</option>
+                    <select class="form-select" onchange="updatePort()">
+                        <option value="465" selected>Select Port (default 465)</option>
                         <option value="587">Gmail</option>
                         <option value="587">Outlook</option>
                         <option value="1025">Proton Mail</option>
@@ -53,16 +61,18 @@
                 </div>
 
                 <div class="tw-flex tw-flex-col">
-                    <span class="tw-m-2" id="">Signature</span>
-                    <textarea class="form-control" 
-                            name="signature" id="" value="{{congfiguration.signature}}" 
-                            placeholder="Email signature">{{congfiguration.signature}}</textarea>
+                    <span class="tw-m-2" id="">Email signature</span>
+                    <textarea class="form-control tw-max-h-[200px]" 
+                            name="signature" id="" maxlength="250" value="{{congfiguration.signature}}" 
+                            placeholder="eg: Best regards, Paul ">{{congfiguration.signature}}</textarea>
                 </div>
 
+                <button type="submit" class="btn btn-dark tw-my-4" class>Save</button>
 
             </form>
 
         </div>
     </div>
 </div>
+<script src="{% static "./js/email-product/configuration.js" %}"></script>
 {%endblock content%}

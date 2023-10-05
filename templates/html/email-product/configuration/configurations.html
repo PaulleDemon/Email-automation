@@ -1,0 +1,72 @@
+{% extends './html/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="tw-flex tw-flex-col tw-min-h-[100vh] tw-p-3 tw-place-items-center tw-gap-4">
+
+    <div class="tw-text-3xl tw-font-semibold tw-text-center tw-mt-[2%]">
+        Email configurations
+    </div> 
+
+    <div class="tw-flex tw-w-full tw-p-4 tw-flex-wrap tw-gap-2 tw-mt-[5%]">
+
+        <a class="tw-flex tw-flex-col tw-border-solid 
+                    tw-text-center tw-justify-items-center 
+                    tw-place-content-center 
+                    tw-w-[250px] tw-g-[150px] 
+                    tw-rounded-lg tw-shadow-xl tw-p-5"
+                    href="{% url "configure-email" %}"
+                    >
+            <i class="bi bi-plus-lg tw-text-3xl"></i>
+            <p>Add configuration</p>
+        </a> 
+
+        {% for configuration in configurations %}
+            <div class="tw-flex tw-flex-col tw-max-w-lg tw-w-full tw-shadow-xl tw-p-5">
+            
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="">Display Name</span>
+                    <input type="text" class="form-control" name="name" id="basic-url" readonly 
+                            value="{{congfiguration.name}}">
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="">Email</span>
+                    <input type="email" class="form-control" maxlength="450" name="email" 
+                            value="{{congfiguration.email}}" readonly>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="">Password</span>
+                    <input type="password" class="form-control" maxlength="80" name="password" 
+                            value="{{congfiguration.password}}" readonly >
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="">Host</span>
+                    <input type="text" class="form-control" maxlength="200" name="host" id="host-input" value="{{congfiguration.host}}" 
+                        readonly>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="">Port</span>
+                    <input type="number" class="form-control" name="port" id="port-input" min="0" oninput="validity.valid||(value='');"
+                                value="{{congfiguration.port}}" 
+                            readonly>
+                </div>
+
+                <div class="tw-flex tw-flex-col">
+                    <span class="tw-m-2" id="">Email signature</span>
+                    <textarea class="form-control tw-max-h-[200px]" 
+                            name="signature" id="" maxlength="250" value="{{congfiguration.signature}}" 
+                            readonly>{{congfiguration.signature}}</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-dark tw-my-4" class>Edit</button>
+
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock content %}

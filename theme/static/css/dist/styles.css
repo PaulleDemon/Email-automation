@@ -348,6 +348,11 @@ button[aria-expanded='false'] > .expand_caret {
   margin-right: 30%;
 }
 
+.tw-my-4 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
 .tw-ml-\[auto\] {
   margin-left: auto;
 }
@@ -382,6 +387,10 @@ button[aria-expanded='false'] > .expand_caret {
 
 .tw-mt-auto {
   margin-top: auto;
+}
+
+.tw-mt-\[5\%\^\] {
+  margin-top: 5%^;
 }
 
 .tw-flex {
@@ -433,6 +442,10 @@ button[aria-expanded='false'] > .expand_caret {
   height: 80px;
 }
 
+.tw-h-\[100px\] {
+  height: 100px;
+}
+
 .tw-max-h-\[400px\] {
   max-height: 400px;
 }
@@ -443,6 +456,14 @@ button[aria-expanded='false'] > .expand_caret {
 
 .tw-max-h-\[30\%\] {
   max-height: 30%;
+}
+
+.tw-max-h-\[300px\] {
+  max-height: 300px;
+}
+
+.tw-max-h-\[200px\] {
+  max-height: 200px;
 }
 
 .tw-min-h-\[100vh\] {

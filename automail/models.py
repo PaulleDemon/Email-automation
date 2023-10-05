@@ -8,7 +8,7 @@ class EmailConfiguration(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    name = models.CharField(max_length=40)
+    name = models.CharField(max_length=40, null=True, blank=True)
 
     host = models.CharField(max_length=350)
     use_ssl = models.BooleanField(default=True)

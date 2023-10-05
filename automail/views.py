@@ -4,11 +4,14 @@ from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 
-from .forms import EmailTemplateForm, AttachmentForm
-from .models import EmailTemplate, EmailCampaign, EmailTemplateAttachment
+from .forms import (EmailTemplateForm, AttachmentForm, EmailConfigurationForm)
+from .models import (EmailTemplate, EmailCampaign, EmailTemplateAttachment, 
+                        EmailConfiguration)
+
+from utils.decorators import login_required_for_post
 
 
-@login_required
+@login_required_for_post
 @require_http_methods(['GET', 'POST'])
 def email_template_create(request):
     
@@ -29,23 +32,17 @@ def email_template_create(request):
 
             try:
                 int(edit)
-            except ValueError:
+                template = EmailTemplate.objects.get(id=edit)
+            except (ValueError, EmailTemplate.DoesNotExist):
                 return render(request, '404.html') 
 
-
-            template = EmailTemplate.objects.filter(id=edit)
-
-            if not template.exists():
-                return render(request, '404.html')
-
-            if template.filter(user=request.user).exists():
+            if template.user == request.user:
                 
-                user_template = template.get(user=request.user)
                 context = {
-                    'template': user_template
+                    'template': template
                 }
 
-            elif template.filter(public=True).exists():
+            elif template.public == True:
                 
                 dup_temp = template.last()
 
@@ -106,9 +103,6 @@ def email_template_create(request):
 
             file_form = AttachmentForm(request.POST, request.FILES)
             template = template_form.save(commit=False)
-
-            print("Public: ", template.public, request.POST)
-            # for updating id is required
 
             if request.FILES:
                 # if there are attachment check if the form is valid before
@@ -181,11 +175,48 @@ def campaign_view(request):
 
     return render(request, 'email-campaign.html')
 
-
+@login_required_for_post
 @require_http_methods(['GET', 'POST'])
-def configuration_view(request):
+def configuration_create_view(request):
 
     """
         used to configure the server
     """
-    return render(request, 'configure-server.html')
+    if request.method == 'GET':
+        edit = request.GET.get('edit')
+
+        context = {}
+
+        if edit:
+            try:
+                int(edit)
+                configuration = EmailConfiguration.objects.get(id=edit)
+                context['configuration'] = configuration
+
+            except (ValueError, EmailConfiguration.DoesNotExist):
+                return render(request, '404.html')
+            
+
+        return render(request, 'configure-server.html', context)
+
+    else:
+
+        form = EmailConfigurationForm(request.POST)
+        
+        if form.is_valid():
+            
+            configuration = form.save(commit=False)
+            configuration.user = request.user
+            configuration.save()
+
+            return redirect('configurations')
+
+        error = form.errors.as_data()
+        errors = [f'{list(error[x][0])[0]}' for x in error] 
+
+        return render(request, 'configure-server.html', context={'errors': errors})
+
+
+def configurations_view(request):
+
+    return render(request, 'configurations.html')
