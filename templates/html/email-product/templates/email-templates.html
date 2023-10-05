@@ -54,7 +54,8 @@
                 <div><b>Subject:</b> {{template.subject}}</div>
                 <div class="tw-flex tw-gap-1 tw-mt-auto tw-text-2xl">
                     <button type="submit" onclick="onDeleteTemplate('{% url 'email-template-delete' id=template.id %}', '{{ template.name }} #{{ template.id }}')" 
-                            class="btn !tw-text-red-600 tw-w-full" data-bs-toggle="modal" data-bs-target="#delete-modal"><i class="bi bi-trash"></i></button>
+                            class="btn !tw-text-red-600 tw-w-full" data-bs-toggle="modal" data-bs-target="#delete-modal"><i class="bi bi-trash"></i>
+                    </button>
                     <a class="btn !tw-border-solid !tw-border" href="{% url 'email-template-create' %}?copy={{ template.id }}" 
                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Duplicate">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-copy" viewBox="0 0 16 16">

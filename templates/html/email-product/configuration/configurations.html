@@ -4,16 +4,38 @@
 {% block content %}
 <div class="tw-flex tw-flex-col tw-min-h-[100vh] tw-p-3 tw-place-items-center tw-gap-4">
 
+    <div class="modal model-dialog fade modal-dialog-centered !tw-hidden" id="delete-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Delete Configuration</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+              Are you sure you want to delete this? This action cannot be undone
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <form action="" id="modal-btn-delete" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+          </div>
+        </div>
+    </div>
+
     <div class="tw-text-3xl tw-font-semibold tw-text-center tw-mt-[2%]">
         Email configurations
     </div> 
+    
 
     <div class="tw-flex tw-w-full tw-p-4 tw-flex-wrap tw-gap-2 tw-mt-[5%]">
 
         <a class="tw-flex tw-flex-col tw-border-solid 
                     tw-text-center tw-justify-items-center 
                     tw-place-content-center 
-                    tw-w-[250px] tw-g-[150px] 
+                    tw-w-[250px] tw-h-[150px] 
                     tw-rounded-lg tw-shadow-xl tw-p-5"
                     href="{% url "configure-email" %}"
                     >
@@ -22,51 +44,57 @@
         </a> 
 
         {% for configuration in configurations %}
-            <div class="tw-flex tw-flex-col tw-max-w-lg tw-w-full tw-shadow-xl tw-p-5">
+            <div class="tw-flex tw-flex-col tw-max-w-lg tw-gap-1 tw-w-full tw-shadow-xl tw-p-5">
             
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="">Display Name</span>
                     <input type="text" class="form-control" name="name" id="basic-url" readonly 
-                            value="{{congfiguration.name}}">
+                            value="{{configuration.name}}">
                 </div>
 
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="">Email</span>
                     <input type="email" class="form-control" maxlength="450" name="email" 
-                            value="{{congfiguration.email}}" readonly>
+                            value="{{configuration.email}}" readonly>
                 </div>
 
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="">Password</span>
                     <input type="password" class="form-control" maxlength="80" name="password" 
-                            value="{{congfiguration.password}}" readonly >
+                            value="{{configuration.password}}" readonly >
                 </div>
 
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="">Host</span>
-                    <input type="text" class="form-control" maxlength="200" name="host" id="host-input" value="{{congfiguration.host}}" 
+                    <input type="text" class="form-control" maxlength="200" name="host" id="host-input" 
+                        value="{{configuration.host}}" 
                         readonly>
                 </div>
 
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="">Port</span>
                     <input type="number" class="form-control" name="port" id="port-input" min="0" oninput="validity.valid||(value='');"
-                                value="{{congfiguration.port}}" 
+                                value="{{configuration.port}}" 
                             readonly>
                 </div>
 
                 <div class="tw-flex tw-flex-col">
                     <span class="tw-m-2" id="">Email signature</span>
                     <textarea class="form-control tw-max-h-[200px]" 
-                            name="signature" id="" maxlength="250" value="{{congfiguration.signature}}" 
-                            readonly>{{congfiguration.signature}}</textarea>
+                            name="signature" id="" maxlength="250" value="{{configuration.signature}}" 
+                            readonly>{{configuration.signature}}</textarea>
                 </div>
+                <a href="{% url "configure-email" %}?edit={{configuration.id}}" class="btn btn-dark tw-my-4" class>Edit</a>
+                
+                <button type="submit" onclick="deleteConfiguration('{% url 'configure-email-delete' id=configuration.id %}')" 
+                    class="btn btn-danger tw-w-full" data-bs-toggle="modal" data-bs-target="#delete-modal"><i class="bi bi-trash"></i>
+                </button>
 
-                <button type="submit" class="btn btn-dark tw-my-4" class>Edit</button>
 
             </div>
         {% endfor %}
     </div>
 
 </div>
+<script src="{% static "./js/email-product/configuration.js" %}"></script>
 {% endblock content %}

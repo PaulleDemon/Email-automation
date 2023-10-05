@@ -2,6 +2,11 @@ const configurationAlert = document.getElementById("configuration-alert")
 const hostInput = document.getElementById("host-input")
 const portInput = document.getElementById("port-input")
 
+const model = document.getElementById("delete-modal")
+const modelForm = document.getElementById("modal-btn-delete")
+const modelBody = document.getElementById("modal-body")
+
+
 const form = document.getElementById("configuration-form")
 
 const inputElements = form.querySelectorAll('[name]');
@@ -13,8 +18,6 @@ function updatePort(){
 function updateHost(){
     hostInput.value = event.target.value
 }
-
-console.log("input: ", inputElements)
 
 function checkSubmition(){
 
@@ -46,4 +49,12 @@ function checkSubmition(){
 
     return true
 
+}
+
+function deleteConfiguration(url){
+    modelForm.action = url
+    modelBody.innerText = `Are you sure you want to delete configuration? This action cannot be undone.`
+    // deleteModal.show()
+    console.log("model: ", model)
+    model.classList.remove("!tw-hidden")
 }

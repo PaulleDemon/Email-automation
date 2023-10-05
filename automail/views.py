@@ -196,15 +196,28 @@ def configuration_create_view(request):
             except (ValueError, EmailConfiguration.DoesNotExist):
                 return render(request, '404.html')
             
-
         return render(request, 'configure-server.html', context)
 
     else:
+        edit = request.GET.get('edit')
 
         form = EmailConfigurationForm(request.POST)
         
+        if edit:
+            try:
+                int(edit)
+                configuration = EmailConfiguration.objects.get(id=edit)
+        
+            except (ValueError, EmailConfiguration.DoesNotExist):
+                return render(request, '404.html')
+
+            EmailConfiguration.objects.filter(id=edit).update(**form.cleaned_data)      
+
         if form.is_valid():
             
+            if EmailConfiguration.objects.filter(user=request.user, email=form.cleaned_data['email'].exists()):
+                return render(request, 'configure-server.html', context={'errors': 'This email already exists'})
+
             configuration = form.save(commit=False)
             configuration.user = request.user
             configuration.save()
@@ -219,4 +232,16 @@ def configuration_create_view(request):
 
 def configurations_view(request):
 
-    return render(request, 'configurations.html')
+    cofigurations = EmailConfiguration.objects.filter(user=request.user)
+
+    return render(request, 'configurations.html', context={'configurations': cofigurations})
+
+@login_required
+def delete_configuration_view(request, id):
+
+    try:
+        EmailConfiguration.objects.get(id=id, user=request.user).delete()
+        return redirect('configurations')   
+    
+    except (EmailConfiguration.DoesNotExist):
+        return render(request, '404.html')

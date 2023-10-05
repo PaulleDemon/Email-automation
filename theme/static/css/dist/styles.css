@@ -393,6 +393,10 @@ button[aria-expanded='false'] > .expand_caret {
   margin-top: 5%^;
 }
 
+.tw-mt-1 {
+  margin-top: 0.25rem;
+}
+
 .tw-flex {
   display: flex;
 }
