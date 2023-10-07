@@ -5,10 +5,12 @@ from django.urls import path, include
 from django.shortcuts import redirect
 from django.conf.urls.static import static
 
+from .views import support_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
+    path('support/', support_view, name='support-view'),
 
     path('', include('automail.urls')),
     path('user/', include('user.urls')),

@@ -8,8 +8,8 @@ from .forms import (EmailTemplateForm, AttachmentForm, EmailConfigurationForm)
 from .models import (EmailTemplate, EmailCampaign, EmailTemplateAttachment, 
                         EmailConfiguration)
 
+from utils.email import test_email_credentials
 from utils.decorators import login_required_for_post
-
 
 @login_required_for_post
 @require_http_methods(['GET', 'POST'])
@@ -171,9 +171,15 @@ def email_templates(request):
 
 
 @require_http_methods(['GET'])
-def campaign_view(request):
+def campaign_create_view(request):
 
-    return render(request, 'email-campaign.html')
+    return render(request, 'email-campaign-create.html')
+
+
+def campaigns_view(request):
+
+    return render(request, 'email-campaigns.html')
+
 
 @login_required_for_post
 @require_http_methods(['GET', 'POST'])
@@ -203,31 +209,41 @@ def configuration_create_view(request):
 
         form = EmailConfigurationForm(request.POST)
         
-        if edit:
-            try:
-                int(edit)
-                configuration = EmailConfiguration.objects.get(id=edit)
-        
-            except (ValueError, EmailConfiguration.DoesNotExist):
-                return render(request, '404.html')
-
-            EmailConfiguration.objects.filter(id=edit).update(**form.cleaned_data)      
-
         if form.is_valid():
-            
-            if EmailConfiguration.objects.filter(user=request.user, email=form.cleaned_data['email'].exists()):
-                return render(request, 'configure-server.html', context={'errors': 'This email already exists'})
 
-            configuration = form.save(commit=False)
-            configuration.user = request.user
-            configuration.save()
+            credentials = form.cleaned_data
+            credentials_valid, error = test_email_credentials(email=credentials['email'], password=credentials['password'],
+                                    host=credentials['host'], port=credentials['port'])
+            
+            if credentials_valid != True:
+                return render(request, 'configure-server.html', context={'errors': [error], 'configuration': credentials})
+
+            if edit:
+                try:
+                    int(edit)
+                    configuration = EmailConfiguration.objects.get(id=edit)
+            
+                except (ValueError, EmailConfiguration.DoesNotExist):
+                    return render(request, '404.html')
+
+                EmailConfiguration.objects.filter(id=edit).update(**form.cleaned_data)      
+
+            else:
+
+                if EmailConfiguration.objects.filter(user=request.user, email=form.cleaned_data['email']).exists():
+                    return render(request, 'configure-server.html', context={'errors': 'This email already exists'})
+
+                configuration = form.save(commit=False)
+                configuration.user = request.user
+                configuration.save()
 
             return redirect('configurations')
+        
+        else:
+            error = form.errors.as_data()
+            errors = [f'{list(error[x][0])[0]}' for x in error] 
 
-        error = form.errors.as_data()
-        errors = [f'{list(error[x][0])[0]}' for x in error] 
-
-        return render(request, 'configure-server.html', context={'errors': errors})
+            return render(request, 'configure-server.html', context={'errors': errors})
 
 
 def configurations_view(request):
@@ -235,6 +251,7 @@ def configurations_view(request):
     cofigurations = EmailConfiguration.objects.filter(user=request.user)
 
     return render(request, 'configurations.html', context={'configurations': cofigurations})
+
 
 @login_required
 def delete_configuration_view(request, id):

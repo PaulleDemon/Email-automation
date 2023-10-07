@@ -38,7 +38,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js" integrity="sha512-dfX5uYVXzyU8+KHqj8bjo7UkOdg18PaOtpa48djpNbZHwExddghZ+ZmzWT06R5v6NSk3ZUfsH6FNEDepLx9hPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     
     <link rel="stylesheet" href="{%static './css/index.css'%}">
- 
+    
+    <script src="{% static "./js/base.js" %}"></script>
+    <script src="{% static "./js/utils/common.js" %}"></script>
+    <script src="{% static "./js/utils/constants.js" %}"></script>
+
     </head>
 {% comment %} <body class="tw-min-h-[100vh]" data-bs-theme="dark"> {% endcomment %}
 <body class="tw-min-h-[100vh]" >
@@ -51,16 +55,22 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
           {% comment %} <a class="navbar-brand tw-justify-center" href="{% url 'home' %}"> {% endcomment %}
-          <a class="navbar-brand tw-justify-center" href="/">
-            {% comment %} <img src="{% static './icons/logo.svg'%}" alt="Logo" width="30" height="24" class="d-inline-block align-text-top"> {% endcomment %}
-            PeckSpace - tools
+          <a class="navbar-brand tw-flex tw-gap-1 tw-justify-center tw-place-items-center" href="/">
+            <img src="{% static './assets/logos/logo.svg'%}" alt="Logo" 
+                width="40" height="40" class="d-inline-block align-text-top">
+            <span>PeckSpace</span> 
           </a>
           <div class="tw-justify-self-center collapse navbar-collapse" id="navbarTogglerDemo01">
             <div class="navbar-nav">
                 <a class="nav-link hover:tw-text-blue-400" href="{% url 'email-templates' %}">Email Templates</a>
                 <a class="nav-link hover:tw-text-blue-400" href="{% url 'configurations' %}">Email Configurations</a>
+                <a class="nav-link hover:tw-text-blue-400" href="{% url 'email-campaigns' %}">Email Campaigns</a>
             </div>
             <div class="navbar-nav tw-ml-auto">
+                <a class="tw-bg-[#ffe11f] tw-m-1 tw-font-medium tw-p-3 tw-rounded-full tw-text-center" href="{% url 'support-view' %}">
+                    <i class="bi bi-suit-heart-fill tw-text-red-600"></i>
+                    <span>Support opensource</span> 
+                </a>
 
                 <div class="dropdown">
                     <button class="btn dropdown-toggle " type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -83,7 +93,7 @@
                 {% endif %}
                 
             </div>
-            <a href="http://" target="_blank" class="tw-m-2"><i class="tw-text-3xl bi bi-github"></i></a>
+            <a href="https://github.com/PaulleDemon" target="_blank" rel="noreferrer" class="tw-m-2"><i class="tw-text-3xl bi bi-github"></i></a>
             
         </div>
         </div>
@@ -91,7 +101,7 @@
     </nav>
 
 
-    <div id="error-toast" class="toast tw-h-max tw-z-[5000] tw-fixed tw-top-[2%] tw-left-[50%] tw-translate-x-[-50%] align-items-center text-bg-danger border-0" 
+    <div id="error-toast" class="toast tw-h-max tw-z-[5000] tw-fixed tw-top-[5%] tw-left-[50%] tw-translate-x-[-50%] align-items-center text-bg-dark border-0" 
         role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
           <div class="toast-body" id="error-toast-body">
@@ -99,14 +109,13 @@
           </div>
           <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
-      </div>
+    </div>
 
     <div class="tw-h-[100%] tw-min-h-[100vh] tw-mt-[70px]">
         {% block content %}{% endblock content %}
     </div>
 
         
-
     <footer class="tw-flex tw-z-[100] tw-flex-wrap p-4 tw-text-gray-400 tw-bg-gray-700 shadow-[0px_0px_3px_#000] tw-justify-around">
         
         <div class="tw-flex tw-text-decoration-none">
@@ -116,7 +125,5 @@
         </div>
     </footer>
 
-    <script src="{% static "./js/base.js" %}"></script>
-    <script src="{% static "./js/utils/common.js" %}"></script>
 </body>
 </html>

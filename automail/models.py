@@ -71,6 +71,7 @@ class EmailCampaign(models.Model):
     schedule = models.DateTimeField(null=True, blank=True)
     scheduled = models.BooleanField(default=False)
 
+    save_to_inbox = models.BooleanField(default=True)
 
     def __str__(self) -> str:
         return f'{self.user}'
