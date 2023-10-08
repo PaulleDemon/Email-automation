@@ -39,7 +39,6 @@
     
     <link rel="stylesheet" href="{%static './css/index.css'%}">
     
-    <script src="{% static "./js/base.js" %}"></script>
     <script src="{% static "./js/utils/common.js" %}"></script>
     <script src="{% static "./js/utils/constants.js" %}"></script>
 
@@ -66,26 +65,37 @@
                 <a class="nav-link hover:tw-text-blue-400" href="{% url 'configurations' %}">Email Configurations</a>
                 <a class="nav-link hover:tw-text-blue-400" href="{% url 'email-campaigns' %}">Email Campaigns</a>
             </div>
-            <div class="navbar-nav tw-ml-auto">
+            <div class="navbar-nav tw-ml-auto !tw-place-items-center">
                 <a class="tw-bg-[#ffe11f] tw-m-1 tw-font-medium tw-p-3 tw-rounded-full tw-text-center" href="{% url 'support-view' %}">
                     <i class="bi bi-suit-heart-fill tw-text-red-600"></i>
                     <span>Support opensource</span> 
                 </a>
 
                 <div class="dropdown">
-                    <button class="btn dropdown-toggle " type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button class="btn dropdown-toggle " type="button" id="create-btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="bi bi-plus tw-text-3xl"></i>
                     </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <div class="dropdown-menu" aria-labelledby="create-btn">
                       <a class="dropdown-item" href="{% url "email-template-create" %}">Create template</a>
                       <a class="dropdown-item" href="{% url "email-campaign-create" %}">Create campaign</a>
                     </div>
-                  </div>
+                </div>
 
                 {% if user.is_authenticated %}
-                    <div class="m-2">
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" id="profile-btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{user.name}}
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="profile-btn" style="right: 0; left: auto;">
+                        <a class="dropdown-item !tw-flex" type="button" href="{% url "logout" %}">
+                            <span>Logout</span> 
+                            <i class="bi bi-power !tw-ml-[auto]"></i>
+                        </a>
+                        
                     </div>
+                </div>
+                
+
                 {% else %}
                     <a class="btn btn-primary nav-item tw-m-1" href="{% url "signup" %}">
                         Create Account
@@ -112,7 +122,17 @@
     </div>
 
     <div class="tw-h-[100%] tw-min-h-[100vh] tw-mt-[70px]">
-        {% block content %}{% endblock content %}
+
+        {% if not user.is_authenticated %}
+            <div class="tw-w-full tw-flex tw-place-content-center">
+                <div class="alert alert-danger tw-max-w-lg tw-mt-[2%]">
+                    You are not logged in. Login to save progress
+                </div>
+            </div>
+        {% endif %}
+        {% block content %}
+            
+        {% endblock content %}
     </div>
 
         
@@ -124,6 +144,7 @@
             {% comment %} <a href="{% url 'contact-us' %}" class="tw-underline tw-underline-offset-2">Contact us</a> {% endcomment %}
         </div>
     </footer>
+    <script src="{% static "./js/base.js" %}"></script>
 
 </body>
 </html>

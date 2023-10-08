@@ -22,7 +22,6 @@ function updateHost(){
 function checkSubmition(){
 
     for (let e of inputElements){
-        console.log("Value: ", e.name, e.value)
 
         if (e.name == 'email' && !isValidEmail(e.value)){
             alertError(configurationAlert, "Invalid email")
@@ -55,6 +54,5 @@ function deleteConfiguration(url){
     modelForm.action = url
     modelBody.innerText = `Are you sure you want to delete configuration? This action cannot be undone.`
     // deleteModal.show()
-    console.log("model: ", model)
     model.classList.remove("!tw-hidden")
 }

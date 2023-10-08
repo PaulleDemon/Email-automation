@@ -46,7 +46,6 @@ function checkLogin(){
         disableBtn(loginBtn)
         return
     }
-    console.log("Password: ", password)
     if (password.length < 6){
         alertError(alert, "Invalid password")
         disableBtn(loginBtn)

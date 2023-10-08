@@ -32,6 +32,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
 
+    return redirect('email-templates')
 
 @require_http_methods(["GET", "POST"])
 def signup_view(request):

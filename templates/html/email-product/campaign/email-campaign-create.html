@@ -6,14 +6,14 @@
     <div class="tw-text-3xl tw-font-semibold tw-text-center tw-mt-[2%]">
         Create Email Campaign
     </div>
-    <div class="tw-min-h-[250px] tw-min-w-[200px] tw-shadow-lg tw-rounded-lg tw-mt-[5%] tw-p-4
+    <div class="tw-min-h-[250px] tw-min-w-[200px] tw-shadow-lg tw-rounded-lg tw-mt-1 tw-p-4
                 tw-flex tw-flex-col tw-gap-2">
 
         <div class="input-group mb-3">
             <span class="input-group-text" id="">Campaign name</span>
             <input type="text" class="form-control" name="email_lookup" id="basic-url" autofocus 
-                    value="{% if campaign.email_lookup %}{{campaign.email_lookup}}{% else %}Email{% endif %}" 
-                    placeholder="default email address column">
+                    value="{% if campaign.name %}{{campaign.name}}{% else %}{% endif %}" 
+                    placeholder="Campaign name">
         </div>  
 
         <div class="input-group mb-3">
@@ -24,7 +24,7 @@
         </div>        
 
         <div class="tw-flex tw-flex-col">
-            <label for="addresses" class="form-label">To Email address</label>
+            <label for="addresses" class="form-label tw-font-medium">To Email address</label>
             <label class="btn btn-dark" id="addresses">
                 <input type="file"  accept=".xlsx, .xls, .csv"  class="tw-hidden" id="file-upload" />
                 <span>Upload excel file</span>  
@@ -32,21 +32,35 @@
             </label>
         </div>
         <div id="selected-file-name" class="tw-text-sm">No file selected</div>
-        
-        <div id="selected-file-name tw-mt-[2%]">Select email template</div>
+       
+        <div class="tw-mt-[2%] tw-font-medium">Select From address</div>
         <select class="form-select">
-            <option selected>Choose Template</option>
-            {% for template in templates %}
-                <option value="{{template.id}}">{{template.name}} #{{template.id}}</option>
+            <option selected>From address</option>
+            {% for email in emails %}
+                <option selected value="{{email.id}}">{{email.email}}</option>
             {% endfor %}
         </select>
-
-        <div class="input-group mb-3">
-            <span class="input-group-text" id="">Schedule</span>
+        <div class="tw-mt-[2%] tw-font-medium">Select email template</div>
+        <div class="tw-flex tw-gap-1">
+            <select class="form-select" name="template" onchange="viewTemplate({{template.id}})">
+                <option selected>Choose Template</option>
+                {% for template in templates %}
+                    <option value="{{template.id}}">{{template.name}} #{{template.id}}</option>
+                {% endfor %}
+            </select>
+            <a  class="btn btn-light" id="template-view" url="{% url 'email-template-create' %}" target="_blank" rel="noreferrer">
+                <i class="bi bi-eye-fill"></i>
+            </a>
+        </div>
+        <div class="input-group mb-3 tw-mt-2">
+            <span class="input-group-text" id="">Schedule (UTC time)</span>
             <input type="datetime-local" class="form-control" name="schedule" id="schedule_time" required 
                     value="{% if campaign.email_lookup %}{{campaign.email_lookup}}{% else %}Email{% endif %}" 
-                    placeholder="default email address column">
+                    placeholder="default email address column" onchange="updateLocalTime()">
         </div>  
+        <div class="tw-text-sm" id="local-time">
+
+        </div>
 
         <div class="form-check !tw-w-full tw-mt-2 tw-text-lg !tw-place-items-center !tw-flex">
             <input class="form-check-input !tw-ml-auto" onchange="" type="checkbox" value="" id="schedule">
@@ -74,7 +88,7 @@
         {% for followup in followups %}
             <div class="tw-min-h-[150px] tw-min-w-[200px] tw-shadow-lg tw-rounded-lg tw-mt-[2%] tw-p-4
                 tw-flex tw-flex-col tw-gap-2" id="{{followup.id}}">
-                <select class="form-select">
+                <select class="form-select" name="template" onchange="viewTemplate({{template.id}})">
                     <option selected>Choose Template</option>
                     {% for template in templates %}
                         <option value="{{template.id}}">{{template.name}} #{{template.id}}</option>
@@ -113,7 +127,7 @@
 
     <button type="submit" class="btn btn-success">Save</button>
 </div>
-{{ templates|json_script:"templates" }}
-{{ rules|json_script:"rules" }}
+{% comment %} {{ templates|json_script:"templates" }}
+{{ rules|json_script:"rules" }} {% endcomment %}
 <script src="{% static "./js/email-product/campaign-create.js" %}"></script>
 {% endblock content %}

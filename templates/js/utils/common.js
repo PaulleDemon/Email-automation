@@ -122,14 +122,35 @@ function generateUUID() {
 function setDatetimeToLocal(datetimeElement, additonal_time=0){
     const currentDate = new Date();
     
-
     // Calculate the datetime 10 minutes from now
     const minDate = new Date(currentDate.getTime() + additonal_time);
     
     // Format the minDate as a string for the input field
     const minDateString = minDate.toISOString().slice(0, 16);
-    console.log("mon date: ", minDateString)
+    // const minDateString = minDate.toUTCString();
+    console.log("mon date: ",  currentDate.getTime()+additonal_time)
     datetimeElement?.setAttribute('min', minDateString);
 
-    return minDateString
+    return minDate
+}
+
+/**
+ * 
+ * @param {Date} datetime 
+ * @returns 
+ */
+function toLocalTime(datetime){
+
+    const options = {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        timeZoneName: 'short',
+        hour12: true,
+    };
+
+    return datetime.toLocaleString('en-US', options);
+
 }

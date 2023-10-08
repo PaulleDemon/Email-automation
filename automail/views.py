@@ -1,12 +1,14 @@
+import json
 from django.urls import reverse
 from django.forms import model_to_dict
 from django.shortcuts import render, redirect
+from django.core.serializers.json import DjangoJSONEncoder
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 
 from .forms import (EmailTemplateForm, AttachmentForm, EmailConfigurationForm)
 from .models import (EmailTemplate, EmailCampaign, EmailTemplateAttachment, 
-                        EmailConfiguration)
+                        EmailConfiguration, EMAIL_SEND_RULES)
 
 from utils.email import test_email_credentials
 from utils.decorators import login_required_for_post
@@ -138,7 +140,7 @@ def email_template_create(request):
         else:
             error = template_form.errors.as_data()
             errors = [f'{list(error[x][0])[0]}' for x in error]
-            print("errors: ", template_form.errors)
+           
             return render(request, 'email-template-create.html', {'error': errors})
 
     return render(request, 'email-template-create.html')
@@ -160,7 +162,7 @@ def email_template_delete(request, id):
 @require_http_methods(['GET'])
 def email_templates(request):
 
-    private_templates = EmailTemplate.objects.filter(user=request.user)
+    private_templates = EmailTemplate.objects.filter(user__id=request.user.id)
 
     public_templates = EmailTemplate.objects.filter(public=True)
 
@@ -170,10 +172,21 @@ def email_templates(request):
                                                             })
 
 
+@login_required_for_post
 @require_http_methods(['GET'])
 def campaign_create_view(request):
 
-    return render(request, 'email-campaign-create.html')
+    templates = EmailTemplate.objects.filter(user__id=request.user.id)
+    emails = EmailConfiguration.objects.filter(user__id=request.user.id)
+    rules  = EMAIL_SEND_RULES.choices
+    context = {
+        'templates': templates.values('name', 'id'),
+        'emails': emails.values('id', 'email'),
+        'rules': json.dumps(rules)
+    }
+    print("Templates Data:", context) 
+
+    return render(request, 'email-campaign-create.html', context)
 
 
 def campaigns_view(request):
@@ -248,7 +261,7 @@ def configuration_create_view(request):
 
 def configurations_view(request):
 
-    cofigurations = EmailConfiguration.objects.filter(user=request.user)
+    cofigurations = EmailConfiguration.objects.filter(user__id=request.user.id)
 
     return render(request, 'configurations.html', context={'configurations': cofigurations})
 

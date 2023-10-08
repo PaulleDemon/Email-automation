@@ -4,6 +4,18 @@ from encrypted_model_fields.fields import EncryptedCharField, EncryptedEmailFiel
 from user.models import User
 
 
+class EMAIL_SEND_RULES(models.IntegerChoices):
+
+    """
+        These rules determine how the follow up messages should be sent, eg: if ALL is set as
+        rule the follow up will be sent to everyone to whom the first mail was sent.
+    """
+
+    ALL = (0, 'Respond for all')    
+    NOT_RESPONDED = (1, 'Reply for not responded')
+    RESPONDED = (2, 'Reply for responded')
+
+
 class EmailConfiguration(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -51,6 +63,8 @@ class EmailTemplateAttachment(models.Model):
 class EmailCampaign(models.Model):
 
     name = models.CharField(max_length=30, default='campaign', null=True, blank=True)
+
+    email_send_rule = models.PositiveSmallIntegerField(choices=EMAIL_SEND_RULES.choices, default=EMAIL_SEND_RULES.ALL, null=True)
 
     email_lookup = models.CharField(default='Email', max_length=150) # this is the field lookup upon uploading xls sheet
 

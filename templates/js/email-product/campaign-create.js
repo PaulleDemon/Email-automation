@@ -6,18 +6,32 @@ const followUpSection = document.getElementById("followup-section")
 
 const followUpElement = document.querySelector("[title='follow-up']");
 
-const templates = JSON.parse(document.getElementById('templates').textContent) || []
-const rules = JSON.parse(document.getElementById('rules').textContent) || []
+const templates = JSON.parse(document.getElementById('templates')?.textContent || '[]')
+const rules = JSON.parse(document.getElementById('rules')?.textContent || '[]')
 
 const campaignSchedule = document.getElementById("schedule_time")
+const localTime = document.getElementById("local-time")
+
+const templateViewBtn = document.getElementById("template-view")
 
 
 const datetime = setDatetimeToLocal(campaignSchedule, 10 * 60 * 1000)
-campaignSchedule.value = datetime
 
-console.log("Follow up", followUpElement, fileInput)
+if (!campaignSchedule.value){
+    campaignSchedule.value = datetime.toISOString().slice(0, 16)
+}
+
+localTime.innerText = toLocalTime(datetime)
+console.log("camph: ", new Date().toLocaleString())
 
 followUpBtn.onclick = createFollowup
+
+// updates the display of the localtime
+function updateLocalTime(){
+    console.log("Value: ", event.target.value)
+    localTime.innerText = toLocalTime(new Date(event.target.value))
+}
+
 
 fileInput.addEventListener("change", function () {
     if (fileInput.files.length > 0) {
@@ -42,6 +56,11 @@ fileInput.addEventListener("change", function () {
         selectedFileName.textContent = "No file selected";
     }
 });
+
+
+function viewTemplate(id){
+    templateViewBtn.href = templateViewBtn.getAttribute("url") + `?edit=${event.target.value}`
+}
 
 
 function createFollowup(){
