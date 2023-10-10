@@ -383,6 +383,10 @@ select {
   margin-top: auto;
 }
 
+.tw-mt-\[4\%\] {
+  margin-top: 4%;
+}
+
 .\!tw-flex {
   display: flex !important;
 }
@@ -886,6 +890,36 @@ select {
   .lg\:tw-mx-\[30\%\] {
     margin-left: 30%;
     margin-right: 30%;
+  }
+
+  .lg\:tw-max-w-xl {
+    max-width: 36rem;
+  }
+
+  .lg\:tw-max-w-\[150px\] {
+    max-width: 150px;
+  }
+
+  .lg\:tw-max-w-\[350px\] {
+    max-width: 350px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .xl\:tw-absolute {
+    position: absolute;
+  }
+
+  .xl\:tw-right-\[5\%\] {
+    right: 5%;
+  }
+
+  .xl\:tw-top-\[20\%\] {
+    top: 20%;
+  }
+
+  .xl\:tw-max-w-\[350px\] {
+    max-width: 350px;
   }
 }
 

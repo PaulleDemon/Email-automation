@@ -3,6 +3,8 @@ const form = document.getElementById("template-create")
 const trixEditor = document.querySelector("#trix-editor");
 const editorElement = document.querySelector('.editor-container');
 
+const testMailBtn = document.getElementById("test-mail-btn")
+
 const previewContainer = document.getElementById("file-previewContainer");
 const fileInput = document.getElementById("file-upload");
 
@@ -13,6 +15,9 @@ const variablesInput = document.getElementById("variables")
 const variableUpload = document.getElementById('variables-upload')
 
 const autoCompleteDropdown = document.getElementById('autoCompleteDropDown'); // Create a div for the drop-down container
+
+testMailBtn.onclick = sendTestMail
+
 
 const strategies = [
     {
@@ -53,7 +58,7 @@ trixEditor.addEventListener('trix-change', function () {
     const text = trixEditor.innerText;
     const lastCharacter = text.charAt(text.length - 1);
 
-    console.log("Change: ", text, lastCharacter)
+    // console.log("Change: ", text, lastCharacter)
 
     if (lastCharacter === '{') {
         autoComplete.autoCompleteHandler();
@@ -195,4 +200,79 @@ function validateTemplate(){
     }
     
     return true
+}
+
+async function sendTestMail(){
+
+    if (!validateTemplate())
+        return
+
+    testMailBtn.disabled = true
+    testMailBtn.classList.add("spinner-border", "text-light")
+
+    const elements = form.querySelectorAll("[name]")
+
+    let data = new FormData()
+    console.log("Inpyt file: ", fileInput, fileInput.files)
+    
+    if (fileInput.files) {
+        for (let i = 0; i < fileInput.files.length; i++) {
+            data.append('attachments', fileInput.files[i]);
+        }
+    }
+    
+    for (let x of elements){
+        data.append(x.name, x.value)
+    }
+
+    const res = await fetch("/email/send-test-mail/", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": Cookies.get('csrftoken'),
+            // "Content-Type": "multipart/form-data; boundary=----WebKitFormBoundaryABC123"
+            }, 
+        body: data
+    })
+
+    let res_data = {}
+
+    try {
+        if (res.headers.get('content-type') === 'application/json') {
+            res_data = await res.json();
+            responseBody = JSON.stringify(data); // Store the JSON response body
+        } else {
+            res_data = await res.text();
+            responseBody = data; // Store the text response body
+        }
+    } catch (e) {
+        console.log("response: ", res);
+        data = await res;
+        return
+    }
+
+    if (res.status == 400){
+        if (res_data.json){
+            toastAlert(null, "Please check your variable structure", "danger")
+        }
+        if (res_data.file){
+            toastAlert(null, "File too large", "danger")
+        }
+        if (res_data.error){
+            toastAlert(null, res_data.error, "danger")
+
+        }
+    }
+
+    if (res.status == 200){
+        toastAlert(null, "Email has been sent successfully. If you cannot find it please check spam.")
+    }
+    
+
+    if (res.staus == 302){
+        window.location = res.redirect
+    }
+    
+    testMailBtn.disabled = false
+    testMailBtn.classList.remove("spinner-border", "text-light")
+
 }

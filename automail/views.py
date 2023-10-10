@@ -1,20 +1,26 @@
+import json
 import jinja2
 
 from django.urls import reverse
+from django.conf import settings
+from django.http import JsonResponse
 from django.forms import model_to_dict
 from django.shortcuts import render, redirect
 from django.core.serializers.json import DjangoJSONEncoder
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 
+from django_ratelimit.decorators import ratelimit
+
 from .forms import (EmailTemplateForm, AttachmentForm, EmailConfigurationForm, 
                         EmailCampaignForm, EmailFollowUpForm)
 from .models import (EmailTemplate, EmailCampaign, EmailTemplateAttachment, 
                         EmailConfiguration, EMAIL_SEND_RULES)
 
-from utils.mailing import test_email_credentials
-from utils.tasks import send_html_mail_celery
-from utils.decorators import login_required_for_post
+from utils.tasks import send_attachment_mail_celery
+from utils.common import get_file_size, get_plain_text_from_html
+from utils.mailing import test_email_credentials, send_email_with_attachments
+from utils.decorators import login_required_for_post, login_required_rest_api
 
 
 jinja_env = jinja2.Environment()
@@ -201,7 +207,6 @@ def campaign_create_view(request):
             'rules': rules,
             **request.POST
         }
-    print("Post: ", request.POST.get('template'))
 
     if request.method == 'GET':
         pass
@@ -305,13 +310,52 @@ def delete_configuration_view(request, id):
         return render(request, '404.html')
 
 
-@login_required
+@login_required_rest_api
 @require_http_methods(['POST'])
-def send_test_mail(request):
+@ratelimit(key='ip', rate='2/min', method=ratelimit.ALL, block=True)
+def send_test_mail_view(request):
 
-    variables = request.POST.get('variables')
-    subject = request.POST.get('subject')
-    body = request.POST.get('body')
-    files = request.FILES
+    # data = json.loads(request.body.decode("utf-8"))
 
-    jinja_env.from_string()
+    variables = request.POST.get('variables') or '{}'
+    subject = request.POST.get('subject') or ''
+    body = request.POST.get('body') or ''
+    files = request.FILES.getlist("attachments")
+
+    try:
+        variables = json.loads(variables)
+    
+    except json.JSONDecodeError:
+        return JsonResponse({'json': 'invalid variable structure'}, status=400)
+
+    file_size = 0
+
+    for f in files:
+        file_size += get_file_size(f)
+
+    if file_size > 10:
+        return JsonResponse({'file': 'file attachments size greater than 10 MB'})
+
+    variables['from_name'] = settings.EMAIL_FROM_NAME
+    variables['from_signature'] = settings.EMAIL_FROM_SIGNATURE
+    variables['from_email'] = settings.EMAIL_FROM
+
+    try:
+        
+        template = jinja_env.from_string(subject)
+        template.render(variables)
+    
+        template = jinja_env.from_string(body)
+        template.render(variables)
+
+    except jinja2.TemplateSyntaxError as e:
+        return JsonResponse({'template': f'template syntax error {e}'}, status=400)
+    
+    try:
+        send_email_with_attachments(subject, get_plain_text_from_html(body), body, variables, recipient_list=[request.user.email], attachments=files)
+
+    except Exception as e:
+        print("exceptioin: ", e)
+        return JsonResponse({'error': 'something went wrong'}, status=400)
+
+    return JsonResponse({'success': 'the email has been sent'}, status=200)

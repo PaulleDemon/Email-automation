@@ -68,13 +68,13 @@
                     </div>
 
                     <div class="tw-flex tw-mt-[2%]">
-                        <button type="button" class="btn btn-primary">Send Test mail</button>
+                        <button type="button" id="test-mail-btn" class="btn btn-primary">Send Test mail</button>
                         <button type="submit" class="btn btn-success tw-ml-auto">Save Template</button>
                     </div>
                 </div>
-                <div class="lg:tw-absolute lg:tw-top-[20%] lg:tw-right-[5%] tw-z-[0] tw-flex-col tw-flex tw-gap-2">
+                <div class="lg:tw-absolute lg:tw-top-[20%] lg:tw-max-w-[350px] lg:tw-right-[5%] tw-z-[0] tw-mt-[4%] tw-flex-col tw-flex tw-gap-2">
                     <div class="tw-text-sm">
-                        Add fields seperated by comma for error check eg: name, age
+                        Add fields structured in the following format {name: "sample name", age: "30"}
                     </div>
                     <textarea name="variables" class="form-control" placeholder="Add email variables" 
                                 id="variables" value="{{template.variables}}" cols="30" rows="10">{{template.variables}}</textarea>

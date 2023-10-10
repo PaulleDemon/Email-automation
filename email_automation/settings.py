@@ -75,6 +75,8 @@ AUTH_USER_MODEL = "user.User"
 
 TAILWIND_APP_NAME = 'theme'
 
+RATELIMIT_VIEW = 'email_automation.views.rate_limiter_view'
+
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
@@ -100,6 +102,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     "django_browser_reload.middleware.BrowserReloadMiddleware", # reload
+    'django_ratelimit.middleware.RatelimitMiddleware',
 
     'email_automation.middlewares.FileUploadMiddleware',
 
@@ -126,6 +129,9 @@ else:
     # EMAIL_USE_TLS = True
     EMAIL_USE_SSL = True
 
+EMAIL_FROM_SIGNATURE = 'Best regards, Team'
+EMAIL_FROM = 'info@peckspace.com'
+EMAIL_FROM_NAME = 'Peckspace'
 
 TEMPLATES = [
     {

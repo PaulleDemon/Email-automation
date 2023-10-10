@@ -24,12 +24,20 @@ function alertError(alert, text=""){
 /**
  * 
  * @param {HTMLElement | null} toast 
- * @param {string} text 
+ * @param {"normal" | "danger"} text 
  */
-function toastAlert(toast, text=""){
+function toastAlert(toast, text="", type="normal"){
 
     if (toast == null){
         toast = defaultToast
+    }
+
+    if (type === "danger"){
+        toast.classList.add("bg-danger")
+        toast.classList.remove("bg-dark")
+    }else{
+        toast.classList.remove("bg-danger")
+        toast.classList.add("bg-dark")
     }
 
     const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toast)

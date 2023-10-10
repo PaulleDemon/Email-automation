@@ -43,11 +43,16 @@ def test_email_credentials(email, password, host, port):
     return (True, "valid credentials")
 
 
-def send_email_with_attachments(subject, text_message, html_message, from_email=None, html_context={}, recipient_list=[], attachments=None):
+def send_email_with_attachments(subject, text_message, html_message, html_context={}, from_email=None, recipient_list=[], attachments=None):
     
+    subject_template = jinja_env.from_string(subject)
+    subject = subject_template.render(html_context)
+    
+    html_template = jinja_env.from_string(html_message)
+    html_message = html_template.render(html_context)
 
-    template = jinja_env.from_string(html_message)
-    html_message = template.render(html_context)
+    plain_template = jinja_env.from_string(text_message)
+    text_message = plain_template.render(html_context)
 
     email = EmailMultiAlternatives(subject, text_message, from_email, recipient_list)
     email.attach_alternative(html_message, "text/html") 
