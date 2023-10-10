@@ -2,7 +2,7 @@ from django.urls import path
 from django.shortcuts import redirect
 
 from .views import (email_template_create, email_templates, email_template_delete, 
-                        campaign_create_view, campaigns_view,
+                        campaign_create_view, campaigns_view, delete_campaign_view,
                         configuration_create_view, configurations_view, delete_configuration_view, 
                         send_test_mail_view
                         )
@@ -16,6 +16,7 @@ urlpatterns = [
     
     path('campaigns/', campaigns_view, name='email-campaigns'),
     path('campaign/create/', campaign_create_view, name='email-campaign-create'),
+    path('campaign/<int:id>/delete/', campaign_create_view, name='email-campaign-create'),
 
     path('configure/add/', configuration_create_view, name='configure-email'),
     path('configure/<int:id>/delete/', delete_configuration_view, name='configure-email-delete'),

@@ -208,23 +208,45 @@ def campaign_create_view(request):
             **request.POST
         }
 
-    if request.method == 'GET':
-        pass
-
-    else:
+    if request.method == 'POST':
         edit = request.POST.get('edit')
 
+        form = EmailCampaignForm(request.POST)
 
-        if not edit:
-            pass
+        if form.is_valid():
 
+            if edit:
+                pass
 
+            else:
+                campaign = form.save()
+
+                # TODO: from here
+
+        else:
+            error = form.errors.as_data()
+            errors = [f'{list(error[x][0])[0]}' for x in error] 
+            context['error'] = errors
+            
     return render(request, 'email-campaign-create.html', context)
 
 
 def campaigns_view(request):
 
     return render(request, 'email-campaigns.html')
+
+
+@login_required
+def delete_campaign_view(request, id):
+    
+    try:
+        EmailCampaign.objects.get(user=request.id, id=id)
+    
+    except (EmailCampaign.DoesNotExist):
+        return render(request, "404.html")
+
+    return redirect('email-campaigns')
+
 
 
 @login_required_for_post
@@ -308,6 +330,7 @@ def delete_configuration_view(request, id):
     
     except (EmailConfiguration.DoesNotExist):
         return render(request, '404.html')
+
 
 
 @login_required_rest_api
