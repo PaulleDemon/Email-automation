@@ -1,3 +1,5 @@
+const form = document.getElementById("template-create")
+
 const trixEditor = document.querySelector("#trix-editor");
 const editorElement = document.querySelector('.editor-container');
 
@@ -8,6 +10,8 @@ const templateAlert = document.getElementById("template-alert")
 const alertToast = document.getElementById("error-toast")
 
 const variablesInput = document.getElementById("variables")
+const variableUpload = document.getElementById('variables-upload')
+
 const autoCompleteDropdown = document.getElementById('autoCompleteDropDown'); // Create a div for the drop-down container
 
 const strategies = [
@@ -60,7 +64,20 @@ trixEditor.addEventListener('trix-change', function () {
 fileInput.addEventListener('change', function () {
     previewContainer.innerHTML = ''; // Clear previous previews
 
+    let fileSize = 0 // 0 MB
+
     for (const file of fileInput.files) {
+        fileSize += getFileSize(file, "MB")
+    }
+
+    if (fileSize > TEMPLATE.attachment_size){
+        toastAlert(alertToast, `Files cannot be larger than ${TEMPLATE.attachment_size} MB`)
+        fileInput.value = null
+        return 
+    }
+
+    for (const file of fileInput.files) {
+
         const filePreview = document.createElement('div');
         filePreview.classList.add('tw-shadow-lg', 'tw-p-1', '!tw-w-fit', 'tw-border-solid',
                                 'tw-border-[0.2px]', 'tw-border-gray-700', 'tw-max-w-[150px]', 
@@ -85,20 +102,28 @@ fileInput.addEventListener('change', function () {
         filePreview.appendChild(removeButton);
         previewContainer.appendChild(filePreview);
     }
+
 });
 
 
-document.getElementById('variables-upload').addEventListener('change', function(e) {
+variableUpload.addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
         const ext = file.name.split('.').pop().toLowerCase();
         const reader = new FileReader();
+
+        if (getFileSize(file, "KB") > EMAIL_CAMPAIGN.upload_size){
+            variableUpload.value = null
+            toastAlert(alertToast, "File too large")
+            return
+        }
 
         reader.onload = function(e) {
             const data = e.target.result;
 
             if (!['csv', 'xlsx', 'xls'].includes(ext)){
                 toastAlert(alertToast, "Incorrect file")
+                variableUpload.value = null
                 return
             }
 
@@ -143,4 +168,31 @@ function warnUserOnPublic(){
         templateAlert.classList.add('tw-hidden')
     }
 
+}
+
+
+function validateTemplate(){
+
+    const elements = form.querySelectorAll("[name]")
+
+    for (let x of elements){
+
+        if (x.name == "name" && x.value.trim().length < 3){
+            toastAlert(null, "Please provide a proper template name")
+            return false
+        }
+
+        if (x.name == "subject" && x.value.trim().length < 5){
+            toastAlert(null, "Please provide a proper subject")
+            return false
+        }
+
+        if (x.name == "body" && x.value.trim().length < 10){
+            toastAlert(null, "Please provide a proper body")
+            return false
+        }
+
+    }
+    
+    return true
 }

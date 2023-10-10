@@ -6,128 +6,143 @@
     <div class="tw-text-3xl tw-font-semibold tw-text-center tw-mt-[2%]">
         Create Email Campaign
     </div>
-    <div class="tw-min-h-[250px] tw-min-w-[200px] tw-shadow-lg tw-rounded-lg tw-mt-1 tw-p-4
-                tw-flex tw-flex-col tw-gap-2">
 
-        <div class="input-group mb-3">
-            <span class="input-group-text" id="">Campaign name</span>
-            <input type="text" class="form-control" name="email_lookup" id="basic-url" autofocus 
-                    value="{% if campaign.name %}{{campaign.name}}{% else %}{% endif %}" 
-                    placeholder="Campaign name">
-        </div>  
+    <form action="" method="post" enctype="multipart/form-data" onsubmit="return checkFields()" class="tw-flex tw-flex-col tw-p-3 tw-place-items-center tw-gap-4">
+        {% csrf_token %}
+        <div class="tw-min-h-[250px] tw-min-w-[200px] tw-shadow-lg tw-rounded-lg tw-mt-1 tw-p-4
+                    tw-flex tw-flex-col tw-gap-2" id="campaign">
 
-        <div class="input-group mb-3">
-            <span class="input-group-text" id="">Default Email column</span>
-            <input type="text" class="form-control" name="email_lookup" id="basic-url" autofocus 
-                    value="{% if campaign.email_lookup %}{{campaign.email_lookup}}{% else %}Email{% endif %}" 
-                    placeholder="default email address column">
-        </div>        
-
-        <div class="tw-flex tw-flex-col">
-            <label for="addresses" class="form-label tw-font-medium">To Email address</label>
-            <label class="btn btn-dark" id="addresses">
-                <input type="file"  accept=".xlsx, .xls, .csv"  class="tw-hidden" id="file-upload" />
-                <span>Upload excel file</span>  
-                <i class="bi bi-filetype-xls tw-text-xl" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add excel file max 300kb"></i>
-            </label>
-        </div>
-        <div id="selected-file-name" class="tw-text-sm">No file selected</div>
-       
-        <div class="tw-mt-[2%] tw-font-medium">Select From address</div>
-        <select class="form-select">
-            <option selected>From address</option>
-            {% for email in emails %}
-                <option selected value="{{email.id}}">{{email.email}}</option>
-            {% endfor %}
-        </select>
-        <div class="tw-mt-[2%] tw-font-medium">Select email template</div>
-        <div class="tw-flex tw-gap-1">
-            <select class="form-select" name="template" onchange="viewTemplate({{template.id}})">
-                <option selected>Choose Template</option>
-                {% for template in templates %}
-                    <option value="{{template.id}}">{{template.name}} #{{template.id}}</option>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="">Campaign name</span>
+                <input type="text" class="form-control" name="name" id="basic-url" autofocus 
+                        value="{% if campaign.name %}{{campaign.name}}{% else %}{% endif %}" 
+                        placeholder="Campaign name" maxlength="30">
+            </div>  
+            <div class="tw-flex">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="">Default Email column</span>
+                    <input type="text" class="form-control" name="email_lookup" id="basic-url" autofocus 
+                            value="{% if campaign.email_lookup %}{{campaign.email_lookup}}{% else %}Email{% endif %}" 
+                            placeholder="default email address column"
+                            maxlength="30"
+                            > 
+                </div>        
+                <i class="bi bi-info-circle-fill tw-m-1" data-bs-toggle="tooltip" data-bs-placement="bottom" 
+                    title="The email column of the excel sheet"></i>
+            </div>
+            <div class="tw-flex tw-flex-col">
+                <label for="addresses" class="form-label tw-font-medium">To Email address</label>
+                <label class="btn btn-dark" id="addresses">
+                    <input type="file" name="file"  accept=".xlsx, .xls, .csv"  class="tw-hidden" id="file-upload" />
+                    <span>Upload excel file</span>  
+                    <i class="bi bi-filetype-xls tw-text-xl" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add excel file max 300kb"></i>
+                </label>
+            </div>
+            <div id="selected-file-name" class="tw-text-sm">No file selected</div>
+        
+            <div class="tw-mt-[2%] tw-font-medium">Select From address</div>
+            <select class="form-select" name="from_email">
+                <option selected>From address</option>
+                {% for email in emails %}
+                    <option selected value="{{email.id}}">{{email.email}}</option>
                 {% endfor %}
             </select>
-            <a  class="btn btn-light" id="template-view" url="{% url 'email-template-create' %}" target="_blank" rel="noreferrer">
-                <i class="bi bi-eye-fill"></i>
-            </a>
-        </div>
-        <div class="input-group mb-3 tw-mt-2">
-            <span class="input-group-text" id="">Schedule (UTC time)</span>
-            <input type="datetime-local" class="form-control" name="schedule" id="schedule_time" required 
-                    value="{% if campaign.email_lookup %}{{campaign.email_lookup}}{% else %}Email{% endif %}" 
-                    placeholder="default email address column" onchange="updateLocalTime()">
-        </div>  
-        <div class="tw-text-sm" id="local-time">
-
-        </div>
-
-        <div class="form-check !tw-w-full tw-mt-2 tw-text-lg !tw-place-items-center !tw-flex">
-            <input class="form-check-input !tw-ml-auto" onchange="" type="checkbox" value="" id="schedule">
-            <label class="form-check-label tw-m-1" for="schedule">
-                Schedule
-            </label>
-        </div>
-
-        <div class="form-check !tw-w-full tw-mt-2 tw-text-lg !tw-place-items-center !tw-flex">
-            <input class="form-check-input !tw-ml-auto" onchange="" type="checkbox" value="" name="save_to_inbox" id="inbox-save">
-            <label class="form-check-label tw-m-1" for="inbox-save">
-                Save to inbox
-                <i class="bi bi-info-circle-fill" data-bs-toggle="tooltip" data-bs-placement="bottom" title="sent mail won't appear in your inbox if this is not checked"></i>
-            </label>
-        </div>
-
-    </div>
-
-    <div class="tw-text-2xl tw-text-center tw-mt-[2%]">
-        Follow up
-    </div>
-
-    <div class="tw-flex tw-flex-wrap tw-gap-2 tw-w-full tw-place-content-center" id="followup-section">
-        
-        {% for followup in followups %}
-            <div class="tw-min-h-[150px] tw-min-w-[200px] tw-shadow-lg tw-rounded-lg tw-mt-[2%] tw-p-4
-                tw-flex tw-flex-col tw-gap-2" id="{{followup.id}}">
-                <select class="form-select" name="template" onchange="viewTemplate({{template.id}})">
-                    <option selected>Choose Template</option>
+            <div class="tw-mt-[2%] tw-font-medium">Select email template</div>
+            <div class="tw-flex tw-gap-1">
+                <select class="form-select" name="template" onchange="viewTemplate()">
+                    <option value="" selected>Choose Template</option>
                     {% for template in templates %}
                         <option value="{{template.id}}">{{template.name}} #{{template.id}}</option>
                     {% endfor %}
                 </select>
-
-                <select class="form-select">
-                    <option selected>Select rule</option>
-                    {% for template in templates %}
-                        <option value="{{template.id}}">{{template.name}} #{{template.id}}</option>
-                    {% endfor %}
-                </select>
-
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="">Schedule</span>
-                    <input type="datetime-local" class="form-control" name="email_lookup" id="basic-url" autofocus 
-                            value="{% if campaign.email_lookup %}{{campaign.email_lookup}}{% else %}Email{% endif %}" 
-                            placeholder="default email address column">
-                </div>  
-
-                <div class="form-check !tw-w-full tw-mt-2 tw-text-lg !tw-place-items-center !tw-flex">
-                    <button class="btn">
-                        <i class="tw-text-red-600 bi bi-trash"></i>
-                    </button>
-                    <input class="form-check-input !tw-ml-auto" onchange="" type="checkbox" value="" id="schedule">
-                    <label class="form-check-label tw-m-1" for="schedule">
-                        Schedule
-                    </label>
-                </div>
-
+                <a  class="btn btn-light" id="template-view" url="{% url 'email-template-create' %}" target="_blank" rel="noreferrer">
+                    <i class="bi bi-eye-fill"></i>
+                </a>
             </div>
-        {% endfor %}
-    </div>
+            <div class="input-group mb-3 tw-mt-2">
+                <span class="input-group-text" id="">Schedule (UTC time)</span>
+                <input type="datetime-local" class="form-control" name="schedule" id="schedule_time" required 
+                        value="{% if campaign.email_lookup %}{{campaign.email_lookup}}{% else %}Email{% endif %}" 
+                        placeholder="default email address column" onchange="updateLocalTime()">
+            </div>  
+            <div class="tw-text-sm" id="local-time">
+            </div>
 
-    <button class="btn btn-warning" id="followup-btn">Add follow up</button>
+            <div class="form-check !tw-w-full tw-mt-2 tw-text-lg !tw-place-items-center !tw-flex">
+                
+                <input class="form-check-input !tw-ml-auto" onchange="" type="checkbox"
+                 value="scheduled"  
+                 {% if checked %} checked {% else %} checked {% endif %}
+                 id="schedule">
+                <label class="form-check-label tw-m-1" for="schedule">
+                    Schedule
+                </label>
+            </div>
 
-    <button type="submit" class="btn btn-success">Save</button>
+            <div class="form-check !tw-w-full tw-mt-2 tw-text-lg !tw-place-items-center !tw-flex">
+                <input class="form-check-input !tw-ml-auto" onchange="" 
+                    type="checkbox" 
+                    value="inbox" 
+                    {% if checked %}checked {% else %} checked {% endif %}
+                    name="save_to_inbox" id="inbox-save">
+                <label class="form-check-label tw-m-1" for="inbox-save">
+                    Save to inbox
+                    <i class="bi bi-info-circle-fill" data-bs-toggle="tooltip" data-bs-placement="bottom" title="sent mail won't appear in your inbox if this is not checked"></i>
+                </label>
+            </div>
+
+        </div>
+
+        <div class="tw-text-2xl tw-text-center tw-mt-[2%]">
+            Follow up
+        </div>
+
+        <div class="tw-flex tw-flex-wrap tw-gap-2 tw-w-full tw-place-content-center" id="followup-section">
+            
+            {% for followup in followups %}
+                <div class="tw-min-h-[150px] tw-min-w-[200px] tw-shadow-lg tw-rounded-lg tw-mt-[2%] tw-p-4
+                    tw-flex tw-flex-col tw-gap-2" id="{{followup.id}}" name="follow-up">
+                    <select class="form-select" name="template" onchange="viewTemplate({{template.id}})">
+                        <option selected>Choose Template</option>
+                        {% for template in templates %}
+                            <option value="{{template.id}}">{{template.name}} #{{template.id}}</option>
+                        {% endfor %}
+                    </select>
+
+                    <select class="form-select">
+                        <option selected>Select rule</option>
+                        {% for template in templates %}
+                            <option value="{{template.id}}">{{template.name}} #{{template.id}}</option>
+                        {% endfor %}
+                    </select>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="">Schedule</span>
+                        <input type="datetime-local" class="form-control" name="email_lookup" id="basic-url" autofocus 
+                                value="{% if campaign.email_lookup %}{{campaign.email_lookup}}{% else %}Email{% endif %}" 
+                                placeholder="default email address column">
+                    </div>  
+
+                    <div class="form-check !tw-w-full tw-mt-2 tw-text-lg !tw-place-items-center !tw-flex">
+                        <button class="btn">
+                            <i class="tw-text-red-600 bi bi-trash"></i>
+                        </button>
+                        <input class="form-check-input !tw-ml-auto" onchange="" type="checkbox" value="" id="schedule">
+                        <label class="form-check-label tw-m-1" for="schedule">
+                            Schedule
+                        </label>
+                    </div>
+
+                </div>
+            {% endfor %}
+        </div>
+
+        <button type="button" class="btn btn-warning" id="followup-btn">Add follow up</button>
+
+        <button type="submit" class="btn btn-success">Save</button>
+    </form>
 </div>
-{% comment %} {{ templates|json_script:"templates" }}
-{{ rules|json_script:"rules" }} {% endcomment %}
+{{ templates|json_script:"templates" }}
+{{ rules|json_script:"rules" }}
 <script src="{% static "./js/email-product/campaign-create.js" %}"></script>
 {% endblock content %}

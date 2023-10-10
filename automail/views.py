@@ -1,4 +1,5 @@
-import json
+import jinja2
+
 from django.urls import reverse
 from django.forms import model_to_dict
 from django.shortcuts import render, redirect
@@ -6,12 +7,18 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 
-from .forms import (EmailTemplateForm, AttachmentForm, EmailConfigurationForm)
+from .forms import (EmailTemplateForm, AttachmentForm, EmailConfigurationForm, 
+                        EmailCampaignForm, EmailFollowUpForm)
 from .models import (EmailTemplate, EmailCampaign, EmailTemplateAttachment, 
                         EmailConfiguration, EMAIL_SEND_RULES)
 
-from utils.email import test_email_credentials
+from utils.mailing import test_email_credentials
+from utils.tasks import send_html_mail_celery
 from utils.decorators import login_required_for_post
+
+
+jinja_env = jinja2.Environment()
+
 
 @login_required_for_post
 @require_http_methods(['GET', 'POST'])
@@ -31,6 +38,9 @@ def email_template_create(request):
         }
 
         if edit:
+
+            if not request.user.is_authenticated:
+                return redirect('login')
 
             try:
                 int(edit)
@@ -60,6 +70,10 @@ def email_template_create(request):
 
 
         if copy:
+
+            if not request.user.is_authenticated:
+                return redirect('login')
+
             try:
                 int(copy)
             except ValueError:
@@ -72,10 +86,13 @@ def email_template_create(request):
                 return render(request, '404.html')
 
             dup_temp = template.last()
+            dup_temp.copy_count += 1
+            dup_temp.save()
 
-            kwargs = model_to_dict(dup_temp, exclude=['id', 'user', 'name', 'public'])
+            kwargs = model_to_dict(dup_temp, exclude=['id', 'user', 'name', 'public', 'copy_count'])
 
             temp = EmailTemplate.objects.create(id=None, user=request.user, name=f'{dup_temp.name} (copy)', public=False, **kwargs)
+            # TODO: copy the attachments
             modified_url = reverse('email-template-create') + f'?edit={temp.id}'
 
             return redirect(modified_url)
@@ -140,8 +157,7 @@ def email_template_create(request):
         else:
             error = template_form.errors.as_data()
             errors = [f'{list(error[x][0])[0]}' for x in error]
-           
-            return render(request, 'email-template-create.html', {'error': errors})
+            return render(request, 'email-template-create.html', {'error': errors, **request.POST})
 
     return render(request, 'email-template-create.html')
 
@@ -173,18 +189,30 @@ def email_templates(request):
 
 
 @login_required_for_post
-@require_http_methods(['GET'])
 def campaign_create_view(request):
 
     templates = EmailTemplate.objects.filter(user__id=request.user.id)
     emails = EmailConfiguration.objects.filter(user__id=request.user.id)
     rules  = EMAIL_SEND_RULES.choices
+
     context = {
-        'templates': templates.values('name', 'id'),
-        'emails': emails.values('id', 'email'),
-        'rules': json.dumps(rules)
-    }
-    print("Templates Data:", context) 
+            'templates': list(templates.values('name', 'id')),
+            'emails': list(emails.values('id', 'email')),
+            'rules': rules,
+            **request.POST
+        }
+    print("Post: ", request.POST.get('template'))
+
+    if request.method == 'GET':
+        pass
+
+    else:
+        edit = request.POST.get('edit')
+
+
+        if not edit:
+            pass
+
 
     return render(request, 'email-campaign-create.html', context)
 
@@ -275,3 +303,15 @@ def delete_configuration_view(request, id):
     
     except (EmailConfiguration.DoesNotExist):
         return render(request, '404.html')
+
+
+@login_required
+@require_http_methods(['POST'])
+def send_test_mail(request):
+
+    variables = request.POST.get('variables')
+    subject = request.POST.get('subject')
+    body = request.POST.get('body')
+    files = request.FILES
+
+    jinja_env.from_string()

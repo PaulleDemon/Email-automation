@@ -47,6 +47,8 @@ class EmailTemplate(models.Model):
 
     public = models.BooleanField(default=False) # is this template public template
 
+    copy_count = models.PositiveIntegerField(default=0) # this keeps a track of number copies of this template made
+
     def __str__(self) -> str:
         return self.subject[:30]
     

@@ -2,7 +2,6 @@
  * commonnly used functions
  */
 
-const defaultToast = document.getElementById("error-toast")
 
 /**
  * 
@@ -29,7 +28,7 @@ function alertError(alert, text=""){
  */
 function toastAlert(toast, text=""){
 
-    if (toast === null){
+    if (toast == null){
         toast = defaultToast
     }
 
@@ -91,11 +90,11 @@ function getFileSize(file, unit='MB') {
         if (unit === 'KB') {
             // Calculate the file size in kilobytes
             const fileSizeInKB = fileSizeInBytes / 1024;
-            return fileSizeInKB.toFixed(2) + ' KB'; // Round to 2 decimal places and add the unit
+            return fileSizeInKB.toFixed(2) // Round to 2 decimal places and add the unit
         } else if (unit === 'MB') {
             // Calculate the file size in megabytes
             const fileSizeInMB = fileSizeInBytes / (1024 * 1024);
-            return fileSizeInMB.toFixed(2) + ' MB'; // Round to 2 decimal places and add the unit
+            return fileSizeInMB.toFixed(2) // Round to 2 decimal places and add the unit
         }
     } else {
         return null; // Invalid input, return null
@@ -128,7 +127,6 @@ function setDatetimeToLocal(datetimeElement, additonal_time=0){
     // Format the minDate as a string for the input field
     const minDateString = minDate.toISOString().slice(0, 16);
     // const minDateString = minDate.toUTCString();
-    console.log("mon date: ",  currentDate.getTime()+additonal_time)
     datetimeElement?.setAttribute('min', minDateString);
 
     return minDate

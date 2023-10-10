@@ -335,6 +335,10 @@ select {
   margin-bottom: 1rem;
 }
 
+.\!tw-ml-\[auto\] {
+  margin-left: auto !important;
+}
+
 .\!tw-ml-auto {
   margin-left: auto !important;
 }
@@ -343,12 +347,20 @@ select {
   margin-left: auto;
 }
 
+.tw-mt-1 {
+  margin-top: 0.25rem;
+}
+
 .tw-mt-2 {
   margin-top: 0.5rem;
 }
 
 .tw-mt-3 {
   margin-top: 0.75rem;
+}
+
+.tw-mt-4 {
+  margin-top: 1rem;
 }
 
 .tw-mt-\[10\%\] {
@@ -369,26 +381,6 @@ select {
 
 .tw-mt-auto {
   margin-top: auto;
-}
-
-.\!tw-ml-\[100\%\] {
-  margin-left: 100% !important;
-}
-
-.\!tw-ml-\[auto\] {
-  margin-left: auto !important;
-}
-
-.tw-mt-1 {
-  margin-top: 0.25rem;
-}
-
-.\!tw-mt-\[2\%\] {
-  margin-top: 2% !important;
-}
-
-.tw-mt-\[8\%\] {
-  margin-top: 8%;
 }
 
 .\!tw-flex {
@@ -531,10 +523,6 @@ select {
   place-content: center;
 }
 
-.\!tw-place-content-center {
-  place-content: center !important;
-}
-
 .tw-place-content-end {
   place-content: end;
 }
@@ -545,10 +533,6 @@ select {
 
 .tw-place-items-center {
   place-items: center;
-}
-
-.\!tw-content-center {
-  align-content: center !important;
 }
 
 .tw-items-center {
@@ -599,22 +583,6 @@ select {
   --tw-space-y-reverse: 0;
   margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
-}
-
-.tw-place-self-auto {
-  place-self: auto;
-}
-
-.\!tw-place-self-auto {
-  place-self: auto !important;
-}
-
-.tw-place-self-center {
-  place-self: center;
-}
-
-.\!tw-place-self-center {
-  place-self: center !important;
 }
 
 .tw-justify-self-center {
@@ -799,6 +767,10 @@ select {
 
 .tw-font-semibold {
   font-weight: 600;
+}
+
+.tw-leading-8 {
+  line-height: 2rem;
 }
 
 .tw-leading-tight {

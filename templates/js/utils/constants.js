@@ -5,5 +5,5 @@ const EMAIL_CAMPAIGN = {
 }
 
 const TEMPLATE = {
-    upload_size: 10 // 10mb
+    attachment_size: 10 // 10mb
 }

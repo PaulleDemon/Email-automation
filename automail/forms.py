@@ -1,6 +1,8 @@
 from django import forms
 
-from .models import (EmailTemplate, EmailTemplateAttachment, EmailConfiguration)
+from .models import (EmailTemplate, EmailTemplateAttachment, EmailConfiguration, 
+                     EmailCampaign, EmailCampaignTemplate
+                     )
 
 
 class EmailConfigurationForm(forms.ModelForm):
@@ -15,7 +17,7 @@ class EmailTemplateForm(forms.ModelForm):
     class Meta:
         
         model = EmailTemplate
-        exclude = ('user',)
+        exclude = ('user', 'copy_count')
 
 
 class AttachmentForm(forms.ModelForm):
@@ -24,3 +26,19 @@ class AttachmentForm(forms.ModelForm):
 
         model = EmailTemplateAttachment
         exclude = ('template', )
+
+
+class EmailCampaignForm(forms.ModelForm):
+
+    class Meta:
+        model = EmailCampaign
+        exclude = ('user', 'completed', 'created_datetime', 'send_count', 
+                   'failed_count', 'failed_emails', 'error', 'email_send_rule')
+        
+
+class EmailFollowUpForm(forms.ModelForm):
+
+    class Meta:
+
+        model = EmailCampaign
+        fields = ('email_send_rule', 'scheduled', 'schedule')

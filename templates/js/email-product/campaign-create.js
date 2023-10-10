@@ -1,3 +1,5 @@
+const campaign = document.getElementById("campaign")
+
 const fileInput = document.getElementById("file-upload");
 const selectedFileName = document.getElementById("selected-file-name");
 
@@ -22,16 +24,39 @@ if (!campaignSchedule.value){
 }
 
 localTime.innerText = toLocalTime(datetime)
-console.log("camph: ", new Date().toLocaleString())
 
 followUpBtn.onclick = createFollowup
 
-// updates the display of the localtime
 function updateLocalTime(){
-    console.log("Value: ", event.target.value)
-    localTime.innerText = toLocalTime(new Date(event.target.value))
+    // triggered when the campaign schedule is changed, updates the localtime and sets
+    // min datetime for all the follow ups
+    const datetime = new Date(event.target.value)
+
+    localTime.innerText = toLocalTime(datetime)
+
+    setMinFollowUpDatetime()
 }
 
+function setMinFollowUpDatetime(){
+
+    const followUp = Array.from(document.querySelectorAll("[title='followup-schedule']")|| [])
+
+    const datetime = new Date(campaignSchedule.value)
+
+    const minDatetime = new Date(datetime.getTime() + 20 * 60 *1000)
+
+    console.log("Datetime: ", minDatetime.toISOString().slice(0, 16))
+
+    followUp.forEach(e => {
+        // set min datetime for each follow up
+        console.log("YAA: ",  minDatetime.toISOString().slice(0, 16))
+        e.setAttribute("min", minDatetime.toISOString().slice(0, 16))
+    })
+    console.log("followup: ", )
+    followUp.forEach(e => console.log("Stay: ", e))
+
+    return minDatetime
+}
 
 fileInput.addEventListener("change", function () {
     if (fileInput.files.length > 0) {
@@ -58,8 +83,14 @@ fileInput.addEventListener("change", function () {
 });
 
 
-function viewTemplate(id){
-    templateViewBtn.href = templateViewBtn.getAttribute("url") + `?edit=${event.target.value}`
+function viewTemplate(){
+ 
+    if (event.target.value){
+        const url = templateViewBtn.getAttribute("url") + `?edit=${event.target.value}`
+        templateViewBtn.setAttribute("href", url) 
+    }else{
+        templateViewBtn.removeAttribute("href")
+    }
 }
 
 
@@ -70,7 +101,7 @@ function createFollowup(){
     const FOLLOW_UP = `
     
                     <div class="tw-min-h-[150px] tw-min-w-[200px] tw-shadow-lg tw-rounded-lg tw-mt-[2%] tw-p-4
-                        tw-flex tw-flex-col tw-gap-2" id="${uuid}">
+                        tw-flex tw-flex-col tw-gap-2" id="${uuid}" name='follow-up'>
                         <select class="form-select">
                             <option selected>Choose Template</option>
                             ${
@@ -85,9 +116,10 @@ function createFollowup(){
                         <select class="form-select">
                             <option selected>Select rule</option>
                             ${
+
                                 rules.map(r => {
                                     return (
-                                        `<option value=${r.i}>${r.name}</option>`
+                                        `<option value=${r[0]}>${r[1]}</option>`
                                     )
                                 })
                             }
@@ -96,7 +128,8 @@ function createFollowup(){
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="">Schedule</span>
                             <input type="datetime-local" class="form-control" name="email_lookup" id="basic-url" autofocus 
-                                    value="{% if campaign.email_lookup %}{{campaign.email_lookup}}{% else %}Email{% endif %}" 
+                                    value="" 
+                                    title='followup-schedule'
                                     placeholder="default email address column">
                         </div>  
 
@@ -104,7 +137,7 @@ function createFollowup(){
                             <button class="btn" onclick="deleteFollowup('${uuid}')">
                                 <i class="tw-text-red-600 bi bi-trash"></i>
                             </button>
-                            <input class="form-check-input !tw-ml-auto" onchange="" type="checkbox" value="" id="schedule">
+                            <input class="form-check-input !tw-ml-auto" onchange="" type="checkbox" value="" >
                             <label class="form-check-label tw-m-1" for="schedule">
                                 Schedule
                             </label>
@@ -115,8 +148,57 @@ function createFollowup(){
 
     
     followUpSection.innerHTML += FOLLOW_UP
-}
+    setMinFollowUpDatetime()
+}   
 
 function deleteFollowup(id){
     document.getElementById(id).remove()
+}
+
+
+function checkFields(){
+
+    const inputFields = campaign.querySelectorAll("[name]")
+
+    for(let x of inputFields){
+    
+        if (x.name === "name" && x.value.trim().length < 3){
+            toastAlert(null, "Please give a proper campaign name")
+            return false
+        }
+
+        if (x.name === "email_lookup" && x.value.trim().length === 0){
+            toastAlert(null, "Please fill default email column")
+            return false
+        }
+        
+        if (x.name === "from_email" && !x.value){
+            toastAlert(null, "Please select the from email")
+            return false
+        }
+
+        if (x.name === "file" && !x.value){
+            toastAlert(null, "Please upload your excel file")
+            return false
+        }
+
+
+        if (x.name === "template" && !x.value){
+            toastAlert(null, "Please select the template")
+            return false
+        }
+
+        if (x.name === "template" && !x.value){
+            toastAlert(null, "Please select the template")
+            return false
+        }
+
+        if (x.name === "schedule" && (!x.value || new Date(x.value) < new Date())){
+            toastAlert(null, "scheduled time must be greater than now!")
+            return false
+        }
+
+    }
+    console.log("false")
+    return true
 }
