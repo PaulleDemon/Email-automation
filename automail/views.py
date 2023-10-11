@@ -13,9 +13,9 @@ from django.contrib.auth.decorators import login_required
 from django_ratelimit.decorators import ratelimit
 
 from .forms import (EmailTemplateForm, AttachmentForm, EmailConfigurationForm, 
-                        EmailCampaignForm, EmailFollowUpForm)
+                        EmailCampaignForm, EmailForm)
 from .models import (EmailTemplate, EmailCampaign, EmailTemplateAttachment, 
-                        EmailConfiguration, EMAIL_SEND_RULES)
+                        EmailConfiguration, EmailCampaignTemplate, EMAIL_SEND_RULES)
 
 from utils.tasks import send_attachment_mail_celery
 from utils.common import get_file_size, get_plain_text_from_html
@@ -208,23 +208,72 @@ def campaign_create_view(request):
             **request.POST
         }
 
+    print("Selected: ", request.POST)
+
     if request.method == 'POST':
         edit = request.POST.get('edit')
 
-        form = EmailCampaignForm(request.POST)
+        template = request.POST.get('template')
+        email_from = request.POST.get('from_email')
+        schedule = request.POST.get('schedule')
+        scheduled = request.POST.get('scheduled')
 
-        if form.is_valid():
+        campaign_form = EmailCampaignForm(request.POST, request.FILES)
 
-            if edit:
-                pass
+        followups = json.loads(request.POST.get('followups'))
+        print("template: ", template, email_from)
+        if campaign_form.is_valid():
+
+            campaign = campaign_form.save(commit=False)
+            campaign.user = request.user
+            campaign.save()
+            email_form = EmailForm({
+                                    'campaign': campaign.id, 
+                                    'template': template, 
+                                    'email': email_from,
+                                    'email_send_rule': EMAIL_SEND_RULES.ALL,
+                                    'schedule': schedule,
+                                    'scheduled': True if scheduled else False,
+                                    'followup': None
+                                    })
+            print("campaign: ", email_form.is_valid(), email_form.errors)
+
+            if email_form.is_valid():
+
+                main_email = email_form.save(commit=True)
+
+                for i, x in enumerate(followups):
+                    print("X: ", x)
+                    follow_up_form = EmailForm({
+                                    'campaign': campaign, 
+                                    'template': x['followup-template'], 
+                                    'email': email_from,
+                                    'email_send_rule': x['rule'],
+                                    'schedule': x['followup-schedule'],
+                                    'scheduled': True if x['followup-scheduled'] else False,
+                                    'followup': main_email
+                                    })
+                    
+                    if follow_up_form.is_valid():
+                        follow_up_form.save(commit=True)
+                    
+                    else:
+                        campaign.delete()
+                        error = follow_up_form.errors.as_data()
+                        errors = [f'{list(error[x][0])[0]}' for x in error] 
+                        context['error'] = errors
+                        break
+                
+                return redirect('email-campaigns')
 
             else:
-                campaign = form.save()
-
-                # TODO: from here
+                campaign.delete()
+                error = email_form.errors.as_data()
+                errors = [f'{list(error[x][0])[0]}' for x in error] 
+                context['error'] = errors
 
         else:
-            error = form.errors.as_data()
+            error = campaign_form.errors.as_data()
             errors = [f'{list(error[x][0])[0]}' for x in error] 
             context['error'] = errors
             

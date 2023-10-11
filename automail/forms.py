@@ -32,13 +32,13 @@ class EmailCampaignForm(forms.ModelForm):
 
     class Meta:
         model = EmailCampaign
-        exclude = ('user', 'completed', 'created_datetime', 'send_count', 
-                   'failed_count', 'failed_emails', 'error', 'email_send_rule')
+        exclude = ('user', 'created_datetime')
         
 
-class EmailFollowUpForm(forms.ModelForm):
+class EmailForm(forms.ModelForm):
 
     class Meta:
 
-        model = EmailCampaign
-        fields = ('email_send_rule', 'scheduled', 'schedule')
+        model = EmailCampaignTemplate
+        exclude = (  'completed', 'created_datetime', 'sent_count', 
+                    'failed_count', 'failed_emails', 'error', )

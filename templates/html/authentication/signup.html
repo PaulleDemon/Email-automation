@@ -27,15 +27,15 @@
                         {% endfor %}
                     </div>
                     <input type="email" name="email" id="email" class="form-control" 
-                        placeholder="email" maxlength="450" onchange="checkForm()" oninput="checkForm()" autofocus>
+                        placeholder="email" maxlength="450" onchange="checkSignUp()" oninput="checkSignUp()" autofocus>
                     
                     <div class="input-group mb-3">
                         <input type="password"  name="password1" id="password" class="form-control" 
-                            placeholder="password" maxlength="30" onchange="checkForm()" oninput="checkForm()">
+                            placeholder="password" maxlength="30" onchange="checkSignUp()" oninput="checkSignUp()">
                     </div>        
 
                     <div class="form-check tw-text-sm tw-text-left tw-mt-2">
-                        <input class="form-check-input" onchange="checkForm()" type="checkbox" value="" id="terms-condition">
+                        <input class="form-check-input" onchange="checkSignUp()" type="checkbox" value="" id="terms-condition">
                         <label class="form-check-label" for="terms-condition">
                             You agree to <a href="" class="tw-text-blue-600">terms and conditions</a> 
                         </label>

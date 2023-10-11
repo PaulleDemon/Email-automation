@@ -30,7 +30,7 @@ class EmailConfiguration(models.Model):
     password = EncryptedCharField(max_length=100)
 
     signature = models.TextField(null=True, blank=True, max_length=400)
-
+    
 
 class EmailTemplate(models.Model):
 
@@ -66,27 +66,12 @@ class EmailCampaign(models.Model):
 
     name = models.CharField(max_length=30, default='campaign', null=True, blank=True)
 
-    email_send_rule = models.PositiveSmallIntegerField(choices=EMAIL_SEND_RULES.choices, default=EMAIL_SEND_RULES.ALL, null=True)
-
     email_lookup = models.CharField(default='Email', max_length=150) # this is the field lookup upon uploading xls sheet
+    created_datetime = models.DateTimeField(auto_now=True)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     file = models.FileField(upload_to='email-files/')
-    completed = models.BooleanField(default=False)
-
-    created_datetime = models.DateTimeField(auto_now=True)
-    sent_count = models.PositiveIntegerField(default=0)
-
-    failed_count = models.PositiveIntegerField(default=0)
-    failed_emails = models.TextField(max_length=4000) 
-    error = models.TextField(max_length=4000)
-
-    follow_up = models.ForeignKey('self', null=True, blank=True ,on_delete=models.CASCADE)
-
-    schedule = models.DateTimeField(null=True, blank=True)
-    scheduled = models.BooleanField(default=False)
-
     save_to_inbox = models.BooleanField(default=True)
 
     def __str__(self) -> str:
@@ -98,6 +83,25 @@ class EmailCampaignTemplate(models.Model):
     email = models.ForeignKey(EmailConfiguration, on_delete=models.CASCADE)
     campaign = models.ForeignKey(EmailCampaign, on_delete=models.CASCADE)
     template = models.ForeignKey(EmailTemplate, on_delete=models.CASCADE)
+
+    followup =  models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
+
+    email_send_rule = models.PositiveSmallIntegerField(choices=EMAIL_SEND_RULES.choices, default=EMAIL_SEND_RULES.ALL, null=True)
+    
+    completed = models.BooleanField(default=False)
+
+    created_datetime = models.DateTimeField(auto_now=True)
+    sent_count = models.PositiveIntegerField(default=0)
+
+    failed_count = models.PositiveIntegerField(default=0)
+    failed_emails = models.TextField(max_length=4000, null=True, blank=True) 
+    error = models.TextField(max_length=4000, null=True, blank=True)
+
+    schedule = models.DateTimeField(null=True, blank=True)
+    scheduled = models.BooleanField(default=False)
+    
+    created_datetime = models.DateTimeField(auto_now=True)
+
 
     def __str__(self) -> str:
         return f'{self.campaign.name}'

@@ -22,6 +22,11 @@ def login_view(request):
     email = request.POST["email"]
     password = request.POST["password"]
     user = authenticate(request, username=email, password=password)
+    
+    if User.objects.filter(email=email, is_active=False).exists():
+        url = reverse('verification-alert') + f'?email={email}'
+        return redirect(url)
+
     if user is not None:
         login(request, user)
         return redirect('email-templates')
@@ -50,8 +55,9 @@ def signup_view(request):
             raw_password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=raw_password)
             # login(request, user) # don't login user unless the user has verified their email
+            send_token(username)
 
-            url = reverse('search_results') + f'?email={username}'
+            url = reverse('verification-alert') + f'?email={username}'
             return redirect(url)
 
         error = form.errors.as_data()
@@ -91,8 +97,8 @@ def verification_resend(request):
             return render(request, 'resend-confirmation.html', {'error': f'The email {email} is already active'})
 
         send_token(email)
-
-        return redirect('verification-alert')
+        url = reverse('verification-alert') + f'?email={email}'
+        return redirect(url)
 
     return render(request, 'resend-confirmation.html')
 

@@ -45,8 +45,8 @@ class EmailCampaignAdmin(admin.ModelAdmin):
 
     search_fields = ['name', 'user']
 
-    list_display = ['id', 'name', 'scheduled']
-    list_filter = ['created_datetime', 'scheduled']
+    list_display = ['id', 'name', ]
+    list_filter = ['created_datetime', ]
 
     autocomplete_fields = ['user']
 
@@ -54,8 +54,8 @@ class EmailCampaignAdmin(admin.ModelAdmin):
 @admin.register(EmailCampaignTemplate)
 class EmailCampaignTemplatedmin(admin.ModelAdmin):
 
-    list_display = ['id', 'campaign', 'template']
-
-    autocomplete_fields = ['template', 'campaign', 'email']
+    list_display = ['id', 'campaign', 'template', 'scheduled']
+    list_filter = ['scheduled', 'created_datetime']
+    autocomplete_fields = ['template', 'campaign', 'email', ]
 
 

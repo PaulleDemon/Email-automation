@@ -28,7 +28,9 @@ def get_file_size(request_file: UploadedFile, unit: str='MB'):
     return file_size
 
 
-def get_plain_text_from_html(html_content):
+def get_plain_text_from_html(html_content: str):
+    
+    html_content = html_content.replace("<br>", "\n")
     soup = bs4.BeautifulSoup(html_content, "html.parser")
 
     # Extract the plain text
