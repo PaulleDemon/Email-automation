@@ -371,6 +371,10 @@ select {
   margin-top: 2%;
 }
 
+.tw-mt-\[4\%\] {
+  margin-top: 4%;
+}
+
 .tw-mt-\[5\%\] {
   margin-top: 5%;
 }
@@ -381,10 +385,6 @@ select {
 
 .tw-mt-auto {
   margin-top: auto;
-}
-
-.tw-mt-\[4\%\] {
-  margin-top: 4%;
 }
 
 .\!tw-flex {
@@ -423,6 +423,11 @@ select {
   height: 80px;
 }
 
+.tw-h-fit {
+  height: -moz-fit-content;
+  height: fit-content;
+}
+
 .tw-h-full {
   height: 100%;
 }
@@ -448,6 +453,10 @@ select {
   max-height: 450px;
 }
 
+.tw-max-h-\[550px\] {
+  max-height: 550px;
+}
+
 .tw-min-h-\[100vh\] {
   min-height: 100vh;
 }
@@ -458,6 +467,10 @@ select {
 
 .tw-min-h-\[250px\] {
   min-height: 250px;
+}
+
+.\!tw-w-\[200px\] {
+  width: 200px !important;
 }
 
 .\!tw-w-full {
@@ -488,6 +501,14 @@ select {
   min-width: 200px;
 }
 
+.tw-min-w-\[300px\] {
+  min-width: 300px;
+}
+
+.tw-max-w-\[500px\] {
+  max-width: 500px;
+}
+
 .tw-max-w-\[800px\] {
   max-width: 800px;
 }
@@ -498,6 +519,10 @@ select {
 
 .tw-max-w-lg {
   max-width: 32rem;
+}
+
+.tw-max-w-xl {
+  max-width: 36rem;
 }
 
 .tw-translate-x-\[-50\%\] {
@@ -731,6 +756,11 @@ select {
   text-align: justify;
 }
 
+.\!tw-text-lg {
+  font-size: 1.125rem !important;
+  line-height: 1.75rem !important;
+}
+
 .tw-text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
@@ -759,6 +789,10 @@ select {
 .tw-text-xl {
   font-size: 1.25rem;
   line-height: 1.75rem;
+}
+
+.\!tw-font-bold {
+  font-weight: 700 !important;
 }
 
 .tw-font-bold {
@@ -857,6 +891,17 @@ select {
   outline-offset: 2px;
 }
 
+@media not all and (min-width: 640px) {
+  .max-sm\:tw-mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .max-sm\:tw-flex-col {
+    flex-direction: column;
+  }
+}
+
 @media (min-width: 640px) {
   .sm\:tw-m-\[2\%\] {
     margin: 2%;
@@ -892,33 +937,11 @@ select {
     margin-right: 30%;
   }
 
-  .lg\:tw-max-w-xl {
-    max-width: 36rem;
-  }
-
-  .lg\:tw-max-w-\[150px\] {
-    max-width: 150px;
+  .lg\:tw-ml-auto {
+    margin-left: auto;
   }
 
   .lg\:tw-max-w-\[350px\] {
-    max-width: 350px;
-  }
-}
-
-@media (min-width: 1280px) {
-  .xl\:tw-absolute {
-    position: absolute;
-  }
-
-  .xl\:tw-right-\[5\%\] {
-    right: 5%;
-  }
-
-  .xl\:tw-top-\[20\%\] {
-    top: 20%;
-  }
-
-  .xl\:tw-max-w-\[350px\] {
     max-width: 350px;
   }
 }

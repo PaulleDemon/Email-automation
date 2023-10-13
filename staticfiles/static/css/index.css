@@ -19,3 +19,11 @@ a{
     text-decoration: none;
     color: inherit;
 }
+
+.trix-button-group.trix-button-group--file-tools {
+    display: none !important;
+}
+
+#trix-editor a {
+    color: blue !important; 
+  }

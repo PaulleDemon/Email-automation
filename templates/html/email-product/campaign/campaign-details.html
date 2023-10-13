@@ -1,0 +1,206 @@
+{% extends './html/base.html' %}
+{% load static %}
+{% load tz %}
+{% load custom_tags %}
+
+
+{% block content %}
+<div class="tw-flex tw-flex-col tw-min-h-[100vh] tw-p-3 tw-place-items-center tw-gap-4">
+
+    <div class="modal model-dialog fade modal-dialog-centered !tw-hidden" id="delete-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Delete Template</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+              Are you sure you want to delete this? This action cannot be undone
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <form action="" id="modal-btn-delete" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="tw-text-3xl tw-font-bold tw-m-5">
+        {{campaign.name}}
+    </div>
+
+
+    <div class="tw-flex tw-flex-col tw-place-content-center tw-gap-4">
+        <div class="tw-flex tw-w-full max-sm:tw-flex-col">
+            <div class="tw-rounded-lg tw-shadow-lg tw-w-full tw-max-w-xl tw-flex tw-h-fit tw-overflow-hidden">
+                <table class="table table-striped tw-mt-3 tw-min-w-[300px]">
+                    <tr>
+                        <td><b>Subject</b></td>
+                        <td>{{ campaign.subject }}</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><b>Template</b></td>
+                        <td>{{ campaign.emailcampaigntemplate_set.first.template.name }}</td>
+                        <td>
+                            <a href="">
+                                <i class="bi bi-eye-fill"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Scheduled time</b></td>
+                        <td>{{ campaign.first_template_schedule|localtime|date:"F j, Y g:i A" }}</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><b>From</b></td>
+                        <td>{{ campaign.emailcampaigntemplate_set.first.email.email }}</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><b>Started</b></td>
+                        <td>
+                            {% if campaign.started %}
+                                Yes
+                            {% else %}
+                                No
+                            {% endif %}
+                        </td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><b>Completed</b></td>
+                        <td> 
+                            {% if campaign.emailcampaigntemplate_set.first.completed %}
+                                Yes
+                            {% else %}
+                                No
+                            {% endif %}
+                        </td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><b>File</b></td>
+                        <td>{{ campaign.file|filename }}
+                        </td>
+                        <td>
+                            <a href="{{ campaign.file.url }}" >
+                                <i class="bi bi-download !tw-text-lg !tw-font-bold"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Save to inbox</b></td>
+                        <td>
+                            {% if campaign.save_to_inbox %}
+                                Yes
+                            {% else %}
+                                No
+                            {% endif %}
+                        </td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><b>Sent count</b></td>
+                        <td>{{ campaign.emailcampaigntemplate_set.first.sent_count }}</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><b>Failed count</b></td>
+                        <td>{{ campaign.emailcampaigntemplate_set.first.failed_count }}</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><b>Failed emails</b></td>
+                        <td>{{ campaign.emailcampaigntemplate_set.first.failed_emails }}</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="tw-flex tw-flex-col tw-gap-2 tw-max-w-lg max-sm:tw-mx-auto tw-mt-3 lg:tw-ml-auto tw-p-4">
+                <button type="button" onclick="onDeleteCampaign('{% url 'email-campaign-delete' id=campaign.id %}', '{{ campaign.name }}')" 
+                            class="btn btn-danger !tw-w-[200px]" data-bs-toggle="modal" data-bs-target="#delete-modal"><i class="bi bi-trash"></i>
+                </button>
+                <a href="{% url 'email-campaign-create' %}?edit={{ campaign.id }}" type="button" onclick="onDeleteCampaign('{% url 'email-campaign-delete' id=campaign.id %}', '{{ campaign.name }}')" 
+                            class="btn btn-dark !tw-w-[200px] tw-flex" >
+                        <span>Edit</span>
+                        {% comment %} <i class="bi bi-pen"></i> {% endcomment %}
+                </a>
+            </div>
+        </div>
+        <hr>
+        <div class="tw-text-center tw-text-xl tw-font-semibold">Follow ups</div>
+
+        <div class="tw-w-full tw-flex tw-flex-wrap tw-place-content-center tw-gap-4">
+
+            {% for x in campaign.emailcampaigntemplate_set.all %}
+                {% if not forloop.first %}
+                <div class="tw-rounded-lg tw-shadow-lg tw-flex 
+                            tw-flex-col tw-h-fit tw-overflow-hidden
+                            tw-max-w-[500px] tw-min-w-[300px]
+                            ">
+                    <div class="tw-text-center">{{forloop.counter|subtract:1}}</div>
+                    <table class="table table-striped tw-mt-3 tw-min-w-[300px]">
+                        <tr>
+                            <td><b>Subject</b></td>
+                            <td>{{ x.template.subject }}</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td><b>Template</b></td>
+                            <td>{{ x.template.name }}</td>
+                            <td>
+                                <a href="">
+                                    <i class="bi bi-eye-fill"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>Scheduled time</b></td>
+                            <td>{{ x.schedule|localtime|date:"F j, Y g:i A" }}</td>
+                            <td>&nbsp;</td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Completed</b></td>
+                            <td> 
+                                {% if x.completed %}
+                                    Yes
+                                {% else %}
+                                    No
+                                {% endif %}
+                            </td>
+                            <td>&nbsp;</td>
+                        </tr>
+        
+                        <tr>
+                            <td><b>Sent count</b></td>
+                            <td>{{ x.sent_count }}</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td><b>Failed count</b></td>
+                            <td>{{ x.failed_count }}</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td><b>Failed emails</b></td>
+                            <td>{{ x.failed_emails }}</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </table>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+<script src="{% static "./js/email-product/email-campaigns.js" %}"></script>
+
+{% endblock content %}

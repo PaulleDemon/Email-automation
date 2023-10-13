@@ -1,14 +1,18 @@
 import json
 import jinja2
 
+
+from django.db import models
 from django.urls import reverse
 from django.conf import settings
+from django.utils import timezone
 from django.http import JsonResponse
 from django.forms import model_to_dict
 from django.shortcuts import render, redirect
-from django.core.serializers.json import DjangoJSONEncoder
-from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
+from django.core.serializers.json import DjangoJSONEncoder, Serializer
+from django.db.models import Q, F, BooleanField, Case, When, Value, Count, OuterRef, Subquery
 
 from django_ratelimit.decorators import ratelimit
 
@@ -208,25 +212,48 @@ def campaign_create_view(request):
             **request.POST
         }
 
-    print("Selected: ", request.POST)
+    edit = request.GET.get('edit')
 
+    if edit:
+        try:
+            campaign = EmailCampaign.objects.get(id=edit, user=request.user.id)
+
+            context['campaign'] = campaign
+
+        except EmailCampaign.DoesNotExist:
+            return render(request, '404.html')
+        
     if request.method == 'POST':
-        edit = request.POST.get('edit')
 
         template = request.POST.get('template')
         email_from = request.POST.get('from_email')
         schedule = request.POST.get('schedule')
         scheduled = request.POST.get('scheduled')
 
-        campaign_form = EmailCampaignForm(request.POST, request.FILES)
+        instance = None
+
+        if edit:
+            try:
+                instance = EmailCampaign.objects.get(id=edit, user=request.user)
+
+            except (EmailCampaign.DoesNotExist):
+                return render(request, '404.html')
+
+        campaign_form = EmailCampaignForm(request.POST or None, request.FILES or None, 
+                                            instance=instance)
 
         followups = json.loads(request.POST.get('followups'))
-        print("template: ", template, email_from)
+       
         if campaign_form.is_valid():
 
             campaign = campaign_form.save(commit=False)
             campaign.user = request.user
             campaign.save()
+
+            # If this is an edit request, update the existing campaign
+            if edit:
+                EmailCampaignTemplate.objects.filter(campaign=campaign).delete()
+
             email_form = EmailForm({
                                     'campaign': campaign.id, 
                                     'template': template, 
@@ -250,7 +277,7 @@ def campaign_create_view(request):
                                     'email': email_from,
                                     'email_send_rule': x['rule'],
                                     'schedule': x['followup-schedule'],
-                                    'scheduled': True if x['followup-scheduled'] else False,
+                                    'scheduled': True if x['followup-scheduled'] != "" else False,
                                     'followup': main_email
                                     })
                     
@@ -262,6 +289,8 @@ def campaign_create_view(request):
                         error = follow_up_form.errors.as_data()
                         errors = [f'{list(error[x][0])[0]}' for x in error] 
                         context['error'] = errors
+                        print('errors: ', follow_up_form.errors.as_data())
+
                         break
                 
                 return redirect('email-campaigns')
@@ -271,25 +300,73 @@ def campaign_create_view(request):
                 error = email_form.errors.as_data()
                 errors = [f'{list(error[x][0])[0]}' for x in error] 
                 context['error'] = errors
+                print('errors: ', follow_up_form.errors.as_data())
 
         else:
             error = campaign_form.errors.as_data()
             errors = [f'{list(error[x][0])[0]}' for x in error] 
             context['error'] = errors
+            print('errors: ', follow_up_form.errors.as_data())
             
     return render(request, 'email-campaign-create.html', context)
 
 
+@login_required
+@require_http_methods(['GET'])
 def campaigns_view(request):
 
-    return render(request, 'email-campaigns.html')
+    view = request.GET.get('view')
+
+    current_datetime = timezone.now()
+
+    first_template_data = EmailCampaign.objects.filter(id=OuterRef('id')  # Correlate with the outer EmailCampaign
+                                                                ).order_by('emailcampaigntemplate__schedule').values('emailcampaigntemplate__schedule',  'emailcampaigntemplate__template__subject')[:1]
+
+
+    campaigns = EmailCampaign.objects.filter(user=request.user.id).annotate(
+                                                                        total_templates=Count('emailcampaigntemplate'),
+                                                                        completed_templates=Count(
+                                                                            'emailcampaigntemplate',
+                                                                            filter=Q(emailcampaigntemplate__completed=True)
+                                                                        ),
+                                                                        all_done=Case(
+                                                                            When(
+                                                                                total_templates=F('completed_templates'),
+                                                                                then=Value(True)
+                                                                            ),
+                                                                            default=Value(False),
+                                                                            output_field=BooleanField()
+                                                                        ),
+                                                                        first_template_schedule=Subquery(first_template_data.values('emailcampaigntemplate__schedule')),
+                                                                        started=Case(
+                                                                            When(first_template_schedule__gt=current_datetime, then=Value(True)),
+                                                                            default=Value(False),
+                                                                            output_field=models.BooleanField()
+                                                                        ),
+                                                                        subject=Subquery(first_template_data.values('emailcampaigntemplate__template__subject'))
+                                                                )
+
+    if view:
+        try:
+            campaign = campaigns.get(id=view)
+          
+            return render(request, 'campaign-details.html', context={'campaign': campaign})
+
+        except (EmailCampaign.DoesNotExist):
+            return render(request, '404.html')
+
+
+    return render(request, 'email-campaigns.html', context={
+                                                                'campaigns': campaigns,
+
+                                                            })
 
 
 @login_required
 def delete_campaign_view(request, id):
     
     try:
-        EmailCampaign.objects.get(user=request.id, id=id)
+        EmailCampaign.objects.get(user=request.user.id, id=id)
     
     except (EmailCampaign.DoesNotExist):
         return render(request, "404.html")
@@ -431,3 +508,20 @@ def send_test_mail_view(request):
         return JsonResponse({'error': 'something went wrong'}, status=400)
 
     return JsonResponse({'success': 'the email has been sent'}, status=200)
+
+
+@require_http_methods(['GET'])
+@ratelimit(key='ip', rate='2/min', method=ratelimit.ALL, block=True)
+def detailed_template_view(request, id):
+
+    if not EmailTemplate.objects.filter(id=id, public=False, user=request.user.id).exists():
+        return JsonResponse({'error': 'unauthorized'}, status=400)
+
+    email_template = EmailTemplate.objects.filter(id=id)
+
+    if not email_template.exists():
+        return JsonResponse({'error': 'does not exist'}, status=404)
+
+    email_template = email_template.defer('copy_count', 'datetime').last()
+
+    return JsonResponse(json.dumps(email_template, cls=DjangoJSONEncoder), status=200)

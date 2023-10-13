@@ -75,7 +75,7 @@ class EmailCampaign(models.Model):
     save_to_inbox = models.BooleanField(default=True)
 
     def __str__(self) -> str:
-        return f'{self.user}'
+        return f'{self.name}'
     
 
 class EmailCampaignTemplate(models.Model):

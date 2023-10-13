@@ -7,3 +7,6 @@ def support_view(request):
 
 def rate_limiter_view(request, *args, **kwargs):
     return render(request, 'ratelimit.html')
+
+def view_404(request, *args, **kwargs):
+    return render(request, '404.html')

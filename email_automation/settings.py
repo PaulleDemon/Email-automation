@@ -31,8 +31,11 @@ SECRET_KEY = env.get_value('SECRET_KEY', default='django-insecure-ksg!i&r49#t+x6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(env('DEBUG')))
 
-ALLOWED_HOSTS = []
+if DEBUG:
+    ALLOWED_HOSTS = []
 
+else:
+    ALLOWED_HOSTS = ['localhost:8000', ]
 
 if DEBUG:
     DOMAIN = 'http://localhost:8000'
@@ -125,7 +128,7 @@ else:
     EMAIL_HOST_USER = env('EMAIL_HOST_USER')
     EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
-    DEFAULT_FROM_EMAIL = Address(display_name="AdoStrings - Creators", addr_spec=EMAIL_HOST_USER)
+    # DEFAULT_FROM_EMAIL = Address(display_name="Email automation", addr_spec=EMAIL_HOST_USER)
 
     # EMAIL_USE_TLS = True
     EMAIL_USE_SSL = True
@@ -155,6 +158,10 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+        'libraries':{
+            'custom_tags': 'email_automation.templatetags.custom_tags',
+            
+            }
         },
     },
 ]

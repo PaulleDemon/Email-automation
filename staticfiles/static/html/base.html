@@ -1,6 +1,9 @@
 {% load static %}
 {% load tailwind_tags %}
-{% load django_browser_reload %}
+
+{%if debug %}
+    {% load django_browser_reload %}
+{% endif %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -19,15 +22,29 @@
     <title>Peckspace{% if page_title %} - {{page_title}}{% endif %}</title>
     
     {% tailwind_css %}
+
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js" integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked@7.0.0/lib/marked.umd.min.js"></script>
+    
+
+    <!-- use version 0.20.0 -->
+    <!-- use xlsx.mini.min.js from version 0.20.0 -->
+    <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.mini.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js" integrity="sha512-dfX5uYVXzyU8+KHqj8bjo7UkOdg18PaOtpa48djpNbZHwExddghZ+ZmzWT06R5v6NSk3ZUfsH6FNEDepLx9hPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
     <link rel="stylesheet" href="{%static './css/index.css'%}">
- 
+    
+    <script src="{% static "./js/utils/common.js" %}"></script>
+    <script src="{% static "./js/utils/constants.js" %}"></script>
+
     </head>
 {% comment %} <body class="tw-min-h-[100vh]" data-bs-theme="dark"> {% endcomment %}
 <body class="tw-min-h-[100vh]" >
@@ -40,47 +57,88 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
           {% comment %} <a class="navbar-brand tw-justify-center" href="{% url 'home' %}"> {% endcomment %}
-          <a class="navbar-brand tw-justify-center" href="/">
-            {% comment %} <img src="{% static './icons/logo.svg'%}" alt="Logo" width="30" height="24" class="d-inline-block align-text-top"> {% endcomment %}
-            PeckSpace - tools
+          <a class="navbar-brand tw-flex tw-gap-1 tw-justify-center tw-place-items-center" href="/">
+            <img src="{% static './assets/logos/logo.svg'%}" alt="Logo" 
+                width="40" height="40" class="d-inline-block align-text-top">
+            <span>PeckSpace</span> 
           </a>
           <div class="tw-justify-self-center collapse navbar-collapse" id="navbarTogglerDemo01">
             <div class="navbar-nav">
-                <a class="nav-link hover:tw-text-blue-400" href="{% url 'email-template-create' %}">Email Templates</a>
+                <a class="nav-link hover:tw-text-blue-400" href="{% url 'email-templates' %}">Email Templates</a>
+                <a class="nav-link hover:tw-text-blue-400" href="{% url 'configurations' %}">Email Configurations</a>
+                <a class="nav-link hover:tw-text-blue-400" href="{% url 'email-campaigns' %}">Email Campaigns</a>
             </div>
-            <div class="navbar-nav tw-ml-auto">
-                {% if user.is_authenticated %}
-                    <div class="m-2">
-                        {{user.name}}
+            <div class="navbar-nav tw-ml-auto !tw-place-items-center">
+                <a class="tw-bg-[#ffe11f] tw-m-1 tw-font-medium tw-p-3 tw-rounded-full tw-text-center" href="{% url 'support-view' %}">
+                    <i class="bi bi-suit-heart-fill tw-text-red-600"></i>
+                    <span>Support opensource</span> 
+                </a>
+
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle " type="button" id="create-btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="bi bi-plus tw-text-3xl"></i>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="create-btn" style="right: 0; left: auto;">
+                      <a class="dropdown-item" href="{% url "email-template-create" %}">Create template</a>
+                      <a class="dropdown-item" href="{% url "email-campaign-create" %}">Create campaign</a>
                     </div>
+                </div>
+
+                {% if user.is_authenticated %}
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" id="profile-btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{user.name}}
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="profile-btn" style="right: 0; left: auto;">
+                        <a class="dropdown-item !tw-flex" type="button" href="{% url "logout" %}">
+                            <span>Logout</span> 
+                            <i class="bi bi-power !tw-ml-[auto]"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+                
+
                 {% else %}
                     <a class="btn btn-primary nav-item tw-m-1" href="{% url "signup" %}">
                         Create Account
                     </a>
                 {% endif %}
+                
             </div>
+            <a href="https://github.com/PaulleDemon" target="_blank" rel="noreferrer" class="tw-m-2"><i class="tw-text-3xl bi bi-github"></i></a>
+            
         </div>
         </div>
         
     </nav>
 
 
-    <div id="error-toast" class="toast tw-h-max tw-z-[5000] tw-fixed tw-top-[2%] tw-left-[50%] tw-translate-x-[-50%] align-items-center text-bg-danger border-0" 
-    role="alert" aria-live="assertive" aria-atomic="true">
+    <div id="error-toast" class="toast tw-h-max tw-z-[5000] tw-fixed tw-top-[5%] tw-left-[50%] tw-translate-x-[-50%] align-items-center text-bg-dark border-0" 
+        role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
           <div class="toast-body" id="error-toast-body">
            
           </div>
           <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
-      </div>
+    </div>
 
     <div class="tw-h-[100%] tw-min-h-[100vh] tw-mt-[70px]">
-        {% block content %}{% endblock content %}
+
+        {% if not user.is_authenticated %}
+            <div class="tw-w-full tw-flex tw-place-content-center">
+                <div class="alert alert-danger tw-max-w-lg tw-mt-[2%]">
+                    You are not logged in. Login to save your progress
+                </div>
+            </div>
+        {% endif %}
+        {% block content %}
+            
+        {% endblock content %}
     </div>
 
         
-
     <footer class="tw-flex tw-z-[100] tw-flex-wrap p-4 tw-text-gray-400 tw-bg-gray-700 shadow-[0px_0px_3px_#000] tw-justify-around">
         
         <div class="tw-flex tw-text-decoration-none">
@@ -89,6 +147,7 @@
             {% comment %} <a href="{% url 'contact-us' %}" class="tw-underline tw-underline-offset-2">Contact us</a> {% endcomment %}
         </div>
     </footer>
+    <script src="{% static "./js/base.js" %}"></script>
 
 </body>
 </html>

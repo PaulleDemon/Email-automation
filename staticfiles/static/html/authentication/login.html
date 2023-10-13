@@ -2,35 +2,36 @@
 {% load static %} 
 {% block fullpage %}
     <div class="tw-bg-black tw-bg-opacity-70 tw-fixed tw-top-0 tw-z-[5000] tw-flex tw-place-content-center tw-items-center tw-h-full tw-w-full">
-        <div id="form-toast" class="toast tw-h-max tw-z-20 tw-absolute tw-top-[25%] tw-right-[2%] align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-            <div class="toast-body" id="form-toast-body">
-            
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-        </div>
-        <div class="tw-w-[350px] tw-min-h-[250px] tw-h-max tw-bg-[#212529]
+        
+        <form action="{% url "login" %}" class="tw-w-[350px] tw-min-h-[250px] tw-h-max tw-bg-white
                         tw-rounded-lg tw-p-3 tw-text-center tw-flex tw-flex-col tw-gap-3"
                     id="login-form"
+                    method="POST"
             >   
-                <a type="button" class="btn-close" aria-label="Close"  href="{% url "home" %}"></a>
-
+                {% comment %} <a type="button" class="btn-close" aria-label="Close"  href="{% url "home" %}"></a> {% endcomment %}
+                {% csrf_token %}
                 <div class="tw-text-xl tw-m-2">
                     Login
                 </div>
-                <input type="text" class="form-control" 
-                    placeholder="email" maxlength="3500" autofocus>
-                <input type="password" class="form-control" 
-                    placeholder="password" maxlength="30">
-
-                <button class="btn btn-success tw-m-3">
+                <div id="login-alert" class="{% if not error%} tw-hidden {% endif %}
+                                    alert alert-danger" role="alert" >
+                    {{error}}
+                </div>
+                <input type="text" class="form-control" id="email"
+                    placeholder="email" name="email" on maxlength="3500" oninput="checkLogin()" autofocus>
+                <div class="input-group mb-3">
+                <input type="password" class="form-control" id="password"
+                    placeholder="password" name="password" maxlength="30" oninput="checkLogin()">
+                </div>
+                
+                <button type="submit" id="login-btn" disabled class="btn btn-success tw-m-3">
                     Login
                 </button>
 
                 <div>
                     New here? <a href="{% url "signup" %}" class="tw-underline tw-text-blue-500">Create account</a>
                 </div>
-            </div>
+            </form>
     </div>
+    <script src="{% static "./js/authentication/authentication.js" %}"></script>
 {% endblock fullpage %}

@@ -1,0 +1,95 @@
+{% extends './html/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="tw-flex tw-flex-col tw-min-h-[100vh] tw-p-3 tw-place-items-center tw-gap-4">
+    <div class="tw-text-3xl tw-font-semibold tw-text-center tw-mt-[2%]">
+        Configure Email
+    </div>
+    <div class="tw-mt-[2%] tw-flex tw-w-full tw-place-content-center">
+        <div class="tw-max-w-lg tw-w-full tw-shadow-xl tw-p-5">
+            
+            <div class="alert alert-danger tw-text-center {% if not errors %}tw-hidden{% endif %}" id="configuration-alert">
+                {% for x in errors %}
+                    {{x}}
+                {% endfor %}
+            </div>
+            <form action="" id="configuration-form" method="post" 
+                class="tw-flex tw-flex-col tw-gap-2" onsubmit="return checkSubmition();">
+                {% csrf_token %}
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="">Display Name</span>
+                    <input type="text" class="form-control" name="name" id="basic-url" autofocus 
+                            value="{{configuration.name}}" placeholder="Name (optional)">
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="">Email</span>
+                    <input type="email" class="form-control" maxlength="450" name="email" id="basic-url" 
+                            value="{{configuration.email}}" placeholder="name@yourdomain.com">
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="">Password</span>
+                    <input type="password" class="form-control" maxlength="80" name="password" id="" 
+                            value="{{configuration.password}}" >
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="">Host</span>
+                    <input type="text" class="form-control" maxlength="200" name="host" id="host-input" value="{{configuration.host}}" 
+                            placeholder="Host">
+                    <select class="form-select" onchange="updateHost()">
+                        <option value="">Select host</option>
+                        <option value="smtp.gmail.com">Gmail</option>
+                        <option value="smtp-mail.outlook.com">Outlook</option>
+                        <option value="smtp.protonmail.com">Proton Mail</option>
+                    </select>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="">Port</span>
+                    <input type="number" class="form-control" name="port" id="port-input" min="0" oninput="validity.valid||(value='');"
+                             value="{{configuration.port}}" 
+                            placeholder="Port">
+                    <select class="form-select" onchange="updatePort()">
+                        <option value="465" selected>Select Port (default 465)</option>
+                        <option value="587">Gmail</option>
+                        <option value="587">Outlook</option>
+                        <option value="1025">Proton Mail</option>
+                    </select>
+                </div>
+
+                <div class="tw-flex tw-flex-col">
+                    <span class="tw-m-2" id="">Email signature</span>
+                    <textarea class="form-control tw-max-h-[200px]" 
+                            name="signature" id="" maxlength="250" value="{{configuration.signature}}" 
+                            placeholder="eg: Best regards, Paul ">{{configuration.signature}}</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-dark tw-my-4" class>Save</button>
+
+            </form>
+
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="tw-flex tw-flex-col tw-place-items-center tw-gap-2 tw-p-3">
+
+        <div class="tw-font-medium tw-text-2xl">
+            Usage guide
+        </div>
+
+        <div class="tw-text-md tw-mt-4">
+            For people using Gmail you will have to enable less secure apps to make this work.
+            Please refer the following guide 
+            <a href="https://stackoverflow.com/a/27515833/15993687" target="_blank"
+                rel="noreferrer" class="tw-underline tw-text-blue-600"  >How to turn on less secure app?</a>
+        </div>
+    </div>
+
+</div>
+<script src="{% static "./js/email-product/configuration.js" %}"></script>
+{%endblock content%}

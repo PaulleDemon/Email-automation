@@ -20,7 +20,6 @@ const templateViewBtn = document.getElementById("template-view")
 
 const datetime = setDatetimeToLocal(campaignSchedule, 10 * 60 * 1000)
 
-
 if (!campaignSchedule.value){
     campaignSchedule.value = datetime.toISOString().slice(0, 16)
 }
@@ -58,13 +57,6 @@ function setMinFollowUpDatetime(){
     followUp.forEach(e => console.log("Stay: ", e))
 
     return minDatetime
-}
-
-console.log("FILE: ", fileInput.title)
-
-if (fileInput.value){
-    fileInput.value = fileInput.value
-    console.log("FILE: ", fileInput.value)
 }
 
 fileInput.addEventListener("change", function () {
@@ -114,7 +106,7 @@ function followUpTemplate(uuid) {
 
     const followUp = `
             <select class="form-select" name="followup-template">
-                <option selected value="">Choose Template</option>
+                <option selected>Choose Template</option>
                 ${
                     templates.map(t => {
                         return (
@@ -145,8 +137,8 @@ function followUpTemplate(uuid) {
                     <i class="tw-text-red-600 bi bi-trash"></i>
                 </button>
                 <input class="form-check-input !tw-ml-auto" onchange="" type="checkbox" 
-                    checked value="scheduled" id="followup-scheduled-${uuid}" name="followup-scheduled">
-                <label class="form-check-label tw-m-1" for="followup-scheduled-${uuid}">
+                    checked value="scheduled" name="followup-scheduled">
+                <label class="form-check-label tw-m-1" for="schedule">
                     Schedule
                 </label>
             </div>
@@ -195,8 +187,8 @@ function checkFields(){
             toastAlert(null, "Please select the from email")
             return false
         }
-        console.log("Value: ", x.name, x.value)
-        if (x.name === "file" && (!x.value && !x.title)){
+
+        if (x.name === "file" && !x.value){
             toastAlert(null, "Please upload your excel file")
             return false
         }
@@ -228,31 +220,22 @@ function checkFields(){
             const name = y.name
             const value = y.value
 
-            console.log("followup", name)
-
-            if (name == "followup-template" && !value){
-                toastAlert(null, `Select a template for Follow up ${x+1}`)
+            if (name == "template" && !value){
+                toastAlert(null, `Follow up ${x+1} requires a proper template`)
                 return false
             }
 
             if (name == "rule" && !value){
-                toastAlert(null, `Select a rule for follow up ${x+1}`)
+                toastAlert(null, `Follow up ${x+1} requires send rule`)
                 return false
             }
 
-            if (name == "followup-schedule" && (!value || new Date(value) < new Date(campaignSchedule.value))){
+            if (name == "schedule" && (!value || new Date(value) < new Date(campaignSchedule.value))){
                 toastAlert(null, `Follow up ${x+1} date has to be greater than the campaign schedule`)
                 return false
             }
-            
-            if (name == 'followup-scheduled')
-                if (y.checked)
-                    data['followup-scheduled'] = value
-                else
-                    data['followup-scheduled'] = ''
 
-            else
-                data[name] = value
+            data[name] = value
 
         }
         followup_data.push(data)
