@@ -31,6 +31,10 @@ class EmailConfiguration(models.Model):
 
     signature = models.TextField(null=True, blank=True, max_length=400)
     
+    is_verified = models.BooleanField(default=False) # if the added email has been 
+
+    def __str__(self) -> str:
+        return f'{self.email}'
 
 class EmailTemplate(models.Model):
 
@@ -73,6 +77,7 @@ class EmailCampaign(models.Model):
 
     file = models.FileField(upload_to='email-files/')
     save_to_inbox = models.BooleanField(default=True)
+    discontinued = models.BooleanField(default=False) # if there are too many errors related to campaign discontinue the campaign
 
     def __str__(self) -> str:
         return f'{self.name}'
@@ -96,6 +101,7 @@ class EmailCampaignTemplate(models.Model):
     failed_count = models.PositiveIntegerField(default=0)
     failed_emails = models.TextField(max_length=4000, null=True, blank=True) 
     error = models.TextField(max_length=4000, null=True, blank=True)
+    smtp_error_count = models.PositiveIntegerField(default=0) 
 
     schedule = models.DateTimeField(null=True, blank=True)
     scheduled = models.BooleanField(default=False)

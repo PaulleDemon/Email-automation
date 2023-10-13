@@ -9,7 +9,7 @@ class EmailConfigurationForm(forms.ModelForm):
 
     class Meta:
         model = EmailConfiguration
-        exclude = ('user', 'use_ssl')
+        exclude = ('user', 'use_ssl', 'is_verified')
 
 
 class EmailTemplateForm(forms.ModelForm):
@@ -32,7 +32,7 @@ class EmailCampaignForm(forms.ModelForm):
 
     class Meta:
         model = EmailCampaign
-        exclude = ('user', 'created_datetime')
+        exclude = ('user', 'created_datetime', 'discontinued')
         
 
 class EmailForm(forms.ModelForm):
@@ -41,4 +41,4 @@ class EmailForm(forms.ModelForm):
 
         model = EmailCampaignTemplate
         exclude = (  'completed', 'created_datetime', 'sent_count', 
-                    'failed_count', 'failed_emails', 'error', )
+                    'failed_count', 'failed_emails', 'error', 'smtp_error_count')

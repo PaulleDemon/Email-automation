@@ -17,5 +17,7 @@ django-celery-beat==2.5.0
 
 django-ratelimit==4.1.0
 
+requests==2.31
+
 PyJWT==2.8.0
 

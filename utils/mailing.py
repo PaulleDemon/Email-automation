@@ -62,12 +62,7 @@ def send_email_with_attachments(subject, text_message, html_message, html_contex
         for attachment in attachments:
             email.attach(attachment.name, attachment.read(), attachment.content_type)
 
-    try:
-        # Send the email
-        # email.send()
-        return get_connection().send_messages([email])
     
-    except Exception as e:
-        # Handle any exceptions here (e.g., log the error)
-        print(f"Error sending email: {e}")
-        return False
+    return email.send()
+    
+  
