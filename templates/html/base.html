@@ -61,7 +61,17 @@
           </a>
           <div class="tw-justify-self-center collapse navbar-collapse" id="navbarTogglerDemo01">
             <div class="navbar-nav">
-                <a class="nav-link hover:tw-text-blue-400" href="{% url 'email-templates' %}">Email Templates</a>
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" id="profile-btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Email templates
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="create-btn">
+                        <a class="dropdown-item" href="{% url "email-templates" %}">My templates</a>
+                        <a class="dropdown-item" href="{% url "email-templates" %}?public=True">Public templates</a>
+                    </div>
+                </div>
+                
+                {% comment %} <a class="nav-link hover:tw-text-blue-400" href="{% url 'email-templates' %}">Email Templates</a> {% endcomment %}
                 <a class="nav-link hover:tw-text-blue-400" href="{% url 'configurations' %}">Email Configurations</a>
                 <a class="nav-link hover:tw-text-blue-400" href="{% url 'email-campaigns' %}">Email Campaigns</a>
             </div>

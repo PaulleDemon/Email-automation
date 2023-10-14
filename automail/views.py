@@ -8,6 +8,7 @@ from django.conf import settings
 from django.utils import timezone
 from django.http import JsonResponse
 from django.forms import model_to_dict
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
@@ -188,10 +189,23 @@ def email_template_delete(request, id):
 @require_http_methods(['GET'])
 def email_templates(request):
 
+    public = request.GET.get('public')
+    search_query = request.GET.get("search")
+    page_number = request.GET.get("page", 1)
+
     private_templates = EmailTemplate.objects.filter(user__id=request.user.id)
 
-    public_templates = EmailTemplate.objects.filter(public=True)
+    public_templates = EmailTemplate.objects.filter(public=True).order_by('copy_count')
 
+    if public and search_query:
+        public_templates = public_templates.filter(Q(subject__icontains=search_query)|Q(name__istartswith=search_query))
+
+    if public == 'True':
+
+        paginator = Paginator(public_templates, per_page=30)
+        templates = paginator.get_page(page_number)
+
+        return render(request, 'public-templates.html', context={'templates': templates})
 
     return render(request, 'email-templates.html', context={'private_templates': private_templates,
                                                             'public_templates': public_templates
@@ -270,7 +284,6 @@ def campaign_create_view(request):
                 main_email = email_form.save(commit=True)
 
                 for i, x in enumerate(followups):
-                    print("X: ", x)
                     follow_up_form = EmailForm({
                                     'campaign': campaign, 
                                     'template': x['followup-template'], 

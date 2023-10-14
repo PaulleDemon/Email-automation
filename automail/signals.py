@@ -17,4 +17,16 @@ def schedule_email(instance, sender, created, *args, **kwargs):
         PeriodicTask.objects.create(name=f'email_{instance.id}', clocked=schedule_start, one_off=True, 
                                         kwargs=json.dumps({'id': instance.id}), 
                                         task='run_schedule_email')
-        
+
+
+@receiver(pre_delete, sender=EmailCampaignTemplate)
+def remove_scheduled_mail(sender, instance, **kwargs):
+
+    try: 
+        task = PeriodicTask.objects.get(name=f'email_{instance.id}')
+        task.enabled = False
+        task.save()
+        task.delete()
+
+    except (PeriodicTask.DoesNotExist):
+        pass

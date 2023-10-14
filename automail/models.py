@@ -22,9 +22,11 @@ class EmailConfiguration(models.Model):
 
     name = models.CharField(max_length=40, null=True, blank=True)
 
-    host = models.CharField(max_length=350)
+    host = models.CharField(max_length=255)
     use_ssl = models.BooleanField(default=True)
     port = models.SmallIntegerField(default=465) # use ssl port
+
+    imap_host = models.CharField(max_length=255, default='')
 
     email = EncryptedEmailField()
     password = EncryptedCharField(max_length=100)

@@ -24,5 +24,5 @@ urlpatterns = [
     
     path('send-test-mail/', send_test_mail_view, name='test-mail-view'),
 
-    path('<int:id>/view_mail/', detailed_template_view, name='detailed-template-view')
+    path('<int:id>/view-mail/', detailed_template_view, name='detailed-template-view')
 ]

@@ -1,9 +1,14 @@
+import time
 import smtplib
+import imaplib
+
 import jinja2
-from django.core.mail import get_connection, EmailMultiAlternatives
+
+from email.mime.text import MIMEText
 
 from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail.backends.smtp import EmailBackend
+from django.core.mail import get_connection, EmailMultiAlternatives
 
 jinja_env = jinja2.Environment()
 
@@ -18,7 +23,7 @@ def send_mass_html_mail(subject: str, message: str, html_message, from_email, re
     return get_connection().send_messages(emails)
 
 
-def test_email_credentials(email, password, host, port):
+def test_email_credentials(email, password, host, port, imap_host):
 
     if settings.DEBUG:
         return (True, "valid")
@@ -40,10 +45,20 @@ def test_email_credentials(email, password, host, port):
         # Close the server connection
         server.quit()
 
+    if imap_host:
+        try:
+            with imaplib.IMAP4_SSL(imap_host) as client:
+                client.login(email, password)
+        
+        except imaplib.IMAP4.error:
+            return (False, "Invalid Imap credentials")
+
     return (True, "valid credentials")
 
 
-def send_email_with_attachments(subject, text_message, html_message, html_context={}, from_email=None, recipient_list=[], attachments=None):
+def send_email_with_attachments(subject, text_message, html_message, html_context={}, 
+                                from_email=None, recipient_list=[], attachments=None, \
+                                connection=None, imap_client:imaplib.IMAP4=None):
     
     subject_template = jinja_env.from_string(subject)
     subject = subject_template.render(html_context)
@@ -54,14 +69,17 @@ def send_email_with_attachments(subject, text_message, html_message, html_contex
     plain_template = jinja_env.from_string(text_message)
     text_message = plain_template.render(html_context)
 
-    email = EmailMultiAlternatives(subject, text_message, from_email, recipient_list)
+    email = EmailMultiAlternatives(subject, text_message, from_email, recipient_list, connection=connection or get_connection())
     email.attach_alternative(html_message, "text/html") 
+
+    if imap_client:
+        imap_client.append('INBOX.Sent', '\\Seen', imaplib.Time2Internaldate(time.time()), plain_template.encode('utf8'))
 
     if attachments:
         # Attach multiple files to the email
         for attachment in attachments:
             email.attach(attachment.name, attachment.read(), attachment.content_type)
-
+    
     
     return email.send()
     

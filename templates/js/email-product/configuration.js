@@ -1,6 +1,7 @@
 const configurationAlert = document.getElementById("configuration-alert")
 const hostInput = document.getElementById("host-input")
 const portInput = document.getElementById("port-input")
+const imapInput = document.getElementById("imap-host-input")
 
 const model = document.getElementById("delete-modal")
 const modelForm = document.getElementById("modal-btn-delete")
@@ -15,6 +16,9 @@ function updatePort(){
     portInput.value = event.target.value
 }
 
+function updateImapHost(){
+    imapInput.value = event.target.value
+}
 function updateHost(){
     hostInput.value = event.target.value
 }
@@ -38,6 +42,10 @@ function checkSubmition(){
             return false
         }
 
+        if (e.name == 'imap_host' && !isValidDomain(e.value)){
+            alertError(configurationAlert, "Invalid imap host")
+            return false
+        }
 
         if (e.name == 'port' && e.value === ''){
             alertError(configurationAlert, "Invalid port")
