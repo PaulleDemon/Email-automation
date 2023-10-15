@@ -266,7 +266,10 @@ async function sendTestMail(){
     if (res.status == 200){
         toastAlert(null, "Email has been sent successfully. If you cannot find it please check spam.")
     }
-    
+
+    if (res.status == 429){
+        toastAlert(null, "Too many requests please wait")
+    }
 
     if (res.staus == 302){
         window.location = res.redirect

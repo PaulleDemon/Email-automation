@@ -5,7 +5,7 @@ from django.contrib import admin
 
 # Register your models here.
 from .models import (EmailCampaign, EmailConfiguration, EmailTemplate, 
-                    EmailTemplateAttachment, EmailCampaignTemplate)
+                    EmailTemplateAttachment, EmailCampaignTemplate, BlacklistedEmailDomains)
 
 
 class AttachmentInline(admin.StackedInline):
@@ -59,3 +59,7 @@ class EmailCampaignTemplatedmin(admin.ModelAdmin):
     autocomplete_fields = ['template', 'campaign', 'email', ]
 
 
+@admin.register(BlacklistedEmailDomains)
+class BlackListDomainAdmin(admin.ModelAdmin):
+
+    list_display = ['id', 'domain']

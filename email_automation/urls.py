@@ -5,9 +5,13 @@ from django.shortcuts import redirect
 from django.conf.urls.static import static
 from django.urls import path, include, re_path
 
-from .views import (support_view, rate_limiter_view, view_404)
+from .views import (support_view, rate_limiter_view, view_404, handler_403)
 
 handler404 = view_404
+
+handler403 = handler_403
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),

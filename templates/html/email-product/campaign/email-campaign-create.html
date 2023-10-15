@@ -95,13 +95,12 @@
                 </label>
             </div>
 
-            <div class="form-check !tw-w-full tw-mt-2 tw-text-lg !tw-place-items-center !tw-flex">
+            <div class="form-check !tw-w-full tw-mt-2 tw-text-lg !tw-place-items-center !tw-flex !tw-hidden">
                 <input class="form-check-input !tw-ml-auto" onchange="" 
                     type="checkbox" 
                     value="inbox" 
                     {% if campaign.save_to_inbox %} checked  {% endif %}4
                     {% if not campaign.exist %}checked{% endif %}
-
                     name="save_to_inbox" id="inbox-save">
                 <label class="form-check-label tw-m-1" for="inbox-save">
                     Save to inbox

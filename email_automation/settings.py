@@ -106,6 +106,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     "django_browser_reload.middleware.BrowserReloadMiddleware", # reload
+    'email_automation.middlewares.RateLimitJsonResponseMiddleware',
     'django_ratelimit.middleware.RatelimitMiddleware',
 
     'email_automation.middlewares.FileUploadMiddleware',

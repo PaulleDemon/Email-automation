@@ -13,15 +13,17 @@ from celery.utils.log import get_task_logger
 
 from django.conf import settings
 from django.db import transaction
+from django.utils import timezone
 from django.core.mail import send_mass_mail, send_mail
 from django.core.mail.backends.smtp import EmailBackend
 
 from django_celery_beat.models import PeriodicTask
 
-from automail.models import EmailCampaignTemplate, EmailTemplateAttachment
+from automail.models import (EmailCampaignTemplate, EmailTemplateAttachment, 
+                                EMAIL_SEND_RULES)
 
-from .common import get_plain_text_from_html
-from .mailing import send_mass_html_mail, send_email_with_attachments
+from .common import get_plain_text_from_html, is_valid_mail
+from .mailing import send_mass_html_mail, send_email_with_attachments, check_recipient_responded
 
 logger = get_task_logger(__name__)
 
@@ -84,7 +86,14 @@ def run_schedule_email(id):
         else:
             raise Exception("File doesn't have a csv, xls, or xlsx extension")
 
-        plain_body = get_plain_text_from_html(body)
+        email_lookup = campaign.campaign.email_lookup
+
+        data = data.drop_duplicates(subset=[email_lookup]) # drop duplicate emails
+        
+        data = data[email_lookup].apply(is_valid_mail).dropna(subset=[email_lookup]) # remove invalid email
+
+        first_schedule = EmailCampaignTemplate.objects.filter(campaign=campaign.campaign).first().schedule.strftime("%d-%b-%Y")
+        now_time = timezone.now().strftime("%d-%b-%Y")
 
         imap_client = None
 
@@ -94,6 +103,39 @@ def run_schedule_email(id):
         
         except imaplib.IMAP4.error:
             imap_client = None
+
+        if campaign.email_send_rule == EMAIL_SEND_RULES.ALL:
+            pass
+
+        elif campaign.email_send_rule == EMAIL_SEND_RULES.NOT_RESPONDED:
+            data['has_responded'] = data[email_lookup].apply(check_recipient_responded, args=(first_schedule, now_time, imap_client)).dropna(subset=[email_lookup]) # remove invalid email
+            # Remove rows where the recipient has not responded
+            data = data[~data['has_responded']]
+            data = data.drop(columns='has_responded')
+
+        elif campaign.email_send_rule == EMAIL_SEND_RULES.RESPONDED:
+            data['has_responded'] = data[email_lookup].apply(check_recipient_responded, args=(first_schedule, now_time, imap_client)).dropna(subset=[email_lookup]) # remove invalid email
+            # Remove rows where the recipient has responded
+            data = data[data['has_responded']]
+            data = data.drop(columns='has_responded')
+
+        plain_body = get_plain_text_from_html(body)
+       
+
+        html_context = {
+            'from_name': campaign.email.name,
+            'from_email': campaign.email.email,
+            'from_signature': campaign.email.signature,
+        }
+
+        smtp_settings = {
+                'host': campaign.email.host,
+                'port': campaign.email.port,
+                'use_ssl': campaign.email.use_ssl,
+                'username': campaign.email.email,
+                'password': campaign.email.password,
+        }
+
 
         for _, row_dict in data.iterrows():
             email_address = row_dict[campaign.campaign.email_lookup]
@@ -106,20 +148,6 @@ def run_schedule_email(id):
                 return
 
             try:
-                # Create a new 'html_context' for each email
-                html_context = {
-                    'from_name': campaign.email.name,
-                    'from_email': campaign.email.email,
-                    'from_signature': campaign.email.signature,
-                }
-
-                smtp_settings = {
-                     'host': campaign.email.host,
-                     'port': campaign.email.port,
-                     'use_ssl': campaign.email.use_ssl,
-                     'username': campaign.email.email,
-                     'password': campaign.email.password,
-                }
 
                 connection = EmailBackend(fail_silently=False, **smtp_settings)
 
@@ -142,6 +170,7 @@ def run_schedule_email(id):
 
             except (smtplib.SMTPAuthenticationError):
                 campaign.campaign.discontinued = True
+                campaign.error += '\nAuthentication error'
                 campaign.save()
                 return
 
@@ -156,7 +185,10 @@ def run_schedule_email(id):
                 campaign.save()         
 
             if campaign.sent_count % 10 == 0:
-                 time.sleep(0.5) # sleep half a second to allow other processes to continue
+                time.sleep(0.5) # sleep half a second to allow other processes to continue
+
+        campaign.completed = True
+        campaign.save()
 
     except EmailCampaignTemplate.DoesNotExist as e:
         pass
@@ -164,8 +196,8 @@ def run_schedule_email(id):
     except (requests.RequestException) as e:
         campaign = EmailCampaignTemplate.objects.filter(id=id).update(error="request error occured")
 
-    except Exception:
-        pass
+    except Exception as e:
+        campaign = EmailCampaignTemplate.objects.filter(id=id).update(error=f"An error occurred on our end {e}")
 
     finally:
         if imap_client:

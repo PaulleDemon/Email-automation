@@ -10,6 +10,8 @@ django-encrypted-model-fields==0.6.5
 pandas==2.0.3
 beautifulsoup4==4.12.2
 
+email-validator==2.0.0.post2
+
 celery==5.2.7
 redis==5.0.0
 django-cors-headers==4.2.0

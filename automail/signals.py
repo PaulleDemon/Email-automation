@@ -18,7 +18,6 @@ def schedule_email(instance, sender, created, *args, **kwargs):
                                         kwargs=json.dumps({'id': instance.id}), 
                                         task='run_schedule_email')
 
-
 @receiver(pre_delete, sender=EmailCampaignTemplate)
 def remove_scheduled_mail(sender, instance, **kwargs):
 

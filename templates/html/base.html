@@ -37,6 +37,8 @@
     <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.mini.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js" integrity="sha512-dfX5uYVXzyU8+KHqj8bjo7UkOdg18PaOtpa48djpNbZHwExddghZ+ZmzWT06R5v6NSk3ZUfsH6FNEDepLx9hPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/acorn/2.0.1/acorn.min.js" integrity="sha512-RXqT0nGakdJ0bPly3+inW8tpbJJeQDHtnrwvt7UbBua3Vj5hdE6pPaGGF7wjlveIsAOw1yi9JYFEgXH6ATeF4Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
     <link rel="stylesheet" href="{%static './css/index.css'%}">
     
     <script src="{% static "./js/utils/common.js" %}"></script>
@@ -131,6 +133,40 @@
         </div>
     </div>
 
+    <!--Template view Modal -->
+    <div class="modal fade" id="templateViewModel" tabindex="-1" aria-labelledby="templateViewModelLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="fs-5" id="templateViewModelLabel"></h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="alert alert-warning !tw-m-1 !tw-hidden" id="templateModalAlert">
+                Just wow
+            </div>
+            <div class="modal-body" id="templateViewModel-body">
+                
+                <div class="text-center">
+                    <div class="spinner-border spinner" id="templateViewModel-loader">
+
+                    </div>
+                </div>
+            </div>
+
+            <textarea name="variables" placeholder="variables" 
+                        class="form-control !tw-max-w-[95%] !tw-m-2 !tw-max-h-[150px]" 
+                        id="templateModal-variables" oninput="parseTemplateModalVariables()"
+                        onchange="parseTemplateModalVariables()"
+                        ></textarea>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" onclick="templateModalRenderPreview()">Render template</button>
+            </div>
+          </div>
+        </div>
+    </div>
+
     <div class="tw-h-[100%] tw-min-h-[100vh] tw-mt-[70px]">
 
         {% if not user.is_authenticated %}
@@ -155,6 +191,9 @@
         </div>
     </footer>
     <script src="{% static "./js/base.js" %}"></script>
-
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/json5/2.2.3/index.min.js" integrity="sha512-44jdhc+R2TFfzBflS3/dGNEABiNUxBkkrqwO7GWTvGsj3HkQNr3GESvI9PUvAxmqxSnTosR0Ij9y3+o+6J1hig==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script async src="
+    https://cdn.jsdelivr.net/npm/nunjucks@3.2.4/browser/nunjucks.min.js
+    "></script>
 </body>
 </html>

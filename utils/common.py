@@ -1,5 +1,10 @@
 import bs4
+import imaplib
+import email_validator
+
 from django.core.files.uploadedfile import UploadedFile
+
+from automail.models import BlacklistedEmailDomains
 
 """
 resused functionss
@@ -35,5 +40,21 @@ def get_plain_text_from_html(html_content: str):
 
     # Extract the plain text
     plain_text = soup.get_text()
-    print("plain text: ", plain_text)
     return plain_text
+
+
+def is_valid_mail(email: str):
+    email_validator.SPECIAL_USE_DOMAIN_NAMES    
+
+    try:
+        validated_email = email_validator.validate_email(email)
+
+    except email_validator.EmailNotValidError:
+        return None
+    
+
+    if BlacklistedEmailDomains.objects.filter(domain__in=[validated_email.domain]).exists():
+        return None
+    
+    return validated_email.normalized
+

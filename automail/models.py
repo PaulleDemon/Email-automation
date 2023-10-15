@@ -1,8 +1,11 @@
 from django.db import models
+from django.core.validators import RegexValidator
+
 from encrypted_model_fields.fields import EncryptedCharField, EncryptedEmailField
 
 from user.models import User
 
+domain_name_validator = RegexValidator(regex='^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$')
 
 class EMAIL_SEND_RULES(models.IntegerChoices):
 
@@ -113,3 +116,12 @@ class EmailCampaignTemplate(models.Model):
 
     def __str__(self) -> str:
         return f'{self.campaign.name}'
+    
+
+class BlacklistedEmailDomains(models.Model):
+
+    """
+        commonly known blacklisted email domains
+    """
+
+    domain = models.CharField(validators=[RegexValidator], max_length=255)

@@ -10,6 +10,7 @@ from django.http import JsonResponse
 from django.forms import model_to_dict
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.core.serializers.json import DjangoJSONEncoder, Serializer
@@ -67,11 +68,9 @@ def email_template_create(request):
 
             elif template.public == True:
                 
-                dup_temp = template.last()
+                kwargs = model_to_dict(template, exclude=['id', 'user', 'name', 'public'])
 
-                kwargs = model_to_dict(dup_temp, exclude=['id', 'user', 'name', 'public'])
-
-                temp = EmailTemplate.objects.create(id=None, user=request.user, name=f'{dup_temp.name} (copy)', public=False, **kwargs)
+                temp = EmailTemplate.objects.create(id=None, user=request.user, name=f'{template.name} (copy)', public=False, **kwargs)
                 modified_url = reverse('email-template-create') + f'?edit={temp.id}'
 
                 return redirect(modified_url)
@@ -472,6 +471,7 @@ def delete_configuration_view(request, id):
 
 
 
+# @csrf_exempt
 @login_required_rest_api
 @require_http_methods(['POST'])
 @ratelimit(key='ip', rate='2/min', method=ratelimit.ALL, block=True)
@@ -517,24 +517,26 @@ def send_test_mail_view(request):
         send_email_with_attachments(subject, get_plain_text_from_html(body), body, variables, recipient_list=[request.user.email], attachments=files)
 
     except Exception as e:
-        print("exceptioin: ", e)
+        # print("exceptioin: ", e)
         return JsonResponse({'error': 'something went wrong'}, status=400)
 
     return JsonResponse({'success': 'the email has been sent'}, status=200)
 
 
 @require_http_methods(['GET'])
-@ratelimit(key='ip', rate='2/min', method=ratelimit.ALL, block=True)
+@ratelimit(key='ip', rate='30/min', method=ratelimit.ALL, block=True)
 def detailed_template_view(request, id):
 
-    if not EmailTemplate.objects.filter(id=id, public=False, user=request.user.id).exists():
-        return JsonResponse({'error': 'unauthorized'}, status=400)
+    template = EmailTemplate.objects.filter(id=id)
 
-    email_template = EmailTemplate.objects.filter(id=id)
-
-    if not email_template.exists():
+    if not template.exists():
         return JsonResponse({'error': 'does not exist'}, status=404)
 
-    email_template = email_template.defer('copy_count', 'datetime').last()
+    if not template.filter(user=request.user.id).exists():
 
-    return JsonResponse(json.dumps(email_template, cls=DjangoJSONEncoder), status=200)
+        if template.filter(public=False):
+            return JsonResponse({'error': 'unauthorized'}, status=400)
+
+    email_template = model_to_dict(template.last(), exclude=['copy_count', 'datetime', 'user'])
+    print("email: ", email_template)
+    return JsonResponse(email_template, status=200)

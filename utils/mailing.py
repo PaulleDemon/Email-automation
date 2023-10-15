@@ -59,7 +59,7 @@ def test_email_credentials(email, password, host, port, imap_host):
 def send_email_with_attachments(subject, text_message, html_message, html_context={}, 
                                 from_email=None, recipient_list=[], attachments=None, \
                                 connection=None, imap_client:imaplib.IMAP4=None):
-    
+    # TODO: in the future enable user to save the sent mail to inbox
     subject_template = jinja_env.from_string(subject)
     subject = subject_template.render(html_context)
     
@@ -72,8 +72,8 @@ def send_email_with_attachments(subject, text_message, html_message, html_contex
     email = EmailMultiAlternatives(subject, text_message, from_email, recipient_list, connection=connection or get_connection())
     email.attach_alternative(html_message, "text/html") 
 
-    if imap_client:
-        imap_client.append('INBOX.Sent', '\\Seen', imaplib.Time2Internaldate(time.time()), plain_template.encode('utf8'))
+    # if imap_client:
+    #     imap_client.append('INBOX.Sent', '\\Seen', imaplib.Time2Internaldate(time.time()), plain_template.encode('utf8'))
 
     if attachments:
         # Attach multiple files to the email
@@ -84,3 +84,19 @@ def send_email_with_attachments(subject, text_message, html_message, html_contex
     return email.send()
     
   
+def check_recipient_responded(email, start_date, end_date, imap: imaplib.IMAP4):
+    """
+        Given a mail id the function test if the 
+        reipient has replied between a specified datetime
+    """
+    imap.select("INBOX")
+    # Search for emails based on sender and date range
+    search_criteria = f'(FROM "{email}") SINCE "{start_date}" BEFORE "{end_date}"'
+    result, email_ids = imap.search(None, search_criteria)
+
+    if result == 'OK':
+        email_ids = email_ids[0].split()
+        if email_ids:
+            return True
+        
+    return False
