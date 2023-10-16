@@ -185,13 +185,15 @@ function isValidVariableFormat(inputString){
  * @param {{}} context 
  * @returns 
  */
-function renderTemplate(template, context={}){
+function renderTemplate(template, context){
 
-    context['from_email'] = "paul@mail.com"
-    context['from_name'] = "Paul"
-    context['from_signature'] = "Best regards, Paul"
+    const copyContext = JSON5.parse(context || {});
+    
+    copyContext['from_email'] = copyContext['from_email'] || "paul@mail.com";
+    copyContext['from_name'] = copyContext['from_name'] || "Paul";
+    copyContext['from_signature'] = copyContext['from_signature'] || "Best regards, Paul";
 
-    return nunjucks.renderString(template, context)
+    return nunjucks.renderString(template, copyContext)
 }
 
 function parseTemplateModalVariables(){

@@ -60,7 +60,6 @@ function setMinFollowUpDatetime(){
     return minDatetime
 }
 
-console.log("FILE: ", fileInput.title)
 
 if (fileInput.value){
     fileInput.value = fileInput.value
@@ -198,7 +197,7 @@ function checkFields(){
             toastAlert(null, "Please select the from email")
             return false
         }
-        console.log("Value: ", x.name, x.value)
+       
         if (x.name === "file" && (!x.value && !x.title)){
             toastAlert(null, "Please upload your excel file")
             return false

@@ -270,7 +270,7 @@ function validateTemplate(){
     const elements = form.querySelectorAll("[name]")
 
     for (let x of elements){
-
+        console.log("elements: ", x.name, x.value)
         if (x.name == "name" && x.value.trim().length < 3){
             toastAlert(null, "Please provide a proper template name")
             return false
@@ -281,11 +281,23 @@ function validateTemplate(){
             return false
         }
 
-        if (x.name == "body" && x.value.trim().length < 10){
+        if (x.name == "body" && trixEditor.innerText.trim().length < 10){
             toastAlert(null, "Please provide a proper body")
             return false
         }
 
+        if (x.name == "body" || x.name == "subject"){
+            console.log("validating template", x.name)
+            try{
+                const value = x.value
+                renderTemplate(value, variablesInput.value)
+                hideAlertError(templateAlert)
+            }catch(e){
+                alertError(templateAlert, `Error in template ${e}`)
+                return false
+            }
+        }
+        
     }
     
     return true

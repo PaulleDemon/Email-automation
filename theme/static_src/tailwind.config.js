@@ -50,7 +50,10 @@ module.exports = {
         extend: {
             fontFamily:{
                 // 'primary': ['Barlow', 'sans-serif']
-            }
+            },
+            screens: {
+                'width-1700': '1700px', // Define your custom screen size
+            },
         },
     },
     plugins: [
