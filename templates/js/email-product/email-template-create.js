@@ -137,8 +137,22 @@ variableUpload.addEventListener('change', function(e) {
                 Papa.parse(data, {
                     header: true,
                     complete: function(results) {
-                        displayColumnNames(results.meta.fields);
-                        variablesInput.value = results.meta.fields.join(", ")
+                        // Extract column names
+                        const columnNames = results.meta.fields;
+                        displayColumnNames(columnNames);
+                        
+                        // Extract the first row values
+                        const firstRowValues = results.data[0];
+
+                        // Create key-value pairs
+                        const keyValues = {};
+                        columnNames.forEach((columnName, index) => {
+                            keyValues[columnName] = firstRowValues[index];
+                        });
+
+                        // Set the key-value pairs as an object
+                        variablesInput.value = JSON.stringify(keyValues);
+
                     }
                 });
             } else if (ext === 'xls' || ext === 'xlsx') {
@@ -151,7 +165,23 @@ variableUpload.addEventListener('change', function(e) {
                         header.push(firstSheet[key].v);
                     }
                 }
-                variablesInput.value = header.join(", ")
+
+                // Extract the first row values
+                const firstRowValues = [];
+                for (const key in firstSheet) {
+                    if (key[0] === 'B') {
+                        firstRowValues.push(firstSheet[key].v);
+                    }
+                }
+
+                // Create key-value pairs
+                const keyValues = {};
+                header.forEach((columnName, index) => {
+                    keyValues[columnName] = firstRowValues[index];
+                });
+
+                // Set the key-value pairs as an object
+                variablesInput.value = JSON.stringify(keyValues, null, 4);
             }
         };
 
@@ -161,7 +191,57 @@ variableUpload.addEventListener('change', function(e) {
             reader.readAsBinaryString(file);
         }
     }
-});
+})
+
+/**
+ * given a csv or xls file returns the header 
+ * @param {File} file 
+ */
+function getHeaderFromFile(file){
+
+    const ext = file.name.split('.').pop().toLowerCase();
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+        const data = e.target.result;
+
+        if (!['csv', 'xlsx', 'xls'].includes(ext)){
+            toastAlert(alertToast, "Incorrect file")
+            variableUpload.value = null
+            return
+        }
+
+        if (ext === 'csv') {
+            // Use PapaParse for CSV
+            Papa.parse(data, {
+                header: true,
+                complete: function(results) {
+                    displayColumnNames(results.meta.fields);
+                    return results.meta.fields.join(", ")
+                }
+            });
+        } else if (ext === 'xls' || ext === 'xlsx') {
+            // Use SheetJS (XLSX) for XLS and XLSX
+            const workbook = XLSX.read(data, { type: 'binary' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const header = [];
+            for (const key in firstSheet) {
+                if (key[0] === 'A') {
+                    header.push(firstSheet[key].v);
+                }
+            }
+            return header.join(", ")
+        }
+    };
+
+    if (ext === 'csv') {
+        reader.readAsText(file);
+    } else if (ext === 'xls' || ext === 'xlsx') {
+        reader.readAsBinaryString(file);
+    }
+
+}
+
 
 function warnUserOnPublic(){
     // show warning when the user make the template public
@@ -173,6 +253,15 @@ function warnUserOnPublic(){
         templateAlert.classList.add('tw-hidden')
     }
 
+}
+
+function validateVariables(){
+    const value = variablesInput.value
+    if (isValidVariableFormat(value)){
+        hideAlertError(templateAlert)
+    }else{
+        alertError(templateAlert, "template variables are in incorrect format. Please use the format specified.")
+    }
 }
 
 
@@ -278,4 +367,39 @@ async function sendTestMail(){
     testMailBtn.disabled = false
     testMailBtn.classList.remove("spinner-border", "text-light")
 
+}
+
+
+function templateRenderPreview(){
+
+    const elements = form.querySelectorAll("[name]")
+    const data = {}
+    for (let x of elements){
+
+        data[x.name] = x.value
+    }
+
+    const templateModalSubject = document.getElementById("templateModalSubject")
+    
+    const templateModalBody = document.getElementById("templateViewModel-body")
+    const templateModalLoader = document.getElementById("templateViewModel-loader")
+    const testVariables = document.getElementById("templateModal-variables")
+
+    templateModalLoader?.classList.add("!tw-hidden")
+
+    const alertWarning = document.getElementById("templateModalAlert")
+
+    try{
+        testVariables.innerText = variablesInput.value
+
+        const body = renderTemplate(data.body, variablesInput.value)
+        const subject = renderTemplate(data.subject, variablesInput.value)
+
+        templateModalBody.innerHTML =`<b>subject: </b>${subject} <br/><br/>${body}`
+        templateModalSubject.innerText = data.name
+        hideAlertError(alertWarning)
+    }catch(e){
+        alertError(alertWarning, "error with the template or variables.")
+        console.log("Error :", e)
+    }
 }

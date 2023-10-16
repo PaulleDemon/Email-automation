@@ -142,13 +142,17 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="alert alert-warning !tw-m-1 !tw-hidden" id="templateModalAlert">
-                Just wow
+            
             </div>
-            <div class="modal-body" id="templateViewModel-body">
-                
+            <div class="modal-body" >
+                <div>
+                    <b>Subject: </b>
+                    <span id="templateModalSubject"></span>
+                </div>
+                <div id="templateViewModel-body" class="tw-mt-4">
+                </div>
                 <div class="text-center">
                     <div class="spinner-border spinner" id="templateViewModel-loader">
-
                     </div>
                 </div>
             </div>
@@ -158,10 +162,15 @@
                         id="templateModal-variables" oninput="parseTemplateModalVariables()"
                         onchange="parseTemplateModalVariables()"
                         ></textarea>
-
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary" onclick="templateModalRenderPreview()">Render template</button>
+          
+            <div class="modal-footer d-flex justify-content-between">
+                <a data-bs-toggle="tooltip" id="templateModalEdit" target="_blank" rel="noreferrer" class="btn" data-bs-placement="bottom" title="Edit">
+                    <i class="bi bi-pencil-fill mr-auto"></i>
+                </a>
+                <div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="templateModalRenderPreview()">Render template</button>
+                </div>
             </div>
           </div>
         </div>

@@ -209,10 +209,14 @@ function parseTemplateModalVariables(){
 
 async function viewTemplate(id){
 
-    const templateModalSubject = document.getElementById("templateViewModelLabel")
+    const templateModalTitle = document.getElementById("templateViewModelLabel")
+    const templateModalSubject = document.getElementById("templateModalSubject")
+    
     const templateModalBody = document.getElementById("templateViewModel-body")
     const templateModalLoader = document.getElementById("templateViewModel-loader")
     const testVariables = document.getElementById("templateModal-variables")
+    const editButton = document.getElementById("templateModalEdit")
+    
     const alertWarning = document.getElementById("templateModalAlert")
 
     console.log("sending request")
@@ -254,9 +258,13 @@ async function viewTemplate(id){
     }
 
     if (res.status == 200){
-        // console.log("data: ", data)
-        templateModalSubject.innerText = data.name
-        templateModalBody.innerHTML =`<b>subject: </b>${data.subject} <br/><br/>${data.body}`
+        console.log("data: ", data.subject, templateModalBody, templateModalSubject)
+        templateModalTitle.innerText = data.name
+        templateModalSubject.innerText = data.subject
+        templateModalBody.innerText = data.body
+        
+        editButton.setAttribute("href", data.edit_url)
+
         try{
             testVariables.value = data.variables// JSON.stringify(JSON.parse(data.variables), null, 4) || JSON.stringify({})
         } catch(error){
@@ -268,15 +276,15 @@ async function viewTemplate(id){
 
 
 function templateModalRenderPreview(){
-    const templateModalSubject = document.getElementById("templateViewModelLabel")
+    const templateModalSubject = document.getElementById("templateModalSubject")
     const templateModalBody = document.getElementById("templateViewModel-body")
     const testVariables = document.getElementById("templateModal-variables")
 
     const alertWarning = document.getElementById("templateModalAlert")
 
     try{
-        templateModalBody.innerText = renderTemplate(templateModalBody.innerText, testVariables.value)
-        templateModalSubject.innerText = renderTemplate(templateModalSubject.innerText, testVariables.value)
+        templateModalBody.innerHTML = renderTemplate(templateModalBody.innerText, testVariables.value)
+        templateModalSubject.innerHTML = renderTemplate(templateModalSubject.innerText, testVariables.value)
         hideAlertError(alertWarning)
     }catch(e){
         alertError(alertWarning, "error with the template or variables.")

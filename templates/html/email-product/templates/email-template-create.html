@@ -30,7 +30,11 @@
                 </div>
 
                 
-                <input type="text" class="tw-appearance-none tw-bg-transparent tw-border-none tw-border-b-4 tw-w-full tw-text-gray-700 tw-leading-tight focus:tw-outline-none"
+                <input type="text" class="tw-appearance-none tw-bg-transparent tw-border-solid
+                                            tw-border-b-2 tw-border-0 tw-w-full tw-text-gray-700 tw-leading-tight 
+                                            focus:tw-border-0 focus:tw-border-b-2
+                                            tw-mb-[2%]
+                                            "
                          name="name" value="{% if template.name %}{{template.name}}{% else %}Sample Template{% endif %}" placeholder="Template name" required maxlength="35">
 
 
@@ -67,7 +71,13 @@
                         <i class="bi bi-info-circle-fill" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Make this template public for anyone on the internet"></i>
                     </div>
 
-                    <div class="tw-flex tw-mt-[2%]">
+                    <div class="tw-flex tw-mt-[2%] tw-gap-2">
+                        <button onclick="templateRenderPreview()" type="button" class="btn btn-dark !tw-max-w-fit" 
+                        data-bs-placement="bottom" title="View template"
+                        data-bs-toggle="modal" data-bs-target="#templateViewModel"
+                        >
+                            <span>Rendered Preview</span>
+                        </button>
                         <button type="button" id="test-mail-btn" class="btn btn-primary">Send Test mail</button>
                         <button type="submit" class="btn btn-success tw-ml-auto">Save Template</button>
                     </div>
@@ -77,7 +87,7 @@
                         Add fields structured in the following format {name: "sample name", age: "30"}
                     </div>
                     <textarea name="variables" class="form-control" placeholder="Add email variables" 
-                                id="variables" value="{{template.variables}}" cols="30" rows="10">{{template.variables}}</textarea>
+                                id="variables" oninput="validateVariables()" value="{{template.variables}}" cols="30" rows="10">{{template.variables}}</textarea>
                     
                     <div class="tw-flex tw-mt-[2%] tw-place-content-end ">
                         <label class="btn btn-warning tw-ml-auto ">

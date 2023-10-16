@@ -538,5 +538,7 @@ def detailed_template_view(request, id):
             return JsonResponse({'error': 'unauthorized'}, status=400)
 
     email_template = model_to_dict(template.last(), exclude=['copy_count', 'datetime', 'user'])
-    print("email: ", email_template)
+    
+    email_template['edit_url'] = reverse('email-template-create') + f"?edit={id}"
+
     return JsonResponse(email_template, status=200)

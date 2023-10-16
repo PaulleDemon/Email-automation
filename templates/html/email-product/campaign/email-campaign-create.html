@@ -63,15 +63,21 @@
             </select>
             <div class="tw-mt-[2%] tw-font-medium">Select email template</div>
             <div class="tw-flex tw-gap-1">
-                <select class="form-select" name="template" value="{{campaign.emailcampaigntemplate_set.first.template.id}}" onchange="viewTemplate()">
+                <select class="form-select" name="template" value="{{campaign.emailcampaigntemplate_set.first.template.id}}" onchange="templatePreview()">
                     <option value="" selected>Choose Template</option>
                     {% for template in templates %}
                         <option {% if campaign.emailcampaigntemplate_set.first.template.id == template.id %}selected{% endif %} value="{{template.id}}">{{template.name}} #{{template.id}}</option>
                     {% endfor %}
                 </select>
-                <a  class="btn btn-light" id="template-view" url="{% url 'email-template-create' %}" target="_blank" rel="noreferrer">
+                {% comment %} <a  class="btn btn-light" id="template-view" url="{% url 'email-template-create' %}" target="_blank" rel="noreferrer">
                     <i class="bi bi-eye-fill"></i>
-                </a>
+                </a> {% endcomment %}
+                <button onclick="viewTemplate({{campaign.emailcampaigntemplate_set.first.template.id}})" id="template-view" type="button" class="btn !tw-max-w-fit" 
+                                    data-bs-placement="bottom" title="View template"
+                                    data-bs-toggle="modal" data-bs-target="#templateViewModel"
+                                >
+                        <i class="bi bi-eye-fill"></i>
+                </button>
             </div>
             <div class="input-group mb-3 tw-mt-2">
                 <span class="input-group-text" id="">Schedule (UTC time)</span>

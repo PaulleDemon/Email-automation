@@ -92,13 +92,16 @@ fileInput.addEventListener("change", function () {
 });
 
 
-function viewTemplate(){
+function templatePreview(){
  
     if (event.target.value){
-        const url = templateViewBtn.getAttribute("url") + `?edit=${event.target.value}`
-        templateViewBtn.setAttribute("href", url) 
+        // const url = templateViewBtn.getAttribute("url") + `?edit=${event.target.value}`
+        // templateViewBtn.setAttribute("href", url)
+        templateViewBtn("onclick", `viewTemplate(${event.target.value})`)
+        // viewTemplate(event.target.value) 
+
     }else{
-        templateViewBtn.removeAttribute("href")
+        templateViewBtn.removeAttribute("onclick")
     }
 }
 
