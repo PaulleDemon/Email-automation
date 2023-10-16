@@ -1,11 +1,12 @@
 
-from django.conf import settings
 from django.contrib import admin
+from django.conf import settings
 from django.shortcuts import redirect
 from django.conf.urls.static import static
 from django.urls import path, include, re_path
 
-from .views import (support_view, rate_limiter_view, view_404, handler_403)
+from .views import (support_view, rate_limiter_view, view_404, 
+                        handler_403, home_view)
 
 handler404 = view_404
 
@@ -19,8 +20,9 @@ urlpatterns = [
     path('support/', support_view, name='support-view'),
     path('ratelimit-error/', rate_limiter_view, name='ratelimit-error'),
 
-    path('', include('automail.urls')),
+    path('', home_view),
     path('user/', include('user.urls')),
+    path('terms/', include('terms.urls')),
     
     path('email/', include('automail.urls')),
     path("__reload__/", include("django_browser_reload.urls")),

@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300&display=swap" rel="stylesheet">
     
-    <title>Peckspace{% if page_title %} - {{page_title}}{% endif %}</title>
+    <title>Peckspace - Email automation</title>
     
     {% tailwind_css %}
 
@@ -58,7 +58,7 @@
           {% comment %} <a class="navbar-brand tw-justify-center" href="{% url 'home' %}"> {% endcomment %}
           <a class="navbar-brand tw-flex tw-gap-1 tw-justify-center tw-place-items-center" href="/">
             <img src="{% static './assets/logos/logo.svg'%}" alt="Logo" 
-                width="40" height="40" class="d-inline-block align-text-top">
+                width="40" height="40" class="d-inline-block align-text-top !tw-fill-slate-400">
             <span>PeckSpace</span> 
           </a>
           <div class="tw-justify-self-center collapse navbar-collapse" id="navbarTogglerDemo01">
@@ -115,7 +115,9 @@
                 {% endif %}
                 
             </div>
-            <a href="https://github.com/PaulleDemon" target="_blank" rel="noreferrer" class="tw-m-2"><i class="tw-text-3xl bi bi-github"></i></a>
+            <a href="https://github.com/PaulleDemon/Email-automation" target="_blank" rel="noreferrer" class="tw-m-2">
+                <i class="tw-text-3xl bi bi-github"></i>
+            </a>
             
         </div>
         </div>
@@ -193,10 +195,14 @@
         
     <footer class="tw-flex tw-z-[100] tw-flex-wrap p-4 tw-text-gray-400 tw-bg-gray-700 shadow-[0px_0px_3px_#000] tw-justify-around">
         
-        <div class="tw-flex tw-text-decoration-none">
-            {% comment %} <a href="{% url 'privacy-policy' %}" >privacy</a> {% endcomment %}
-            {% comment %} <a href="{% url 't&c' %}">. terms and conditions. &nbsp;</a> {% endcomment %}
-            {% comment %} <a href="{% url 'contact-us' %}" class="tw-underline tw-underline-offset-2">Contact us</a> {% endcomment %}
+        <div class="tw-flex tw-text-decoration-none tw-place-items-center">
+            <a href="{% url 'privacy' %}" >privacy</a>
+            <a href="{% url 't&c' %}">.&nbsp; terms and conditions.&nbsp;</a>
+            <a href="https://github.com/PaulleDemon/Email-automation/issues" target="_blank" rel="noreferrer" class="tw-m-2">
+                <span>Report bugs <i class="tw-text-xl bi bi-github"></i>
+                </span>
+            </a>
+            
         </div>
     </footer>
     <script src="{% static "./js/base.js" %}"></script>

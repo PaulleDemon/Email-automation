@@ -172,8 +172,37 @@
     
         <button type="button" class="btn btn-warning" id="followup-btn">Add follow up</button>
 
-        <button type="submit" class="btn btn-success">Save</button>
+        <button type="submit" class="btn btn-success !tw-w-[100px]">Save</button>
     </form>
+
+    <hr >
+ 
+    <div class="tw-flex tw-flex-col tw-place-items-center lg:tw-mx-[20%] tw-leading-8 tw-gap-2 tw-p-3">
+
+        <div class="tw-font-medium tw-text-2xl">
+            Usage guide
+        </div>
+
+        <div class="tw-text-md tw-text-base tw-leading-8 tw-mt-2 tw-text-justify">
+            Creating templates campaigns are fairly straight forward. 
+            However here are some points to note.
+
+            <ul>
+                <li>
+                    The excel/csv file that you upload should contain email column, that contains recipient address.
+                </li>
+                <li>
+                    <code>Default Email column</code> is the name column in your excel sheet that contains email addresses.
+                </li>
+                <li>
+                    The rule in the follow up specifies if the mail should be sent to the
+                    responded recipients.
+                </li>
+            </ul>
+        </div>
+            
+    </div>
+
 </div>
 {{ templates|json_script:"templates" }}
 {{ rules|json_script:"rules" }}
