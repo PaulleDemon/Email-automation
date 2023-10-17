@@ -33,18 +33,64 @@
     </div>
 
     <div class="tw-h-[100vh] tw-w-full max-sm:tw-max-h-fit tw-bg-[#ffffff] 
-                tw-p-3 tw-relative tw-flex tw-flex-col tw-place-content-center">
+                tw-p-3 tw-relative tw-flex tw-flex-col ">
         
-        <div class="tw-font-[900] tw-text-5xl md:tw-text-7xl tw-text-center tw-text-black 
+        <div class="tw-font-[900] tw-text-4xl md:tw-text-7xl tw-text-center tw-text-black 
         tw-whitespace-pre-line !tw-leading-tight" style="font-family: 'Playfair Display', serif;">
-            Easy To Use
+            Cold Campaign Made Easy
         </div>
                     
-        <div class="tw-flex tw-w-full tw-place-content-center tw-mt-[10%]" style="font-family: 'Playfair Display', serif;">
-            <div class=" tw-flex tw-w-full tw-place-content-center tw-object-contain" >
-                <img src={% static './assets/images/email-send.png' %} class="tw-max-w-full" srcset="">
+        <div class="tw-flex tw-w-full tw-place-content-center tw-mt-[10%] tw-font-sans tw-relative">
+     
+            <div class="tw-flow-chart tw-flex tw-items-center tw-flex-col md:tw-flex-row">
+                <div class="tw-dot tw-bg-blue-500 tw-w-12 tw-h-12 tw-rounded-full tw-relative
+                            max-sm:tw-w-6 max-sm:tw-h-6
+                            ">
+                    <div class="tw-absolute md:tw-bottom-[-70px] md:tw-left-[50%] md:tw-translate-x-[-50%]
+                                max-sm:tw-bottom-[50%] max-sm:tw-translate-y-[50%] 
+                                max-sm:tw-left-[110%] md:tw-text-2xl
+                                tw-flex tw-w-max tw-font-semibold
+                                "
+                                >
+                        Configure your email
+                    </div>
+                </div>
+                <div class="tw-arrow tw-bg-blue-500 tw-w-2 tw-h-32 md:tw-w-60 md:tw-h-2"></div>
+                <div class="tw-dot tw-bg-blue-500 tw-w-12 tw-h-12 tw-rounded-full tw-relative
+                            max-sm:tw-w-6 max-sm:tw-h-6
+                            ">
+                    <div class="tw-absolute md:tw-bottom-[-70px] md:tw-left-[50%] md:tw-translate-x-[-50%]
+                                max-sm:tw-bottom-[50%] max-sm:tw-translate-y-[50%] 
+                                max-sm:tw-left-[110%] md:tw-text-2xl
+                                tw-flex tw-w-max tw-font-semibold
+                                "
+                                >
+                        Create a template
+                    </div>
+                </div>
+                <div class="tw-arrow tw-bg-blue-500 tw-w-2 tw-h-32 md:tw-w-60 md:tw-h-2"></div>
+                <div class="tw-dot tw-bg-blue-500 tw-w-12 tw-h-12 tw-rounded-full tw-relative
+                             max-sm:tw-w-6 max-sm:tw-h-6
+                            ">
+                    <div class="tw-absolute md:tw-bottom-[-70px] md:tw-left-[50%] md:tw-translate-x-[-50%]
+                                max-sm:tw-bottom-[50%] max-sm:tw-translate-y-[50%] 
+                                max-sm:tw-left-[110%] md:tw-text-2xl
+                                tw-flex tw-w-max tw-font-semibold
+                                "
+                                >
+                        Schedule and send
+                    </div>
+                </div>
             </div>
     
+        </div>
+
+        <div class="tw-mx-[auto] tw-flex tw-max-w-[40%] tw-mt-[10%]">
+            <a href="{% url "email-templates" %}?public=True" 
+                class="tw-p-2 tw-border-solid tw-border-black tw-font-semibold tw-text-lg
+                      hover:tw-bg-black hover:tw-text-white">
+                Get Started
+            </a>
         </div>
     </div>
 
@@ -58,7 +104,7 @@
                         </svg>
                     </div>
                     <div class="tw-font-[900] tw-text-4xl md:tw-text-6xl tw-text-black 
-                                tw-whitespace-pre-line tw-leading-snug lg:tw-leading-relaxed" style="font-family: 'Playfair Display', serif;">
+                                tw-whitespace-pre-line tw-leading-snug lg:tw-leading-normal" style="font-family: 'Playfair Display', serif;">
                         Send Business Inquires,
                         Resumes To Potential Employeers,
                         Send Winning College Applications,
@@ -75,6 +121,46 @@
                     </a>
                 </div>
             </div>
+    </div>
+
+    <div class="tw-h-[100vh] tw-flex tw-flex-col tw-w-full max-sm:tw-max-h-fit tw-bg-[#ffb0ab] tw-p-3 ">
+        
+        <div class="tw-flex max-md:tw-flex-col tw-place-items-center tw-h-full">
+            <div class="tw-ml-[10%] tw-flex tw-flex-col" style="font-family: 'Playfair Display', serif;">
+                
+                <div class="tw-font-[900] tw-text-4xl md:tw-text-6xl tw-text-black 
+                            tw-whitespace-pre-line" style="font-family: 'Playfair Display', serif;">
+                    Features Made For Your Perfect
+                    Cold Campaign
+
+                </div>
+
+                <div class="tw-font-bold tw-text-xl">
+                    Quick and easy
+                </div>
+            </div>
+
+            <div class="tw-mx-[auto] tw-flex md:tw-max-w-[40%] max-sm:tw-mt-[5%]">
+                <div class="tw-border-solid tw-min-w-[300px] tw-p-3 tw-rounded-md tw-list-none
+                                tw-text-lg tw-gap-2 tw-leading-10
+                            ">
+                    <li class="bi bi-check">Create templates</li>
+                    <li class="bi bi-check">Use existing templates</li>
+                    <li class="bi bi-check">Personalize emails using variables</li>
+                    <li class="bi bi-check">Schedule emails</li>
+                    <li class="bi bi-check">Schedule follow ups</li>
+                    <li class="bi bi-check">Set Follow up rule</li>
+                </div>
+            </div>
+        </div>
+
+        <div class="tw-mx-[auto] tw-flex tw-max-w-[40%]">
+            <a href="{% url "email-templates" %}?public=True" 
+                class="tw-p-2 tw-border-solid tw-border-black tw-font-semibold tw-text-lg
+                      hover:tw-bg-black hover:tw-text-white">
+                Get Started
+            </a>
+        </div>
     </div>
 
 </div>

@@ -64,7 +64,8 @@ INSTALLED_APPS = [
     # my apps
     'automail',
     'user',
-    'terms'
+    # 'terms',
+    'blog'
 
 ]
 
@@ -148,6 +149,7 @@ TEMPLATES = [
             BASE_DIR.joinpath("templates", "html", "error"),
             BASE_DIR.joinpath("templates", "html", "authentication"),
             BASE_DIR.joinpath("templates", "html", "terms"),
+            BASE_DIR.joinpath("templates", "html", "blog"),
             BASE_DIR.joinpath("templates", "html", "email-product"),
             BASE_DIR.joinpath("templates", "html", "email-product", "templates"),
             BASE_DIR.joinpath("templates", "html", "email-product", "campaign"),

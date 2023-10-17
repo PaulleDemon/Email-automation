@@ -270,7 +270,7 @@ function validateTemplate(){
     const elements = form.querySelectorAll("[name]")
 
     for (let x of elements){
-        console.log("elements: ", x.name, x.value)
+
         if (x.name == "name" && x.value.trim().length < 3){
             toastAlert(null, "Please provide a proper template name")
             return false
@@ -287,7 +287,7 @@ function validateTemplate(){
         }
 
         if (x.name == "body" || x.name == "subject"){
-            console.log("validating template", x.name)
+
             try{
                 const value = x.value
                 renderTemplate(value, variablesInput.value)
@@ -314,7 +314,6 @@ async function sendTestMail(){
     const elements = form.querySelectorAll("[name]")
 
     let data = new FormData()
-    console.log("Inpyt file: ", fileInput, fileInput.files)
     
     if (fileInput.files) {
         for (let i = 0; i < fileInput.files.length; i++) {
@@ -412,6 +411,6 @@ function templateRenderPreview(){
         hideAlertError(alertWarning)
     }catch(e){
         alertError(alertWarning, "error with the template or variables.")
-        console.log("Error :", e)
+        // console.log("Error :", e)
     }
 }

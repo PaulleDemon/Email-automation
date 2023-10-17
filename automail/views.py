@@ -35,7 +35,9 @@ jinja_env = jinja2.Environment()
 @login_required_for_post
 @require_http_methods(['GET', 'POST'])
 def email_template_create(request):
-    
+
+    print("HSE: ", )
+
     if request.method == 'GET':
         
         edit = request.GET.get('edit')
@@ -129,8 +131,8 @@ def email_template_create(request):
 
 
         if template_form.is_valid():
-
-            file_form = AttachmentForm(request.POST, request.FILES)
+            #TODO: attachments
+            file_form = AttachmentForm(request.POST, request.FILES.get('attachments'))
             template = template_form.save(commit=False)
 
             if request.FILES:
@@ -145,11 +147,21 @@ def email_template_create(request):
 
                     EmailTemplateAttachment.objects.filter(template=template).delete()
 
-                    for f in request.FILES.getlist('file'):
+                    for f in request.FILES.getlist('attachments'):
+                        print("Files: ", f)
                         EmailTemplateAttachment.objects.create(template=template, attachment=f)
 
                 else:
-                    return render(request, 'email-template-create.html', {'error': ['error with file']})
+                    error = file_form.errors.as_data()
+                    errors = [f'{list(error[x][0])[0]}' for x in error]
+
+                    print("error2: ", error)
+                    return render(request, 
+                                    'email-template-create.html', 
+                                    {'error': ['error with file'], 
+                                     'template': request.POST,
+                                     'edit': edit
+                                    })
             
             else:
                 
@@ -166,8 +178,9 @@ def email_template_create(request):
 
         else:
             error = template_form.errors.as_data()
+            print("error2: ", error)
             errors = [f'{list(error[x][0])[0]}' for x in error]
-            return render(request, 'email-template-create.html', {'error': errors, **request.POST})
+            return render(request, 'email-template-create.html', {'error': errors, 'template': request.POST})
 
     return render(request, 'email-template-create.html')
 
@@ -276,7 +289,6 @@ def campaign_create_view(request):
                                     'scheduled': True if scheduled else False,
                                     'followup': None
                                     })
-            print("campaign: ", email_form.is_valid(), email_form.errors)
 
             if email_form.is_valid():
 
@@ -301,8 +313,6 @@ def campaign_create_view(request):
                         error = follow_up_form.errors.as_data()
                         errors = [f'{list(error[x][0])[0]}' for x in error] 
                         context['error'] = errors
-                        print('errors: ', follow_up_form.errors.as_data())
-
                         break
                 
                 return redirect('email-campaigns')
@@ -312,13 +322,13 @@ def campaign_create_view(request):
                 error = email_form.errors.as_data()
                 errors = [f'{list(error[x][0])[0]}' for x in error] 
                 context['error'] = errors
-                print('errors: ', follow_up_form.errors.as_data())
 
         else:
             error = campaign_form.errors.as_data()
             errors = [f'{list(error[x][0])[0]}' for x in error] 
             context['error'] = errors
-            print('errors: ', follow_up_form.errors.as_data())
+
+    context['edit'] = edit
             
     return render(request, 'email-campaign-create.html', context)
 

@@ -186,8 +186,8 @@ function isValidVariableFormat(inputString){
  * @returns 
  */
 function renderTemplate(template, context){
-
-    const copyContext = JSON5.parse(context || {});
+    console.log("Context: ", context)
+    const copyContext = JSON5.parse(context || '{}');
     
     copyContext['from_email'] = copyContext['from_email'] || "paul@mail.com";
     copyContext['from_name'] = copyContext['from_name'] || "Paul";

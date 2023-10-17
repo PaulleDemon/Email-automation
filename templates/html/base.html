@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300&display=swap" rel="stylesheet">
     
-    <title>Peckspace - Email automation</title>
+    <title>Peckspace - {% if page_title %}{{page_title}}{% else %}Email automation{% endif %}</title>
     
     {% tailwind_css %}
 
@@ -76,10 +76,12 @@
                 {% comment %} <a class="nav-link hover:tw-text-blue-400" href="{% url 'email-templates' %}">Email Templates</a> {% endcomment %}
                 <a class="nav-link hover:tw-text-blue-400" href="{% url 'configurations' %}">Email Configurations</a>
                 <a class="nav-link hover:tw-text-blue-400" href="{% url 'email-campaigns' %}">Email Campaigns</a>
+                <a class="nav-link hover:tw-text-blue-400" href="{% url 'blog-list' %}">Blogs</a>
             </div>
-            <div class="navbar-nav tw-ml-auto !tw-place-items-center">
-                <a class="tw-bg-[#ffe11f] tw-m-1 tw-font-medium tw-p-3 tw-rounded-full tw-text-center" href="{% url 'support-view' %}">
+            <div class="navbar-nav tw-ml-auto md:!tw-place-items-center">
+                <a class="tw-bg-[#ffe11f] tw-m-1 tw-font-medium tw-p-3  tw-text-center" href="{% url 'support-view' %}">
                     <i class="bi bi-suit-heart-fill tw-text-red-600"></i>
+                    {% comment %} <img src="{% static "./assets/images/heart.svg" %}" class="tw-h-[25px] tw-w-[25px]" alt="" srcset=""> {% endcomment %}
                     <span>Support opensource</span> 
                 </a>
 
@@ -109,7 +111,11 @@
                 
 
                 {% else %}
-                    <a class="btn btn-primary nav-item tw-m-1" href="{% url "signup" %}">
+                    <a class="tw-border-solid tw-p-2 tw-border-2 tw-bg-black
+                        tw-text-white tw-font-semibold nav-item tw-m-1
+                         hover:tw-bg-white hover:tw-text-black
+                        " 
+                        href="{% url "signup" %}">
                         Create Account
                     </a>
                 {% endif %}
@@ -180,7 +186,7 @@
 
     <div class="tw-h-[100%] tw-min-h-[100vh] tw-mt-[70px]">
 
-        {% if not user.is_authenticated %}
+        {% if not user.is_authenticated and not request.resolver_match.url_name == "home" and not request.resolver_match.url_name|first in "blog" %}
             <div class="tw-w-full tw-flex tw-place-content-center">
                 <div class="alert alert-danger tw-max-w-lg tw-mt-[2%]">
                     You are not logged in. Login to save your progress

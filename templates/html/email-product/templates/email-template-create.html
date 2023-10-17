@@ -19,7 +19,7 @@
                 </div>
             </div>
             
-            <form  action="" id="template-create" enctype="multipart/form-data" onsubmit="return validateTemplate()"
+            <form  action="{% url "email-template-create" %}{% if edit %}?edit={{edit}}{% endif %}" id="template-create" enctype="multipart/form-data" onsubmit="return validateTemplate()"
                     method="POST" class="tw-flex tw-flex-col tw-gap-3 tw-mt-[5%]">
                 {% csrf_token %}
 
@@ -52,12 +52,14 @@
                     </div>
 
                     <div id="file-previewContainer" class="tw-flex tw-flex-wrap tw-gap-2 tw-grid-cols-2">
-                    
+                        {% for attachment in template.emailtemplateattachment_set.all  %}
+                            a
+                        {% endfor %}
                     </div>
 
                     <div class="tw-flex tw-mt-[2%] tw-place-content-end ">
                         <label class="btn btn-warning tw-ml-auto ">
-                            <input type="file" class="tw-hidden" id="file-upload" />
+                            <input type="file" name="attachments" class="tw-hidden" id="file-upload" />
                             <span>Attach file</span>  
                             <i class="bi bi-paperclip" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add attachments max 10MB"></i>
                         </label>
