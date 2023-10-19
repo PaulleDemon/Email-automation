@@ -12,6 +12,22 @@ const form = document.getElementById("configuration-form")
 
 const inputElements = form.querySelectorAll('[name]');
 
+const selectInputs = form.querySelectorAll('select')
+
+
+function updateSelect(field) {
+    const selectedValue = form.querySelector(`#${field}-input`).value;
+    const selectElements = form.querySelectorAll(`select.form-select:not([onchange*="${field}"])`);
+    console.log("Selected: ", selectedValue, selectElements)
+    selectElements.forEach(select => {
+        const option = select.querySelector(`option[value="${selectedValue}"]`);
+        if (option) {
+            select.value = selectedValue;
+        }
+    });
+}
+
+
 function updatePort(){
     portInput.value = event.target.value
 }

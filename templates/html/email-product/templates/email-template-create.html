@@ -1,5 +1,6 @@
 {% extends './html/base.html' %}
 {% load static %}
+{% load custom_tags %}
 
 {% block content %}
 
@@ -18,8 +19,8 @@
                     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
             </div>
-            
-            <form  action="{% url "email-template-create" %}{% if edit %}?edit={{edit}}{% endif %}" id="template-create" enctype="multipart/form-data" onsubmit="return validateTemplate()"
+           
+            <form action="{% url "email-template-create" %}{% if edit %}?edit={{edit}}{% endif %}" id="template-create" enctype="multipart/form-data" onsubmit="return validateTemplate()"
                     method="POST" class="tw-flex tw-flex-col tw-gap-3 tw-mt-[5%]">
                 {% csrf_token %}
 
@@ -52,14 +53,28 @@
                     </div>
 
                     <div id="file-previewContainer" class="tw-flex tw-flex-wrap tw-gap-2 tw-grid-cols-2">
-                        {% for attachment in template.emailtemplateattachment_set.all  %}
-                            a
+                        {% for attachment in template.emailtemplateattachment_set.all %}
+                            <div class="tw-shadow-lg tw-p-1 !tw-w-fit tw-border-solid
+                                        tw-border-[0.2px] tw-border-gray-700 tw-max-w-[150px] 
+                                        tw-flex tw-gap-2 tw-place-items-center"
+                                        id="attachment-{{attachment.id}}"
+                                        >
+                                <input type="hidden" name="existing-attachments" value="{{attachment.id}}">
+                                <span>{{ attachment.attachment|filename }}</span>
+                                <a href="{{ attachment.attachment.url }}" 
+                                        class="tw-text-xl tw-font-semibold bi bi-download"
+                                     target="_blank">
+                                </a>
+                                <button type="button" class="btn btn-close" onclick="removeFileAttachment('attachment-{{attachment.id}}')">
+
+                                </button>
+                            </div>
                         {% endfor %}
                     </div>
 
                     <div class="tw-flex tw-mt-[2%] tw-place-content-end ">
                         <label class="btn btn-warning tw-ml-auto ">
-                            <input type="file" name="attachments" class="tw-hidden" id="file-upload" />
+                            <input type="file" name="attachment" multiple class="tw-hidden" id="file-upload" />
                             <span>Attach file</span>  
                             <i class="bi bi-paperclip" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add attachments max 10MB"></i>
                         </label>

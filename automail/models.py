@@ -59,7 +59,7 @@ class EmailTemplate(models.Model):
     copy_count = models.PositiveIntegerField(default=0) # this keeps a track of number copies of this template made
 
     def __str__(self) -> str:
-        return self.subject[:30]
+        return f'{self.subject[:30]} #{self.pk}'
     
 
 class EmailTemplateAttachment(models.Model):

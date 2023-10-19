@@ -59,7 +59,7 @@
                     >
                         <i class="bi bi-eye-fill"></i>
                     </button>
-                    <button type="submit" onclick="onDeleteTemplate('{% url 'email-template-delete' id=template.id %}', '{{ template.name }} #{{ template.id }}')" 
+                    <button type="submit" onclick="onDeleteTemplate('{% url 'email-template-delete' id=template.id %}', `{{ template.name }} #{{ template.id }}`)" 
                             class="btn !tw-text-red-600 tw-w-full" data-bs-toggle="modal" data-bs-target="#delete-modal"><i class="bi bi-trash"></i>
                     </button>
                     <a class="btn !tw-border-solid !tw-border" href="{% url 'email-template-create' %}?copy={{ template.id }}" 

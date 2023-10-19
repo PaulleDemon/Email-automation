@@ -36,11 +36,11 @@ jinja_env = jinja2.Environment()
 @require_http_methods(['GET', 'POST'])
 def email_template_create(request):
 
-    print("HSE: ", )
+    print("HSE: ", request.POST.get('edit'))
+    edit = request.GET.get('edit')
 
     if request.method == 'GET':
         
-        edit = request.GET.get('edit')
         copy = request.GET.get('copy')
 
         context = {
@@ -48,7 +48,8 @@ def email_template_create(request):
             'body': '',
             'template_name': '',
             'variables': '',
-            'attachements': []
+            'attachements': [],
+            'edit': edit
         }
 
         if edit:
@@ -65,7 +66,8 @@ def email_template_create(request):
             if template.user == request.user:
                 
                 context = {
-                    'template': template
+                    'template': template,
+                    'edit': edit
                 }
 
             elif template.public == True:
@@ -112,11 +114,8 @@ def email_template_create(request):
         return render(request, 'email-template-create.html', context=context)
     
     if request.method == 'POST':
-
-        edit = request.GET.get('edit')
-
-        template_form = EmailTemplateForm(request.POST)
-
+        print("request: ", request.POST)
+       
         if edit:
             try:
                 int(edit)
@@ -129,25 +128,36 @@ def email_template_create(request):
             if not email_template.exists() or (email_template.last().public == False and email_template.last().user != request.user):
                 return render(request, '404.html') 
 
+        instance = None
+
+        if edit:
+            instance = EmailTemplate.objects.get(id=edit)
+        
+        template_form = EmailTemplateForm(request.POST or None, instance=instance)
+
 
         if template_form.is_valid():
-            #TODO: attachments
-            file_form = AttachmentForm(request.POST, request.FILES.get('attachments'))
+
+            print("Attachments existing: ", request.POST.get("existing-attachments"))
+
+            file_form = AttachmentForm(request.POST, request.FILES)
             template = template_form.save(commit=False)
+
+            if edit:
+                attachment_ids = request.POST.get('existing-attachments') or []
+                attachments = EmailTemplateAttachment.objects.filter(template=template).exclude(id__in=attachment_ids).delete()
+                print("attachment ids: ", attachments)
 
             if request.FILES:
                 # if there are attachment check if the form is valid before
                 if file_form.is_valid():
-                    if edit:
-                        template = EmailTemplate.objects.filter(id=edit, user=request.user).update(**template_form.cleaned_data)
-                    else:
-                        template = template_form.save(commit=True)
-                        template.user = request.user
-                        template.save()
+        
+                    template.user = request.user
+                    template.save()
 
                     EmailTemplateAttachment.objects.filter(template=template).delete()
 
-                    for f in request.FILES.getlist('attachments'):
+                    for f in request.FILES.getlist('attachment'):
                         print("Files: ", f)
                         EmailTemplateAttachment.objects.create(template=template, attachment=f)
 

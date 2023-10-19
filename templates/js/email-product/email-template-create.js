@@ -111,6 +111,11 @@ fileInput.addEventListener('change', function () {
 });
 
 
+function removeFileAttachment(id){
+    previewContainer.removeChild(previewContainer.querySelector(`#${id}`))
+}
+
+
 variableUpload.addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {

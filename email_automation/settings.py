@@ -121,7 +121,7 @@ ROOT_URLCONF = 'email_automation.urls'
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # This is only for development
     # EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
-
+   
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' # for production
 
@@ -137,8 +137,8 @@ else:
     EMAIL_USE_SSL = True
 
 EMAIL_FROM_SIGNATURE = 'Best regards, Team'
-EMAIL_FROM = 'info@peckspace.com'
-EMAIL_FROM_NAME = 'Peckspace'
+EMAIL_FROM = 'info@atmailwin.com'
+EMAIL_FROM_NAME = 'AtMailWin'
 
 TEMPLATES = [
     {
@@ -255,6 +255,12 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
         },
+        
+        'celery': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+
         # Send info messages to syslog
         'syslog':{
             'level':'INFO',

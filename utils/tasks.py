@@ -40,7 +40,8 @@ def send_mass_mail_celery(subject, message, from_email=None, recipient_list=[]):
 
 @shared_task
 def send_mail_celery(subject, message, from_email=None, recipient_list=[]):
-    send_mail(subject, message, from_email=None, recipient_list=[])
+    logger.log(1, f"log: {recipient_list}")
+    send_mail(subject, message, from_email=from_email, recipient_list=recipient_list)
 
 
 @shared_task
@@ -65,7 +66,8 @@ def disable_periodic_task(taskid):
 		task.enabled = False
 		task.save()
                 
-    
+                
+@transaction.atomic
 @shared_task
 def run_schedule_email(id):
     try:

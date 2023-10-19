@@ -1,6 +1,6 @@
 # Email Automation tool
 
-You can use the site at [https://peckspace.com](https://peckspace.com) 
+You can use the site at [https://atmailwin.com](https://atmailwin.com) 
 
 or
 
