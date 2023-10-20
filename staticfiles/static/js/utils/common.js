@@ -78,12 +78,11 @@ function isValidEmail(email){
 }
 
 function isValidDomain(domain) {
-    // Regular expression pattern to match a valid domain
-    const domainPattern = /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/
-  
+    // Regular expression pattern to match a valid domain, including subdomains
+    const domainPattern = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/i;
+
     return domainPattern.test(domain);
 }
-
 /**
  * 
  * @param {File} file 

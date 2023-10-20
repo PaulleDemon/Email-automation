@@ -29,10 +29,11 @@ urlpatterns = [
     path('email/', include('automail.urls')),
     path("__reload__/", include("django_browser_reload.urls")),
     
-    re_path(r'^.*/$', view_404, name='page_not_found'),
 ]
 if settings.DEBUG:
    urlpatterns +=  []
 
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+   
+urlpatterns += [ re_path(r'^.*/$', view_404, name='page_not_found'),]

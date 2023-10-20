@@ -29,7 +29,7 @@ logger = get_task_logger(__name__)
 
 
 @shared_task
-def send_html_mail_celery(subject, message, html_message, from_email, recipient_list):
+def send_html_mail_celery(subject, message, html_message, from_email=None, recipient_list=[]):
     send_mass_html_mail(subject, message, html_message, from_email, recipient_list)
 
 
@@ -68,36 +68,54 @@ def disable_periodic_task(taskid):
                 
                 
 @transaction.atomic
-@shared_task
+@shared_task(name='run_schedule_email')
 def run_schedule_email(id):
+
+    logger.info(f"working {id}")
+    imap_client = None
+
     try:
         campaign = EmailCampaignTemplate.objects.get(id=id)
         subject = campaign.template.subject
         body = campaign.template.body
-        sheet = campaign.file
+        sheet = campaign.campaign.file
         extension = sheet.name.split('.')[-1]
 
+        if campaign.schedule == False:
+             return
+
+        response = requests.get(settings.MEDIA_DOMAIN + sheet.url)  # Fetch CSV data from the URL
+        logger.info(f"media url {settings.MEDIA_DOMAIN + sheet.url}")
+
+        if response.status_code not in [200, 201]:
+            logger.info(f"request exited with status {response.status_code}")
+            raise Exception(f"request exited with status {response.status_code}")
+
         if extension.lower() == 'csv':
-            response = requests.get(sheet.url)  # Fetch CSV data from the URL
             data = pd.read_csv(io.StringIO(response.text))
 
-        elif extension.lower() in ['xls', 'xlsx']:
-            response = requests.get(sheet.url)  # Fetch Excel data from the URL
+        elif extension.lower() == 'xls':
             data = pd.read_excel(io.BytesIO(response.content))
 
+        elif extension.lower() == 'xlsx':
+            data = pd.read_excel(io.BytesIO(response.content), engine='openpyxl')
+             
         else:
+            logger.info(f"File doesn't have proper extension")
+
             raise Exception("File doesn't have a csv, xls, or xlsx extension")
 
         email_lookup = campaign.campaign.email_lookup
 
         data = data.drop_duplicates(subset=[email_lookup]) # drop duplicate emails
-        
-        data = data[email_lookup].apply(is_valid_mail).dropna(subset=[email_lookup]) # remove invalid email
+      
+        logger.info(f"Dataframe:  {data.columns} ")
+        # print(valid_email_mask)
+        # Use boolean indexing to keep only rows with valid emails
+        data = data[data[email_lookup].apply(is_valid_mail) != None] # remove invalid email
 
         first_schedule = EmailCampaignTemplate.objects.filter(campaign=campaign.campaign).first().schedule.strftime("%d-%b-%Y")
         now_time = timezone.now().strftime("%d-%b-%Y")
-
-        imap_client = None
 
         try:
             imap_client = imaplib.IMAP4_SSL(campaign.email.imap_host)
@@ -133,15 +151,18 @@ def run_schedule_email(id):
         smtp_settings = {
                 'host': campaign.email.host,
                 'port': campaign.email.port,
-                'use_ssl': campaign.email.use_ssl,
+                'use_ssl': True if campaign.email.port == 465 else False,
+                'use_tls': True if campaign.email.port == 587 else False,
                 'username': campaign.email.email,
                 'password': campaign.email.password,
         }
 
+        logger.info(f"iterating")
 
         for _, row_dict in data.iterrows():
             email_address = row_dict[campaign.campaign.email_lookup]
             recipient_list = [email_address]
+            logger.info(f"row: {row_dict}")
 
             if campaign.smtp_error_count > 10:
                 campaign.error += "\nToo many failed failed emails"
@@ -150,6 +171,7 @@ def run_schedule_email(id):
                 return
 
             try:
+                logger.info(f"sending mail")
 
                 connection = EmailBackend(fail_silently=False, **smtp_settings)
 
@@ -171,6 +193,7 @@ def run_schedule_email(id):
                 campaign.save()
 
             except (smtplib.SMTPAuthenticationError):
+                logger.info(f"Auth error")
                 campaign.campaign.discontinued = True
                 campaign.error += '\nAuthentication error'
                 campaign.save()
@@ -184,7 +207,9 @@ def run_schedule_email(id):
             except Exception as e:
                 campaign.failed_count += 1
                 campaign.failed_emails += f"{email_address}, "
-                campaign.save()         
+                campaign.save() 
+                logger.info(f"exception: {e}")
+
 
             if campaign.sent_count % 10 == 0:
                 time.sleep(0.5) # sleep half a second to allow other processes to continue
@@ -197,11 +222,12 @@ def run_schedule_email(id):
 
     except (requests.RequestException) as e:
         campaign = EmailCampaignTemplate.objects.filter(id=id).update(error="request error occured")
+        logger.info(f"request error: {e}")
 
     except Exception as e:
         campaign = EmailCampaignTemplate.objects.filter(id=id).update(error=f"An error occurred on our end {e}")
+        logger.info(f"Campaign error: {e}")
 
     finally:
         if imap_client:
             imap_client.logout() 
-            imap_client.close()

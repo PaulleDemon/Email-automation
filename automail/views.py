@@ -398,7 +398,7 @@ def campaigns_view(request):
 def delete_campaign_view(request, id):
     
     try:
-        EmailCampaign.objects.get(user=request.user.id, id=id)
+        EmailCampaign.objects.get(user=request.user.id, id=id).delete()
     
     except (EmailCampaign.DoesNotExist):
         return render(request, "404.html")
@@ -439,7 +439,7 @@ def configuration_create_view(request):
 
             credentials = form.cleaned_data
             credentials_valid, error = test_email_credentials(email=credentials['email'], password=credentials['password'],
-                                    host=credentials['host'], port=credentials['port'])
+                                    host=credentials['host'], port=credentials['port'], imap_host=credentials['imap_host'])
             
             if credentials_valid != True:
                 return render(request, 'configure-server.html', context={'errors': [error], 'configuration': credentials})

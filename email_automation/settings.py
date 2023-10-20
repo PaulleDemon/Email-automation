@@ -35,7 +35,8 @@ if DEBUG:
     ALLOWED_HOSTS = []
 
 else:
-    ALLOWED_HOSTS = ['localhost:8000', ]
+    ALLOWED_HOSTS = env('ALLOWED_PROD_HOSTS').replace(' ', '').split(',')
+
 
 if DEBUG:
     DOMAIN = 'http://localhost:8000'
@@ -98,6 +99,9 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 
+CELERYBEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
+CELERY_IMPORTS = ['utils.tasks',]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -136,7 +140,7 @@ else:
     # EMAIL_USE_TLS = True
     EMAIL_USE_SSL = True
 
-EMAIL_FROM_SIGNATURE = 'Best regards, Team'
+EMAIL_FROM_SIGNATURE = 'Best regards, Atmailwin Team'
 EMAIL_FROM = 'info@atmailwin.com'
 EMAIL_FROM_NAME = 'AtMailWin'
 
@@ -228,7 +232,13 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR.joinpath('staticfiles', 'static')
 
 MEDIA_ROOT = BASE_DIR.joinpath('media')
-MEDIA_URL = '/media/'
+
+if DEBUG:
+    MEDIA_URL = '/media/'
+    MEDIA_DOMAIN = 'http://localhost:8000'
+
+else:
+    MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -256,10 +266,10 @@ LOGGING = {
             'class': 'logging.StreamHandler',
         },
         
-        'celery': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-        },
+        # 'celery': {
+        #     'level': 'DEBUG',
+        #     'class': 'logging.StreamHandler',
+        # },
 
         # Send info messages to syslog
         'syslog':{

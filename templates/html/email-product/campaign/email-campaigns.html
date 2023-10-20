@@ -92,9 +92,11 @@
                 </table>
                 
                 <div class="tw-flex tw-gap-1 tw-mt-auto tw-text-2xl">
-                    <button type="submit" onclick="onDeleteCampaign('{% url 'email-campaign-delete' id=campaign.id %}', '{{ campaign.name }}')" 
+                   
+                    <button type="button" onclick="onDeleteCampaign('{% url 'email-campaign-delete' id=campaign.id %}', '{{ campaign.name }}')" 
                             class="btn !tw-text-red-600 tw-w-full" data-bs-toggle="modal" data-bs-target="#delete-modal"><i class="bi bi-trash"></i>
                     </button>
+                   
                     <a class="btn !tw-border-solid tw-w-full" href="{% url 'email-campaigns' %}?view={{ campaign.id }}"
                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Detailed view"
                         >

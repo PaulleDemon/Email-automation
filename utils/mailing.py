@@ -1,4 +1,5 @@
 import time
+import random
 import smtplib
 import imaplib
 
@@ -84,15 +85,21 @@ def send_email_with_attachments(subject, text_message, html_message, html_contex
     return email.send()
     
   
-def check_recipient_responded(email, start_date, end_date, imap: imaplib.IMAP4):
+def check_recipient_responded(email, start_date, end_date, imap_client: imaplib.IMAP4):
     """
         Given a mail id the function test if the 
         reipient has replied between a specified datetime
     """
-    imap.select("INBOX")
+
+    if settings.DEBUG:
+        return random.choice([True, False])
+
+    imap_client.select("INBOX")
     # Search for emails based on sender and date range
     search_criteria = f'(FROM "{email}") SINCE "{start_date}" BEFORE "{end_date}"'
-    result, email_ids = imap.search(None, search_criteria)
+    result, email_ids = imap_client.search(None, search_criteria)
+
+    imap_client.close()
 
     if result == 'OK':
         email_ids = email_ids[0].split()

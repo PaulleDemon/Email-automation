@@ -96,7 +96,7 @@ function templatePreview(){
     if (event.target.value){
         // const url = templateViewBtn.getAttribute("url") + `?edit=${event.target.value}`
         // templateViewBtn.setAttribute("href", url)
-        templateViewBtn("onclick", `viewTemplate(${event.target.value})`)
+        templateViewBtn.setAttribute("onclick", `viewTemplate(${event.target.value})`)
         // viewTemplate(event.target.value) 
 
     }else{

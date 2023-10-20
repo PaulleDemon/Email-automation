@@ -16,7 +16,7 @@ urlpatterns = [
     
     path('campaigns/', campaigns_view, name='email-campaigns'),
     path('campaign/create/', campaign_create_view, name='email-campaign-create'),
-    path('campaign/<int:id>/delete/', campaign_create_view, name='email-campaign-delete'),
+    path('campaign/<int:id>/delete/', delete_campaign_view, name='email-campaign-delete'),
 
     path('configure/add/', configuration_create_view, name='configure-email'),
     path('configure/<int:id>/delete/', delete_configuration_view, name='configure-email-delete'),
