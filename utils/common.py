@@ -52,9 +52,8 @@ def is_valid_mail(email: str):
     except email_validator.EmailNotValidError:
         return None
     
-
     if BlacklistedEmailDomains.objects.filter(domain__in=[validated_email.domain]).exists():
         return None
     
-    return validated_email.normalized
+    return validated_email.normalized.lower()
 

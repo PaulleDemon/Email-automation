@@ -19,6 +19,7 @@ function hideAlertError(alert){
 function alertError(alert, text=""){
     alert.innerText = text
     alert.classList.remove("tw-hidden")
+    alert.classList.remove("!tw-hidden")
 }
 
 /**
@@ -83,6 +84,7 @@ function isValidDomain(domain) {
 
     return domainPattern.test(domain);
 }
+
 /**
  * 
  * @param {File} file 
@@ -159,3 +161,146 @@ function toLocalTime(datetime){
     return datetime.toLocaleString('en-US', options);
 
 }
+
+function stringifyOnlyObjects(key, value) {
+    if (typeof value === 'object' && value !== null) {
+        return value; // Include only objects
+    }
+    return undefined; // Exclude all other types
+}
+
+function isValidVariableFormat(inputString){
+    try {
+        JSON5.parse(inputString);
+        return true
+    } catch (error) {
+        return false
+    }
+    
+}
+
+/**
+ * 
+ * @param {string} template 
+ * @param {{}} context 
+ * @returns 
+ */
+function renderTemplate(template, context){
+    console.log("Context: ", context)
+    const copyContext = JSON5.parse(context || '{}');
+    
+    copyContext['from_email'] = copyContext['from_email'] || "paul@mail.com";
+    copyContext['from_name'] = copyContext['from_name'] || "Paul";
+    copyContext['from_signature'] = copyContext['from_signature'] || "Best regards, Paul";
+
+    return nunjucks.renderString(template, copyContext)
+}
+
+function parseTemplateModalVariables(){
+    const alertWarning = document.getElementById("templateModalAlert")
+    const testVariables = document.getElementById("templateModal-variables")
+
+    console.log("variables: ", JSON.parse(JSON.stringify(testVariables.value, null, 4))  )
+    if(!isValidVariableFormat(testVariables.value)){
+        alertError(alertWarning, "Cannot parse variables, Please use JS object model eg: {name: 'hellp', id: 2}")
+    }else{
+        hideAlertError(alertWarning)
+    }
+
+}
+
+async function viewTemplate(id){
+
+    const templateModalTitle = document.getElementById("templateViewModelLabel")
+    const templateModalSubject = document.getElementById("templateModalSubject")
+    
+    const templateModalBody = document.getElementById("templateViewModel-body")
+    const templateModalLoader = document.getElementById("templateViewModel-loader")
+    const testVariables = document.getElementById("templateModal-variables")
+    const editButton = document.getElementById("templateModalEdit")
+    
+    const alertWarning = document.getElementById("templateModalAlert")
+
+    console.log("sending request")
+
+    // fetches the full template.
+    templateModalLoader?.classList.remove("!tw-hidden")
+    
+    const res = await fetch(`/email/${id}/view-mail/`, {
+        method: "GET",
+        headers: {
+            "X-CSRFToken": Cookies.get('csrftoken'),
+            // 'Content-Type': 'application/json'
+            }, 
+    })
+
+    let data = undefined
+    try {
+        if (res.headers.get('content-type') === 'application/json') {
+            data = await res.json();
+            responseBody = JSON.stringify(data); // Store the JSON response body
+        } else {
+            data = await res.text();
+            responseBody = data; // Store the text response body
+        }
+    } catch (e) {
+        data = await res;
+        return
+    }
+    templateModalLoader?.classList.add("!tw-hidden")
+
+    if (res.status == 400){
+        alertError(alertWarning, "Something went wrong")
+    }
+
+    if (res.status == 429){
+        toastAlert(null, "Too many requests please wait", "danger")
+        alertError(alertWarning, "Too many requst please close this modal and wait")
+
+    }
+
+    if (res.status == 200){
+        console.log("data: ", data.subject, templateModalBody, templateModalSubject)
+        templateModalTitle.innerText = data.name
+        templateModalSubject.innerText = data.subject
+        templateModalBody.innerText = data.body
+        
+        editButton.setAttribute("href", data.edit_url)
+
+        try{
+            testVariables.value = data.variables// JSON.stringify(JSON.parse(data.variables), null, 4) || JSON.stringify({})
+        } catch(error){
+            alertError(alertWarning, "Cannot parse variables, please add your own")
+        }
+    }
+
+}
+
+
+function templateModalRenderPreview(){
+    const templateModalSubject = document.getElementById("templateModalSubject")
+    const templateModalBody = document.getElementById("templateViewModel-body")
+    const testVariables = document.getElementById("templateModal-variables")
+
+    const alertWarning = document.getElementById("templateModalAlert")
+
+    try{
+        templateModalBody.innerHTML = renderTemplate(templateModalBody.innerText, testVariables.value)
+        templateModalSubject.innerHTML = renderTemplate(templateModalSubject.innerText, testVariables.value)
+        hideAlertError(alertWarning)
+    }catch(e){
+        alertError(alertWarning, "error with the template or variables.")
+        console.log("Error :", e)
+    }
+}
+
+
+// function templateModalClosed(){
+//     const templateModalSubject = document.getElementById("templateViewModelLabel")
+//     const templateModalBody = document.getElementById("templateViewModel-body")
+//     const templateModalLoader = document.getElementById("templateViewModel-loader")
+
+//     templateModalLoader.classList.remove("!tw-hidden")
+//     templateModalSubject.innerText = ""
+//     templateModalBody.innerHTML = ""
+// }

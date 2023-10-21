@@ -1,7 +1,7 @@
 import json
 from django.dispatch import receiver
+from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save, pre_delete, post_delete
-
 from django_celery_beat.models import PeriodicTask, ClockedSchedule, IntervalSchedule
 
 from utils.tasks import send_html_mail_celery
@@ -16,6 +16,9 @@ def schedule_email(instance, sender, created, *args, **kwargs):
         tasks = PeriodicTask.objects.filter(name=f'email_{instance.id}')
         tasks.update(enabled=False)      
         tasks.delete()
+
+        if not instance.schedule:
+            raise ValidationError("Schedule not found", code=400)
 
         schedule_start = ClockedSchedule.objects.create(clocked_time=instance.schedule)
 

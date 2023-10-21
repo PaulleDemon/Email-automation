@@ -1,4 +1,6 @@
+from typing import Iterable, Optional
 from django.db import models
+from django.utils import timezone
 from django.core.validators import RegexValidator
 
 from encrypted_model_fields.fields import EncryptedCharField, EncryptedEmailField
@@ -116,7 +118,6 @@ class EmailCampaignTemplate(models.Model):
 
     def __str__(self) -> str:
         return f'{self.campaign.name}'
-    
 
 class BlacklistedEmailDomains(models.Model):
 

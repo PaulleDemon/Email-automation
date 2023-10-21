@@ -1,8 +1,20 @@
 {% extends './base.html' %} 
 {% load static %} 
 {% block fullpage %}
-    <div class="tw-bg-black tw-bg-opacity-70 tw-fixed tw-top-0 tw-z-[5000] tw-flex tw-place-content-center tw-items-center tw-h-full tw-w-full">
-        <form action="{% url "signup" %}" method="post">
+    <div class="tw-bg-white tw-fixed tw-top-0 tw-z-[5000] tw-flex tw-place-content-center tw-items-center tw-h-full tw-w-full">
+        <div class="max-md:tw-hidden tw-max-w-[30%] tw-flex 
+        tw-h-[80%] tw-p-4 tw-rounded-3xl
+            lg:tw-ml-[20%]
+            tw-overflow-hidden ">
+            <img src="{% static "./assets/images/signup-illustration.svg" %}" class="tw-w-full" alt="" srcset="">
+        </div>
+        
+        <form action="{% url "signup" %}" method="post"
+            class="tw-w-[350px] tw-min-h-[250px] tw-h-max tw-bg-white
+            tw-rounded-lg tw-p-3 tw-text-center tw-flex tw-flex-col tw-gap-3 max-md:tw-shadow-lg
+            lg:tw-ml-auto lg:tw-mr-[20%]
+            "
+        >
             {% csrf_token %}
             <div class="tw-w-[350px] tw-min-h-[250px] tw-h-max tw-bg-white
                         tw-rounded-lg tw-p-3 tw-text-center tw-flex tw-flex-col tw-gap-3"
@@ -10,7 +22,7 @@
             
             >   
                 {% comment %} <a type="button" class="btn-close" aria-label="Close" href="{% url "home" %}"></a> {% endcomment %}
-                <div class="tw-text-xl tw-m-2">
+                <div class="tw-text-3xl tw-m-2 tw-mb-[5%]">
                     Create Account
                 </div>
                 <div class="tw-text-sm tw-m-2">
@@ -37,7 +49,7 @@
                     <div class="form-check tw-text-sm tw-text-left tw-mt-2">
                         <input class="form-check-input" onchange="checkSignUp()" type="checkbox" value="" id="terms-condition">
                         <label class="form-check-label" for="terms-condition">
-                            You agree to <a href="" class="tw-text-blue-600">terms and conditions</a> 
+                            You agree to <a href="{% url "t&c" %}" target="_blank" rel="noreferrer" class="tw-text-blue-600">terms and conditions</a> 
                         </label>
                     </div>
 

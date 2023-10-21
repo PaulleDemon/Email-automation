@@ -84,7 +84,13 @@ def run_schedule_email(id):
         if campaign.schedule == False:
              return
 
-        response = requests.get(settings.MEDIA_DOMAIN + sheet.url)  # Fetch CSV data from the URL
+        if settings.DEBUG:
+            url = settings.MEDIA_DOMAIN + sheet.url
+
+        else:
+            url = sheet.url
+
+        response = requests.get(url, timeout=20)  # Fetch CSV data from the URL
         logger.info(f"media url {settings.MEDIA_DOMAIN + sheet.url}")
 
         if response.status_code not in [200, 201]:
@@ -109,11 +115,12 @@ def run_schedule_email(id):
 
         data = data.drop_duplicates(subset=[email_lookup]) # drop duplicate emails
       
-        logger.info(f"Dataframe:  {data.columns} ")
-        # print(valid_email_mask)
-        # Use boolean indexing to keep only rows with valid emails
-        data = data[data[email_lookup].apply(is_valid_mail) != None] # remove invalid email
+        data[email_lookup] = data[email_lookup].apply(is_valid_mail)
+        # Remove rows with invalid email addresses (where 'Email' is None)
+        data = data.dropna(subset=[email_lookup])
 
+        print("data: ", data)
+       
         first_schedule = EmailCampaignTemplate.objects.filter(campaign=campaign.campaign).first().schedule.strftime("%d-%b-%Y")
         now_time = timezone.now().strftime("%d-%b-%Y")
 
@@ -157,12 +164,9 @@ def run_schedule_email(id):
                 'password': campaign.email.password,
         }
 
-        logger.info(f"iterating")
-
         for _, row_dict in data.iterrows():
             email_address = row_dict[campaign.campaign.email_lookup]
             recipient_list = [email_address]
-            logger.info(f"row: {row_dict}")
 
             if campaign.smtp_error_count > 10:
                 campaign.error += "\nToo many failed failed emails"
@@ -171,8 +175,7 @@ def run_schedule_email(id):
                 return
 
             try:
-                logger.info(f"sending mail")
-
+            
                 connection = EmailBackend(fail_silently=False, **smtp_settings)
 
                 html_context.update(row_dict)

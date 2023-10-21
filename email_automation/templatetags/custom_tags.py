@@ -1,5 +1,6 @@
 import os
 from django import template
+from django.utils import timezone
 
 register = template.Library()
 
@@ -14,3 +15,9 @@ def filename(value):
 @register.filter
 def subtract(value, arg):
     return value - arg
+
+@register.filter
+def utc_to_local(utc_datetime):
+    if utc_datetime:
+        return timezone.localtime(utc_datetime)
+    return None

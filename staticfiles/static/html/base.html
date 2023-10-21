@@ -1,9 +1,6 @@
 {% load static %}
 {% load tailwind_tags %}
-
-{%if debug %}
-    {% load django_browser_reload %}
-{% endif %}
+{% load django_browser_reload %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -19,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300&display=swap" rel="stylesheet">
     
-    <title>Peckspace{% if page_title %} - {{page_title}}{% endif %}</title>
+    <title>AtMailWin - {% if page_title %}{{page_title}}{% else %}Email automation{% endif %}</title>
     
     {% tailwind_css %}
 
@@ -40,6 +37,8 @@
     <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.mini.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js" integrity="sha512-dfX5uYVXzyU8+KHqj8bjo7UkOdg18PaOtpa48djpNbZHwExddghZ+ZmzWT06R5v6NSk3ZUfsH6FNEDepLx9hPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/acorn/2.0.1/acorn.min.js" integrity="sha512-RXqT0nGakdJ0bPly3+inW8tpbJJeQDHtnrwvt7UbBua3Vj5hdE6pPaGGF7wjlveIsAOw1yi9JYFEgXH6ATeF4Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
     <link rel="stylesheet" href="{%static './css/index.css'%}">
     
     <script src="{% static "./js/utils/common.js" %}"></script>
@@ -59,18 +58,30 @@
           {% comment %} <a class="navbar-brand tw-justify-center" href="{% url 'home' %}"> {% endcomment %}
           <a class="navbar-brand tw-flex tw-gap-1 tw-justify-center tw-place-items-center" href="/">
             <img src="{% static './assets/logos/logo.svg'%}" alt="Logo" 
-                width="40" height="40" class="d-inline-block align-text-top">
-            <span>PeckSpace</span> 
+                width="40" height="40" class="d-inline-block align-text-top !tw-fill-slate-400">
+            <span>AtMailWin</span> 
           </a>
           <div class="tw-justify-self-center collapse navbar-collapse" id="navbarTogglerDemo01">
             <div class="navbar-nav">
-                <a class="nav-link hover:tw-text-blue-400" href="{% url 'email-templates' %}">Email Templates</a>
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" id="profile-btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Email templates
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="create-btn">
+                        <a class="dropdown-item" href="{% url "email-templates" %}">My templates</a>
+                        <a class="dropdown-item" href="{% url "email-templates" %}?public=True">Public templates</a>
+                    </div>
+                </div>
+                
+                {% comment %} <a class="nav-link hover:tw-text-blue-400" href="{% url 'email-templates' %}">Email Templates</a> {% endcomment %}
                 <a class="nav-link hover:tw-text-blue-400" href="{% url 'configurations' %}">Email Configurations</a>
                 <a class="nav-link hover:tw-text-blue-400" href="{% url 'email-campaigns' %}">Email Campaigns</a>
+                <a class="nav-link hover:tw-text-blue-400" href="{% url 'blog-list' %}">Blogs</a>
             </div>
-            <div class="navbar-nav tw-ml-auto !tw-place-items-center">
-                <a class="tw-bg-[#ffe11f] tw-m-1 tw-font-medium tw-p-3 tw-rounded-full tw-text-center" href="{% url 'support-view' %}">
+            <div class="navbar-nav tw-ml-auto md:!tw-place-items-center">
+                <a class="tw-bg-[#ffe11f] tw-m-1 tw-font-medium tw-p-3  tw-text-center" href="{% url 'support-view' %}">
                     <i class="bi bi-suit-heart-fill tw-text-red-600"></i>
+                    {% comment %} <img src="{% static "./assets/images/heart.svg" %}" class="tw-h-[25px] tw-w-[25px]" alt="" srcset=""> {% endcomment %}
                     <span>Support opensource</span> 
                 </a>
 
@@ -100,13 +111,19 @@
                 
 
                 {% else %}
-                    <a class="btn btn-primary nav-item tw-m-1" href="{% url "signup" %}">
+                    <a class="tw-border-solid tw-p-2 tw-border-2 tw-bg-black
+                        tw-text-white tw-font-semibold nav-item tw-m-1
+                         hover:tw-bg-white hover:tw-text-black
+                        " 
+                        href="{% url "signup" %}">
                         Create Account
                     </a>
                 {% endif %}
                 
             </div>
-            <a href="https://github.com/PaulleDemon" target="_blank" rel="noreferrer" class="tw-m-2"><i class="tw-text-3xl bi bi-github"></i></a>
+            <a href="https://github.com/PaulleDemon/Email-automation" target="_blank" rel="noreferrer" class="tw-m-2">
+                <i class="tw-text-3xl bi bi-github"></i>
+            </a>
             
         </div>
         </div>
@@ -124,9 +141,52 @@
         </div>
     </div>
 
+    <!--Template view Modal -->
+    <div class="modal fade" id="templateViewModel" tabindex="-1" aria-labelledby="templateViewModelLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="fs-5" id="templateViewModelLabel"></h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="alert alert-warning !tw-m-1 !tw-hidden" id="templateModalAlert">
+            
+            </div>
+            <div class="modal-body" >
+                <div>
+                    <b>Subject: </b>
+                    <span id="templateModalSubject"></span>
+                </div>
+                <div id="templateViewModel-body" class="tw-mt-4">
+                </div>
+                <div class="text-center">
+                    <div class="spinner-border spinner" id="templateViewModel-loader">
+                    </div>
+                </div>
+            </div>
+
+            <textarea name="variables" placeholder="variables" 
+                        class="form-control !tw-max-w-[95%] !tw-m-2 !tw-max-h-[150px]" 
+                        id="templateModal-variables" oninput="parseTemplateModalVariables()"
+                        onchange="parseTemplateModalVariables()"
+                        ></textarea>
+          
+            <div class="modal-footer d-flex justify-content-between">
+                <a data-bs-toggle="tooltip" id="templateModalEdit" target="_blank" rel="noreferrer" class="btn" data-bs-placement="bottom" title="Edit">
+                    <i class="bi bi-pencil-fill mr-auto"></i>
+                </a>
+                <div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="templateModalRenderPreview()">Render template</button>
+                </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
     <div class="tw-h-[100%] tw-min-h-[100vh] tw-mt-[70px]">
 
-        {% if not user.is_authenticated %}
+        {% if not user.is_authenticated and not request.resolver_match.url_name == "home" and not request.resolver_match.url_name|first in "blog" %}
             <div class="tw-w-full tw-flex tw-place-content-center">
                 <div class="alert alert-danger tw-max-w-lg tw-mt-[2%]">
                     You are not logged in. Login to save your progress
@@ -141,13 +201,20 @@
         
     <footer class="tw-flex tw-z-[100] tw-flex-wrap p-4 tw-text-gray-400 tw-bg-gray-700 shadow-[0px_0px_3px_#000] tw-justify-around">
         
-        <div class="tw-flex tw-text-decoration-none">
-            {% comment %} <a href="{% url 'privacy-policy' %}" >privacy</a> {% endcomment %}
-            {% comment %} <a href="{% url 't&c' %}">. terms and conditions. &nbsp;</a> {% endcomment %}
-            {% comment %} <a href="{% url 'contact-us' %}" class="tw-underline tw-underline-offset-2">Contact us</a> {% endcomment %}
+        <div class="tw-flex tw-text-decoration-none tw-place-items-center">
+            <a href="{% url 'privacy' %}" >privacy</a>
+            <a href="{% url 't&c' %}">.&nbsp; terms and conditions.&nbsp;</a>
+            <a href="https://github.com/PaulleDemon/Email-automation/issues" target="_blank" rel="noreferrer" class="tw-m-2">
+                <span>Report bugs <i class="tw-text-xl bi bi-github"></i>
+                </span>
+            </a>
+            
         </div>
     </footer>
     <script src="{% static "./js/base.js" %}"></script>
-
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/json5/2.2.3/index.min.js" integrity="sha512-44jdhc+R2TFfzBflS3/dGNEABiNUxBkkrqwO7GWTvGsj3HkQNr3GESvI9PUvAxmqxSnTosR0Ij9y3+o+6J1hig==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script async src="
+    https://cdn.jsdelivr.net/npm/nunjucks@3.2.4/browser/nunjucks.min.js
+    "></script>
 </body>
 </html>

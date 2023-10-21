@@ -9,11 +9,17 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
+import os
 import base64
 import environ
+import dj_database_url
 from pathlib import Path
 from email.headerregistry import Address
 from logging.handlers import SysLogHandler
+
+import firebase_admin
+from firebase_admin import storage
+from google.oauth2 import service_account
 
 
 env = environ.Env()
@@ -23,13 +29,16 @@ environ.Env.read_env()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.get_value('SECRET_KEY', default='django-insecure-ksg!i&r49#t+x6*f^v#glkvhg_nfb^24r%l7im#ti-(it!5(y6')
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(env('DEBUG')))
+
+
+# SECURITY WARNING: keep the secret key used in production secret!
+if DEBUG:
+    SECRET_KEY = env.get_value('SECRET_KEY', default='django-insecure-ksg!i&r49#t+x6*f^v#glkvhg_nfb^24r%l7im#ti-(it!5(y6')
+
+else:
+    SECRET_KEY = env.get_value('PORD_SECRET_KEY')
 
 if DEBUG:
     ALLOWED_HOSTS = []
@@ -70,11 +79,14 @@ INSTALLED_APPS = [
 
 ]
 
-FIELD_ENCRYPTION_KEY = env.get_value('FIELD_ENCRYPTION_KE', default="-0YzXZeaLwOzaR0NYym4UmZurjhZDlaccMc7sbAhi0w=")
-# FIELD_ENCRYPTION_KEY = "-0YzXZeaLwOzaR0NYym4UmZurjhZDlaccMc7sbAhi0w="# env('FIELD_ENCRYPTION_KEY', default="-0YzXZeaLwOzaR0NYym4UmZurjhZDlaccMc7sbAhi0w=")
+if DEBUG:
+    FIELD_ENCRYPTION_KEY = env.get_value('FIELD_ENCRYPTION_KEY')
+
+else:
+    FIELD_ENCRYPTION_KEY = env.get_value('PROD_FIELD_ENCRYPTION_KEY')
 
 # # Decode the base64-encoded string to bytes with UTF-8 encoding
-# # FIELD_ENCRYPTION_KEY = base64.b64decode(FIELD_ENCRYPTION_KEY_str)
+# FIELD_ENCRYPTION_KEY = base64.b64decode(FIELD_ENCRYPTION_KEY_str)
 
 LOGIN_URL = '/user/login/'
 
@@ -181,12 +193,35 @@ WSGI_APPLICATION = 'email_automation.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        },
+        'OPTIONS': {
+            "timeout": 20,
+        }
     }
-}
+
+else:
+    # DATABASES = {
+    #         'default': {
+    #             'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #             'NAME': env.get_value('POSTGRES_DATABASE'), # use env file
+    #             'USER': env.get_value('POSTGRES_USER'),
+    #             # 'PASSWORD': os.environ.get('PROD_DB_PASSWORD'),
+    #             'PASSWORD': env.get_value('POSTGRES_PASSWORD'),
+    #             'HOST': env.get_value('POSTGRES_HOST'),
+    #             'PORT': '5432',
+    #     }
+    # }
+
+    DATABASES  = {
+                    'default':dj_database_url.config(default=env('POSTGRES_URL')),
+                                   
+                }
+    DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
 
 
 # Password validation
@@ -235,10 +270,32 @@ MEDIA_ROOT = BASE_DIR.joinpath('media')
 
 if DEBUG:
     MEDIA_URL = '/media/'
-    MEDIA_DOMAIN = 'http://localhost:8000'
+    # MEDIA_DOMAIN = 'http://localhost:8000'
+   
+    DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+
+    DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+    GS_BUCKET_NAME = env("BUCKET_NAME")
+    GS_PROJECT_ID = env("PROJECT_ID")
+    GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+        BASE_DIR.joinpath(env("FIREBASE_CRED_PATH"))
+    )
+    GS_DEFAULT_ACL = "publicRead"  # Optional: Set ACL for public access
+    GS_QUERYSTRING_AUTH = True  # Optional: Enable querystring authentication
+
 
 else:
     MEDIA_URL = '/media/'
+
+    # Define the storage settings for media files
+    DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+    GS_BUCKET_NAME = env("BUCKET_NAME")
+    GS_PROJECT_ID = env("PROJECT_ID")
+    GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+        BASE_DIR.joinpath(env("FIREBASE_CRED_PATH"))
+    )
+    GS_DEFAULT_ACL = "publicRead"  # Optional: Set ACL for public access
+    GS_QUERYSTRING_AUTH = True  # Optional: Enable querystring authentication
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

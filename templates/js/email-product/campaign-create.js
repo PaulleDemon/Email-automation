@@ -18,14 +18,21 @@ const localTime = document.getElementById("local-time")
 const templateViewBtn = document.getElementById("template-view")
 
 
-const datetime = setDatetimeToLocal(campaignSchedule, 10 * 60 * 1000)
+const datetime = setDatetimeToLocal(campaignSchedule, 10 * 60 * 1000) // add 10 minutes to the current time
 
 
 if (!campaignSchedule.value){
-    campaignSchedule.value = datetime.toISOString().slice(0, 16)
+    new Date().toLocaleString()
+    console.log("DATetime: ", datetime.toLocaleString())
+    campaignSchedule.value = `${datetime.getFullYear()}-${(datetime.getMonth() + 1).toString().padStart(2, '0')}-${datetime.getDate().toString().padStart(2, '0')}T${datetime.getHours().toString().padStart(2, '0')}:${datetime.getMinutes().toString().padStart(2, '0')}`;
+
+    localTime.innerText = toLocalTime(datetime)
 }
 
-localTime.innerText = toLocalTime(datetime)
+else{
+    localTime.innerText = toLocalTime(new Date(campaignSchedule.value))
+
+}
 
 followUpBtn.onclick = createFollowup
 
@@ -209,9 +216,15 @@ function checkFields(){
             return false
         }
 
-        if (x.name === "schedule" && (!x.value || new Date(x.value) < new Date())){
-            toastAlert(null, "scheduled time must be greater than now!")
-            return false
+        if (x.name === "schedule") {
+        
+            if(!x.value || new Date(x.value) < new Date()){
+                toastAlert(null, "scheduled time must be greater than now!")
+                return false
+            }
+            console.log("valie: ", new Date(x.value).toUTCString())
+            // x.value = UTCStringToInputString(x.value)
+            console.log("valie: ", x.value)
         }
 
     }
@@ -230,7 +243,6 @@ function checkFields(){
             const name = y.name
             const value = y.value
 
-            console.log("followup", name)
 
             if (name == "followup-template" && !value){
                 toastAlert(null, `Select a template for Follow up ${x+1}`)
@@ -242,9 +254,12 @@ function checkFields(){
                 return false
             }
 
-            if (name == "followup-schedule" && (!value || new Date(value) < new Date(campaignSchedule.value))){
-                toastAlert(null, `Follow up ${x+1} date has to be greater than the campaign schedule`)
-                return false
+            if (name == "followup-schedule"){
+                if (!value || new Date(value) < new Date(campaignSchedule.value)){
+                    toastAlert(null, `Follow up ${x+1} date has to be greater than the campaign schedule`)
+                    return false
+                }
+                // y.value = UTCStringToInputString(value) // convert to UTC string before upload
             }
             
             if (name == 'followup-scheduled')

@@ -1,12 +1,118 @@
 {% extends './html/base.html' %}
 {% load static %}
+{% load tz %}
 
 {% block content %}
 <div class="tw-flex tw-flex-col tw-min-h-[100vh] tw-p-3 tw-place-items-center tw-gap-4">
 
+    <div class="modal model-dialog fade modal-dialog-centered !tw-hidden" id="delete-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Delete Template</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+              Are you sure you want to delete this? This action cannot be undone
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <form action="" id="modal-btn-delete" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+          </div>
+        </div>
+    </div>
+
     <div class="tw-text-3xl tw-font-bold tw-m-5">
         Email campaigns
     </div>
+
+    <div class="tw-flex tw-flex-wrap tw-gap-3 tw-place-content-center">
+
+        <a class="tw-flex tw-flex-col tw-border-solid 
+                    tw-text-center tw-justify-items-center 
+                    tw-place-content-center 
+                    tw-w-[250px] tw-h-[150px] 
+                    tw-rounded-lg tw-shadow-xl tw-p-5"
+                    href="{% url "email-campaign-create" %}"
+                    >
+            <i class="bi bi-plus-lg tw-text-3xl"></i>
+            <p>Create campaign</p>
+        </a>  
+
+        {% for campaign in campaigns %}
+            <div class="tw-flex tw-flex-col tw-border-solid tw-border
+                        tw-text-left tw-justify-items-center 
+                        tw-w-[350px] tw-max-h-[550px] 
+                        tw-rounded-lg tw-shadow-xl tw-p-5">
+                
+                <div class="tw-text-center tw-font-semibold tw-text-xl">
+                        {{ campaign.name }}
+                </div>
+                <table class="table table-striped tw-mt-3">
+                    <tr>
+                        <td><b>Started</b></td>
+                        <td>
+                            {% if campaign.started %}
+                                Yes
+                                {% comment %} <i class="bi bi-check-circle-fill text-success tw-text-lg"></i> {% endcomment %}
+                            {% else %}
+                                No
+                                {% comment %} <i class="bi bi-x-circle-fill text-danger tw-text-lg"></i> {% endcomment %}
+                            {% endif %}
+                        </td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><b>Completed</b></td>
+                        <td> 
+                            {% if campaign.all_done %}
+                                Yes
+                                {% comment %} <i class="bi bi-check-circle-fill text-success tw-text-lg"></i> {% endcomment %}
+                            {% else %}
+                                No
+                                {% comment %} <i class="bi bi-x-circle-fill text-danger tw-text-lg"></i> {% endcomment %}
+                            {% endif %}
+                        </td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><b>Subject</b></td>
+                        <td>{{ campaign.subject }}</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><b>Start time</b></td>
+                        <td>{{ campaign.first_template_schedule|localtime|date:"F j, Y g:i A" }}</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </table>
+                
+                <div class="tw-flex tw-gap-1 tw-mt-auto tw-text-2xl">
+                   
+                    <button type="button" onclick="onDeleteCampaign('{% url 'email-campaign-delete' id=campaign.id %}', '{{ campaign.name }}')" 
+                            class="btn !tw-text-red-600 tw-w-full" data-bs-toggle="modal" data-bs-target="#delete-modal"><i class="bi bi-trash"></i>
+                    </button>
+                   
+                    <a class="btn !tw-border-solid tw-w-full" href="{% url 'email-campaigns' %}?view={{ campaign.id }}"
+                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Detailed view"
+                        >
+                        <i class="bi bi-eye-fill"></i>
+                    </a>
+                    <a class="btn !tw-border-solid tw-w-full" href="{% url 'email-campaign-create' %}?edit={{ campaign.id }}"
+                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit"
+                        >
+                        <i class="bi bi-pencil-fill"></i>
+                    </a>
+                </div>      
+
+            </div>
+        {% endfor %}
+    </div>
+    <script src="{% static "./js/email-product/email-campaigns.js" %}"></script>
 
 </div>
 {% endblock %}

@@ -1,0 +1,155 @@
+{% extends './html/base.html' %}
+
+{% load tz %}
+{% load static %}
+
+{% block content %}
+    <div class="blog tw-p-4 md:tw-text-lg">
+        
+        <div id="blog-toast" class="toast tw-h-max tw-z-20 tw-fixed tw-top-[10%] tw-right-[50%] tw-translate-x-[50%] align-items-center text-bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+              <div class="toast-body" id="blog-toast-body">
+               
+              </div>
+              <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+
+        <div class="column margin-top">
+
+            <div class="tw-text-center tw-font-semibold tw-text-3xl">
+                <p class="">{{blog.title}}</p>
+            </div>
+            
+            <div class="tw-mt-4 tw-justify-center tw-flex tw-flex-col lg:tw-mx-[30%]">
+                <div class="tw-text-center tw-flex tw-space-x-2 tw-place-content-center ">
+                    <i class="bi bi-clock"></i>
+                    <p class="">{% localtime on %}{{blog.datetime}}{% endlocaltime %}</p>
+                </div>
+                <div class="tw-text-base tw-p-4 tw-leading-8" id="blog-description">
+
+                        {{blog.description}}
+                    
+                </div>
+
+                <div class="tw-m-2 tw-p-2 tw-bg-[#212529] tw-min-w-[30px] tw-min-h-[50px] 
+                            tw-flex md:tw-flex-col md:tw-fixed md:tw-top-[10%] 
+                            tw-place-content-center tw-justify-around max-sm:tw-text-xl md:tw-text-2xl
+                            md:tw-right-[10%] bg-prima tw-text-white max-sm:tw-rounded-full">
+                    <a class="tw-m-2" id="twitter-share"  target="_blank" rel="noreferrer">
+                        𝕏
+                    </a>
+                    <a class="tw-m-2" id="reddit-share" target="_blank" rel="noreferrer">
+                        <i class="bi bi-reddit"></i>
+                    </a>
+                    <a class="tw-m-2" id="facebook-share" target="_blank" rel="noreferrer">
+                        <i class="bi bi-facebook"></i>
+                    </a>
+                    <div class="tw-m-2 tw-cursor-pointer" id="copy-link" >
+                        <i class="bi bi-share-fill"></i>
+                    </div>
+                    
+                </div>
+                
+                {% if blog.relatedblog_set.exists %}
+                    <hr>
+                    <div class="tw-text-xl">
+                        Read realated articles
+                    </div>
+                    <div class="tw-flex tw-flex-wrap  tw-w-full ">
+                        {% for related_blog in blog.relatedblog_set.all %}
+                            <div class="tw-shadow-lg tw-m-5 tw-h-max tw-w-[300px] tw-rounded-lg tw-flex tw-flex-col">
+                                <a href="{% url 'blog-view' id=related_blog.related_blog.id title=related_blog.related_blog.title|slugify %}" class="tw-text-md tw-h-full tw-max-h-full">
+                                 
+                                    {% with first_image=related_blog.related_blog.images_set.first %}
+                                        {% if first_image %}
+                                            <img src="{{ first_image.img.url }}" class="tw-object-contain tw-h-max-[80%] tw-w-full tw-rounded-t-2xl" alt="Image for {{ related_blog.title }}">
+                                        {% endif %}
+                                    {% endwith %}
+                                    <div class="tw-p-5 tw-text-lg">
+                                        {{ related_blog.related_blog.title }}
+                                    </div>
+                                   
+
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+            </div>
+
+        </div>
+
+       
+    </div>
+
+    <script>
+        // Raw Markdown content from the blog.description variable
+        const rawMarkdown = `{% autoescape off %}{{ blog.description }}{% endautoescape %}`;
+        
+        const renderer = new marked.Renderer({
+            gfm: true,
+        });
+    
+        renderer.heading = (text, level) => {
+            if (level === 1) {
+                return `<h1 class="tw-text-4xl tw-font-semibold">${text}</h1>`;
+            }else  if (level === 2) {
+                return `<h2 class="tw-text-2xl tw-font-semibold">${text}</h2>`;
+            } else  if (level === 3) {
+                return `<h3 class="tw-text-xl tw-font-semibold">${text}</h3>`;
+            } 
+            else {
+                return `<h${level}>${text}</h${level}>`;
+            }
+        };
+
+        renderer.link = (href, title, text) => {
+            const coloredLink = `<a class="tw-text-blue-600 tw-underline" href="${href}" title="${title}" target="_blank" rel="noreferrer">${text}</a>`;
+            return coloredLink;
+          };
+
+        renderer.paragraph = (text) => {
+            // Center-align images and apply max-height
+            const styledText = text.replace(/<img /g, '<img style="display: block; margin: 10px auto; max-height: 450px; max-width:100%;" ');
+
+            // Add color to links
+            //const coloredText = styledText.replace(/<a/g, '<a class="tw-text-blue-600 tw-underline" target="_blank" rel="noreferrer"');
+
+            // Apply paragraph styling
+            return `<p class="lg:tw-text-[16px] sm:tw-text-md">${styledText}</p>`;
+        };
+
+        // Render the Markdown content using marked
+        const blogDescription = document.getElementById('blog-description');
+        blogDescription.innerHTML = window.marked.marked(rawMarkdown, { renderer: renderer });
+    
+        // copy share button
+        const twitter = document.getElementById("twitter-share")
+        const reddit = document.getElementById("reddit-share")
+        const facebook = document.getElementById("facebook-share")
+        const copy_link = document.getElementById("copy-link")
+
+        twitter.href = `https://twitter.com/share?url=${window.location.href}&text=${encodeURIComponent(`Check out this article: {{blog.title}}`)}`
+        reddit.href = `https://reddit.com/submit?url=${window.location.href}&title=${encodeURIComponent(`Check out this article: {{blog.title}}`)}`
+        facebook.href = `https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`
+        
+        const toast = document.getElementById("blog-toast")
+        const toast_body = document.getElementById("blog-toast-body")
+        
+        copy_link.onclick = () => {
+            navigator.clipboard.writeText(window.location.href).then(function() {
+                console.log("callback: ", toast)
+                const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toast)
+                toast_body.innerText = `Link copied to clipboard`
+                toastBootstrap.show()
+              }, function(err) {
+                callback_form_toast_body.innerText = `Error copying link`
+              });
+        }
+
+    </script>
+    
+
+{% endblock content %}

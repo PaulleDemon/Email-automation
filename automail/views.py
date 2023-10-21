@@ -241,6 +241,8 @@ def campaign_create_view(request):
     emails = EmailConfiguration.objects.filter(user__id=request.user.id)
     rules  = EMAIL_SEND_RULES.choices
 
+    user_timezone = request.session.get('user_timezone', 'UTC')
+
     context = {
             'templates': list(templates.values('name', 'id')),
             'emails': list(emails.values('id', 'email')),
@@ -297,7 +299,8 @@ def campaign_create_view(request):
                                     'email_send_rule': EMAIL_SEND_RULES.ALL,
                                     'schedule': schedule,
                                     'scheduled': True if scheduled else False,
-                                    'followup': None
+                                    'followup': None,
+                                    'user_timezone': user_timezone
                                     })
 
             if email_form.is_valid():
@@ -312,7 +315,8 @@ def campaign_create_view(request):
                                     'email_send_rule': x['rule'],
                                     'schedule': x['followup-schedule'],
                                     'scheduled': True if x['followup-scheduled'] != "" else False,
-                                    'followup': main_email
+                                    'followup': main_email,
+                                    'user_timezone': user_timezone
                                     })
                     
                     if follow_up_form.is_valid():
@@ -343,7 +347,7 @@ def campaign_create_view(request):
     return render(request, 'email-campaign-create.html', context)
 
 
-@login_required
+# @login_required
 @require_http_methods(['GET'])
 def campaigns_view(request):
 

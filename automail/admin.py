@@ -20,7 +20,7 @@ class EmailServerAdmin(admin.ModelAdmin):
     list_display = ['id', 'user', 'host']
     search_fields = ['user']
     autocomplete_fields = ['user']
-
+    exclude = ['password']
 
 @admin.register(EmailTemplate)
 class EmailTemplateAdmin(admin.ModelAdmin):
@@ -43,10 +43,10 @@ class EmailTemplateAttachmentAdmin(admin.ModelAdmin):
 @admin.register(EmailCampaign)
 class EmailCampaignAdmin(admin.ModelAdmin):
 
-    search_fields = ['name', 'user']
+    search_fields = ['name', 'user', ]
 
-    list_display = ['id', 'name', ]
-    list_filter = ['created_datetime', ]
+    list_display = ['id', 'name', 'discontinued']
+    list_filter = ['created_datetime', 'discontinued']
 
     autocomplete_fields = ['user']
 
@@ -54,8 +54,8 @@ class EmailCampaignAdmin(admin.ModelAdmin):
 @admin.register(EmailCampaignTemplate)
 class EmailCampaignTemplatedmin(admin.ModelAdmin):
 
-    list_display = ['id', 'campaign', 'template', 'scheduled']
-    list_filter = ['scheduled', 'created_datetime']
+    list_display = ['id', 'campaign', 'template', 'scheduled', 'completed']
+    list_filter = ['scheduled', 'created_datetime', 'completed']
     autocomplete_fields = ['template', 'campaign', 'email', ]
 
 

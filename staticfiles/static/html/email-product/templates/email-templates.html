@@ -50,10 +50,16 @@
                         tw-w-[250px] tw-h-[250px] 
                         tw-rounded-lg tw-shadow-xl tw-p-5"
                         >
-                <b>{{template.name}} #{{template.id}}</b>
-                <div><b>Subject:</b> {{template.subject}}</div>
+                <span class="tw-text-center tw-font-semibold tw-text-sm">{{template.name}} #{{template.id}}</span>
+                <div class="tw-mt-2"><b>Subject:</b> {{template.subject}}</div>
                 <div class="tw-flex tw-gap-1 tw-mt-auto tw-text-2xl">
-                    <button type="submit" onclick="onDeleteTemplate('{% url 'email-template-delete' id=template.id %}', '{{ template.name }} #{{ template.id }}')" 
+                    <button onclick="viewTemplate({{template.id}})" class="btn !tw-max-w-fit" 
+                        data-bs-placement="bottom" title="View template"
+                        data-bs-toggle="modal" data-bs-target="#templateViewModel"
+                    >
+                        <i class="bi bi-eye-fill"></i>
+                    </button>
+                    <button type="submit" onclick="onDeleteTemplate('{% url 'email-template-delete' id=template.id %}', `{{ template.name }} #{{ template.id }}`)" 
                             class="btn !tw-text-red-600 tw-w-full" data-bs-toggle="modal" data-bs-target="#delete-modal"><i class="bi bi-trash"></i>
                     </button>
                     <a class="btn !tw-border-solid !tw-border" href="{% url 'email-template-create' %}?copy={{ template.id }}" 
@@ -75,7 +81,7 @@
     <div class="tw-text-2xl">
         Public Email templates
     </div>
-    <div class="tw-flex tw-mt-[2%] tw-w-full tw-flex-wrap tw-gap-4 tw-mx-[30%]">
+    <div class="tw-flex tw-mt-[2%] tw-w-full tw-place-content-center tw-flex-wrap tw-gap-4 tw-mx-[30%]">
         {% for template in public_templates %}
             <div class="tw-flex tw-flex-col tw-border-solid 
                         tw-border
@@ -87,13 +93,20 @@
                         tw-overflow-hidden
                         "
                         >
-                <b>{{template.name}} #{{template.id}}</b>
-                <p class="tw-h-[80px] tw-overflow-auto"> <b>Subject:</b>  {{template.subject}}</p>
+                <b>{{template.name}}</b>
+                <p class="tw-h-[80px] tw-overflow-auto tw-mt-2"> <b>Subject:</b>  {{template.subject}}</p>
                 <p>by: {{template.user.name}}</p>
                 <div class="tw-flex tw-gap-1 tw-mt-auto tw-w-[80%] tw-text-center">
+                    <button onclick="viewTemplate({{template.id}})" class="btn !tw-max-w-fit" 
+                        data-bs-placement="bottom" title="View template"
+                        data-bs-toggle="modal" data-bs-target="#templateViewModel"
+                    >
+                        <i class="bi bi-eye-fill"></i>
+                    </button>
                     <a class="tw-border-solid tw-border tw-border-rounded-2 tw-w-full tw-p-2 tw-rounded-lg tw-bg-green-400 hover:tw-bg-green-500" href="{% url 'email-template-create' %}?edit={{ template.id }}">
                         Edit
                     </a>
+                   
                 </div>
             </div>
         {% endfor %}
@@ -101,4 +114,5 @@
     </div>  
 </div>
 <script src="{% static "./js/email-product/email-templates.js" %}"></script>
+
 {% endblock content %}

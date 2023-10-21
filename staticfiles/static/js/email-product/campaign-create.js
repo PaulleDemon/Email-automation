@@ -18,10 +18,14 @@ const localTime = document.getElementById("local-time")
 const templateViewBtn = document.getElementById("template-view")
 
 
-const datetime = setDatetimeToLocal(campaignSchedule, 10 * 60 * 1000)
+const datetime = setDatetimeToLocal(campaignSchedule, 10 * 60 * 1000) // add 10 minutes to the current time
+
 
 if (!campaignSchedule.value){
-    campaignSchedule.value = datetime.toISOString().slice(0, 16)
+    new Date().toLocaleString()
+    console.log("DATetime: ", datetime.toLocaleString())
+    campaignSchedule.value = `${datetime.getFullYear()}-${(datetime.getMonth() + 1).toString().padStart(2, '0')}-${datetime.getDate().toString().padStart(2, '0')}T${datetime.getHours().toString().padStart(2, '0')}:${datetime.getMinutes().toString().padStart(2, '0')}`;
+
 }
 
 localTime.innerText = toLocalTime(datetime)
@@ -59,6 +63,12 @@ function setMinFollowUpDatetime(){
     return minDatetime
 }
 
+
+if (fileInput.value){
+    fileInput.value = fileInput.value
+    console.log("FILE: ", fileInput.value)
+}
+
 fileInput.addEventListener("change", function () {
     if (fileInput.files.length > 0) {
 
@@ -84,13 +94,16 @@ fileInput.addEventListener("change", function () {
 });
 
 
-function viewTemplate(){
+function templatePreview(){
  
     if (event.target.value){
-        const url = templateViewBtn.getAttribute("url") + `?edit=${event.target.value}`
-        templateViewBtn.setAttribute("href", url) 
+        // const url = templateViewBtn.getAttribute("url") + `?edit=${event.target.value}`
+        // templateViewBtn.setAttribute("href", url)
+        templateViewBtn.setAttribute("onclick", `viewTemplate(${event.target.value})`)
+        // viewTemplate(event.target.value) 
+
     }else{
-        templateViewBtn.removeAttribute("href")
+        templateViewBtn.removeAttribute("onclick")
     }
 }
 
@@ -106,7 +119,7 @@ function followUpTemplate(uuid) {
 
     const followUp = `
             <select class="form-select" name="followup-template">
-                <option selected>Choose Template</option>
+                <option selected value="">Choose Template</option>
                 ${
                     templates.map(t => {
                         return (
@@ -137,8 +150,8 @@ function followUpTemplate(uuid) {
                     <i class="tw-text-red-600 bi bi-trash"></i>
                 </button>
                 <input class="form-check-input !tw-ml-auto" onchange="" type="checkbox" 
-                    checked value="scheduled" name="followup-scheduled">
-                <label class="form-check-label tw-m-1" for="schedule">
+                    checked value="scheduled" id="followup-scheduled-${uuid}" name="followup-scheduled">
+                <label class="form-check-label tw-m-1" for="followup-scheduled-${uuid}">
                     Schedule
                 </label>
             </div>
@@ -187,8 +200,8 @@ function checkFields(){
             toastAlert(null, "Please select the from email")
             return false
         }
-
-        if (x.name === "file" && !x.value){
+       
+        if (x.name === "file" && (!x.value && !x.title)){
             toastAlert(null, "Please upload your excel file")
             return false
         }
@@ -199,9 +212,13 @@ function checkFields(){
             return false
         }
 
-        if (x.name === "schedule" && (!x.value || new Date(x.value) < new Date())){
-            toastAlert(null, "scheduled time must be greater than now!")
-            return false
+        if (x.name === "schedule") {
+        
+            if(!x.value || new Date(x.value) < new Date()){
+                toastAlert(null, "scheduled time must be greater than now!")
+                return false
+            }
+            x.value = new Date(x.value).toUTCString()
         }
 
     }
@@ -220,22 +237,34 @@ function checkFields(){
             const name = y.name
             const value = y.value
 
-            if (name == "template" && !value){
-                toastAlert(null, `Follow up ${x+1} requires a proper template`)
+            console.log("followup", name)
+
+            if (name == "followup-template" && !value){
+                toastAlert(null, `Select a template for Follow up ${x+1}`)
                 return false
             }
 
             if (name == "rule" && !value){
-                toastAlert(null, `Follow up ${x+1} requires send rule`)
+                toastAlert(null, `Select a rule for follow up ${x+1}`)
                 return false
             }
 
-            if (name == "schedule" && (!value || new Date(value) < new Date(campaignSchedule.value))){
-                toastAlert(null, `Follow up ${x+1} date has to be greater than the campaign schedule`)
-                return false
+            if (name == "followup-schedule"){
+                if (!value || new Date(value) < new Date(campaignSchedule.value)){
+                    toastAlert(null, `Follow up ${x+1} date has to be greater than the campaign schedule`)
+                    return false
+                }
+                y.value = new Date(value).toUTCString()
             }
+            
+            if (name == 'followup-scheduled')
+                if (y.checked)
+                    data['followup-scheduled'] = value
+                else
+                    data['followup-scheduled'] = ''
 
-            data[name] = value
+            else
+                data[name] = value
 
         }
         followup_data.push(data)

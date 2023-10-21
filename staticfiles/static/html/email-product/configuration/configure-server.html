@@ -43,7 +43,7 @@
                         <option value="">Select host</option>
                         <option value="smtp.gmail.com">Gmail</option>
                         <option value="smtp-mail.outlook.com">Outlook</option>
-                        <option value="smtp.protonmail.com">Proton Mail</option>
+                        <option value="smtp.mail.yahoo.com">Yahoo Mail</option>
                     </select>
                 </div>
 
@@ -56,7 +56,19 @@
                         <option value="465" selected>Select Port (default 465)</option>
                         <option value="587">Gmail</option>
                         <option value="587">Outlook</option>
-                        <option value="1025">Proton Mail</option>
+                        <option value="465">Yahoo Mail</option>
+                    </select>
+                </div>
+                
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="">Imap host</span>
+                    <input type="text" class="form-control" maxlength="200" name="imap_host" id="imap-host-input" value="{{configuration.host}}" 
+                            placeholder="Host">
+                    <select class="form-select" onchange="updateImapHost()">
+                        <option value="">Select host</option>
+                        <option value="imap.gmail.com">Gmail</option>
+                        <option value="outlook.office365.com">Outlook</option>
+                        <option value="imap.mail.yahoo.com">Yahoo mail</option>
                     </select>
                 </div>
 
@@ -83,10 +95,13 @@
         </div>
 
         <div class="tw-text-md tw-mt-4">
-            For people using Gmail you will have to enable less secure apps to make this work.
-            Please refer the following guide 
-            <a href="https://stackoverflow.com/a/27515833/15993687" target="_blank"
-                rel="noreferrer" class="tw-underline tw-text-blue-600"  >How to turn on less secure app?</a>
+            For people using Gmail please refer the below guide on how to generate an app password
+            <a href="https://stackoverflow.com/a/73214197/15993687" target="_blank"
+                rel="noreferrer" class="tw-underline tw-text-blue-600"  >Generating app password</a>
+        </div>
+
+        <div class="tw-font-semibold">
+            The email configurations password and email are encrypted in the backend.
         </div>
     </div>
 

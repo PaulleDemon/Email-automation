@@ -1,6 +1,7 @@
 {% extends './html/base.html' %}
 {% load static %}
 {% load tz %}
+{% load custom_tags %}
 
 {% block content %}
 <div class="tw-flex tw-flex-col tw-min-h-[100vh] tw-p-3 tw-place-items-center tw-gap-4">
@@ -86,7 +87,7 @@
                     </tr>
                     <tr>
                         <td><b>Start time</b></td>
-                        <td>{{ campaign.first_template_schedule|localtime|date:"F j, Y g:i A" }}</td>
+                        <td id="start-time-{{ forloop.counter }}">toLocalTime({{ campaign.first_template_schedule }})</td>
                         <td>&nbsp;</td>
                     </tr>
                 </table>
@@ -115,4 +116,17 @@
     <script src="{% static "./js/email-product/email-campaigns.js" %}"></script>
 
 </div>
+
+<script>
+    function convertToLocal(utcString, elementId) {
+        console.log("WOW: ", toLocalTime(utcString), document.getElementById(elementId))
+        document.getElementById(elementId).innerText = toLocalTime(utcString);
+    }
+
+    // Call toLocalTime for the current campaign's start time
+    {% for campaign in campaigns %}
+        console.log("CampaignL ", '{{campaign.first_template_schedule}}')
+        convertToLocal("{{ campaign.first_template_schedule }}", "start-time-{{ forloop.counter }}");
+    {% endfor %}
+</script>
 {% endblock %}

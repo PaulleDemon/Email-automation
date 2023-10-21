@@ -24,19 +24,32 @@ pip install -r requirements.txt
 
 add a .env file inside the email_automation folder with the following 
 ```
-DEBUG=0
+DEBUG=1
 DOMAIN=""
-ALLOWED_PROD_HOSTS=""
 SECRET_KEY=""
+PORD_SECRET_KEY=""
 REDIS_PROD_HOST=""
+
+FIELD_ENCRYPTION_KEY=""
+PROD_FIELD_ENCRYPTION_KEY=""
 
 EMAIL_HOST=""
 EMAIL_HOST_USER=""
 EMAIL_HOST_PASSWORD=""
 
-FIELD_ENCRYPTION_KEY="" # for encrypting
+POSTGRES_DATABASE=""
+POSTGRES_USER=""
+PROD_DB_PASSWORD=""
+POSTGRES_PASSWORD=""
+POSTGRES_HOST=""
+
+POSTGRES_URL=""
+
+FIREBASE_CRED_PATH=""
 ```
 > You must fill up the values required
+
+> You can create encryption key using the following `python manage.py generate_encryption_key`
 
 Run database creation queries using
 ```

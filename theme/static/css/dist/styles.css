@@ -833,6 +833,10 @@ select {
   border-radius: 0.375rem;
 }
 
+.\!tw-rounded-2xl {
+  border-radius: 1rem !important;
+}
+
 .tw-rounded-t-2xl {
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
@@ -982,6 +986,10 @@ select {
 
 .tw-p-5 {
   padding: 1.25rem;
+}
+
+.\!tw-p-2 {
+  padding: 0.5rem !important;
 }
 
 .tw-text-left {
