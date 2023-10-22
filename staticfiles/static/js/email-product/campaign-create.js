@@ -26,9 +26,13 @@ if (!campaignSchedule.value){
     console.log("DATetime: ", datetime.toLocaleString())
     campaignSchedule.value = `${datetime.getFullYear()}-${(datetime.getMonth() + 1).toString().padStart(2, '0')}-${datetime.getDate().toString().padStart(2, '0')}T${datetime.getHours().toString().padStart(2, '0')}:${datetime.getMinutes().toString().padStart(2, '0')}`;
 
+    localTime.innerText = toLocalTime(datetime)
 }
 
-localTime.innerText = toLocalTime(datetime)
+else{
+    localTime.innerText = toLocalTime(new Date(campaignSchedule.value))
+
+}
 
 followUpBtn.onclick = createFollowup
 
@@ -218,9 +222,9 @@ function checkFields(){
                 toastAlert(null, "scheduled time must be greater than now!")
                 return false
             }
-            console.log("value1: ", x.value)
-            x.value = new Date(x.value).toLocaleString()
-            console.log("value: ", x.value)
+            console.log("valie: ", new Date(x.value).toUTCString())
+            x.value = UTCToUTCInputString(x.value)
+            console.log("valie: ", x.value)
         }
 
     }
@@ -239,7 +243,6 @@ function checkFields(){
             const name = y.name
             const value = y.value
 
-            console.log("followup", name)
 
             if (name == "followup-template" && !value){
                 toastAlert(null, `Select a template for Follow up ${x+1}`)
@@ -256,7 +259,7 @@ function checkFields(){
                     toastAlert(null, `Follow up ${x+1} date has to be greater than the campaign schedule`)
                     return false
                 }
-                y.value = new Date(value).toUTCString()
+                y.value = UTCToUTCInputString(value) // convert to UTC string before upload
             }
             
             if (name == 'followup-scheduled')
@@ -275,5 +278,5 @@ function checkFields(){
     }
 
     hiddenFollowup.value =  JSON.stringify(followup_data)
-    return false
+    return true
 }

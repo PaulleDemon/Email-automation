@@ -17,8 +17,6 @@ from pathlib import Path
 from email.headerregistry import Address
 from logging.handlers import SysLogHandler
 
-import firebase_admin
-from firebase_admin import storage
 from google.oauth2 import service_account
 
 
@@ -149,7 +147,7 @@ else:
     EMAIL_HOST_USER = env('EMAIL_HOST_USER')
     EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
-    # DEFAULT_FROM_EMAIL = Address(display_name="Email automation", addr_spec=EMAIL_HOST_USER)
+    DEFAULT_FROM_EMAIL = Address(display_name="AtMailWin", addr_spec=EMAIL_HOST_USER)
 
     # EMAIL_USE_TLS = True
     EMAIL_USE_SSL = True

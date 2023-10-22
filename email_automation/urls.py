@@ -8,6 +8,14 @@ from django.urls import path, include, re_path
 from .views import (support_view, rate_limiter_view, view_404, 
                         handler_403, home_view)
 
+
+admin.site.site_header = 'AtMailWIn'           
+admin.site.index_title = 'Site Admin'              
+admin.site.site_title = 'AtMailWin admin site'
+admin.site.site_url = "https://atmailwin.com" 
+
+
+
 handler404 = view_404
 
 handler403 = handler_403

@@ -56,7 +56,7 @@
                     </tr>
                     <tr>
                         <td><b>Scheduled time</b></td>
-                        <td>{{ campaign.first_template_schedule|localtime|date:"F j, Y g:i A" }}</td>
+                        <td>{% utc_to_local campaign.first_template_schedule request.COOKIES.user_timezone %}</td>
                         <td>&nbsp;</td>
                     </tr>
                     <tr>
@@ -175,7 +175,11 @@
                         </tr>
                         <tr>
                             <td><b>Scheduled time</b></td>
-                            <td>{{ x.schedule|localtime|date:"F j, Y g:i A" }}</td>
+                            <td>
+                                
+                                {% utc_to_local x.schedule request.COOKIES.user_timezone %}
+
+                            </td>
                             <td>&nbsp;</td>
                         </tr>
 

@@ -1,6 +1,7 @@
 {% extends './html/base.html' %}
 {% load static %}
 {% load tz %}
+{% load custom_tags %}
 
 {% block content %}
 <div class="tw-flex tw-flex-col tw-min-h-[100vh] tw-p-3 tw-place-items-center tw-gap-4">
@@ -86,7 +87,9 @@
                     </tr>
                     <tr>
                         <td><b>Start time</b></td>
-                        <td>{{ campaign.first_template_schedule|localtime|date:"F j, Y g:i A" }}</td>
+                            <td id="start-time-{{ forloop.counter }}">
+                                {%utc_to_local campaign.first_template_schedule request.COOKIES.user_timezone  %}
+                            </td>
                         <td>&nbsp;</td>
                     </tr>
                 </table>
@@ -115,4 +118,5 @@
     <script src="{% static "./js/email-product/email-campaigns.js" %}"></script>
 
 </div>
+
 {% endblock %}

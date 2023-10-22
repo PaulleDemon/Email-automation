@@ -84,6 +84,7 @@ function isValidDomain(domain) {
 
     return domainPattern.test(domain);
 }
+ 
 
 /**
  * 
@@ -161,6 +162,24 @@ function toLocalTime(datetime){
     return datetime.toLocaleString('en-US', options);
 
 }
+
+/**
+ * Makes the string input value format usable
+ */
+function UTCToUTCInputString(utcDateString){
+
+    const utcDate = new Date(utcDateString)
+
+    const year = utcDate.getUTCFullYear()
+    const month = (utcDate.getUTCMonth() + 1).toString().padStart(2, '0')
+    const day = utcDate.getUTCDate().toString().padStart(2, '0')
+    const hours = utcDate.getUTCHours().toString().padStart(2, '0')
+    const minutes = utcDate.getUTCMinutes().toString().padStart(2, '0')
+
+    // Create a string in the format expected by the input element
+    return `${year}-${month}-${day}T${hours}:${minutes}`
+
+}  
 
 function stringifyOnlyObjects(key, value) {
     if (typeof value === 'object' && value !== null) {

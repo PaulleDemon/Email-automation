@@ -16,6 +16,7 @@ clone the repo
 ```
 git clone https://github.com/PaulleDemon/Email-automation
 ```
+Install python 3.8 or above
 
 Install dependencies
 ```

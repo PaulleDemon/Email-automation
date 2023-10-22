@@ -833,10 +833,6 @@ select {
   border-radius: 0.375rem;
 }
 
-.\!tw-rounded-2xl {
-  border-radius: 1rem !important;
-}
-
 .tw-rounded-t-2xl {
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
@@ -864,10 +860,6 @@ select {
 
 .tw-border-b-2 {
   border-bottom-width: 2px;
-}
-
-.tw-border-b-4 {
-  border-bottom-width: 4px;
 }
 
 .\!tw-border-solid {
@@ -968,6 +960,10 @@ select {
      object-fit: contain;
 }
 
+.\!tw-p-2 {
+  padding: 0.5rem !important;
+}
+
 .tw-p-1 {
   padding: 0.25rem;
 }
@@ -986,10 +982,6 @@ select {
 
 .tw-p-5 {
   padding: 1.25rem;
-}
-
-.\!tw-p-2 {
-  padding: 0.5rem !important;
 }
 
 .tw-text-left {
@@ -1201,11 +1193,6 @@ select {
   border-bottom-width: 2px;
 }
 
-.focus\:tw-outline-none:focus {
-  outline: 2px solid transparent;
-  outline-offset: 2px;
-}
-
 @media not all and (min-width: 768px) {
   .max-md\:tw-hidden {
     display: none;
@@ -1372,18 +1359,6 @@ select {
 }
 
 @media (min-width: 1024px) {
-  .lg\:tw-absolute {
-    position: absolute;
-  }
-
-  .lg\:tw-right-\[5\%\] {
-    right: 5%;
-  }
-
-  .lg\:tw-top-\[20\%\] {
-    top: 20%;
-  }
-
   .lg\:tw-mx-\[15\%\] {
     margin-left: 15%;
     margin-right: 15%;
@@ -1409,10 +1384,6 @@ select {
 
   .lg\:tw-mr-\[20\%\] {
     margin-right: 20%;
-  }
-
-  .lg\:tw-max-w-\[350px\] {
-    max-width: 350px;
   }
 
   .lg\:tw-text-\[16px\] {

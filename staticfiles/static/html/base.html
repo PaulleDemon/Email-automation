@@ -216,5 +216,10 @@
     <script async src="
     https://cdn.jsdelivr.net/npm/nunjucks@3.2.4/browser/nunjucks.min.js
     "></script>
+    <script>
+        // Timezone settings
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone; // e.g. "America/New_York"
+        document.cookie = "user_timezone=" + timezone;
+    </script>
 </body>
 </html>
