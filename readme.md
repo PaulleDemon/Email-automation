@@ -51,6 +51,8 @@ FIREBASE_CRED_PATH=""
 
 > You can create encryption key using the following `python manage.py generate_encryption_key`
 
+> To generate secret key use `from django.core.management.utils import get_random_secret_key` then `get_random_secret_key()` in your python shell
+
 Run database creation queries using
 ```
 python manage.py migrate
