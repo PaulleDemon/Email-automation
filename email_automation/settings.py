@@ -114,6 +114,7 @@ CELERY_IMPORTS = ['utils.tasks',]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', #whitenoise
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -265,6 +266,10 @@ STATICFILES_DIRS = [
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR.joinpath('staticfiles', 'static')
+
+if not DEBUG:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 MEDIA_ROOT = BASE_DIR.joinpath('media')
 

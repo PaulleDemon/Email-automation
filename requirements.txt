@@ -12,6 +12,8 @@ django-celery-beat==2.5.0
 django-ratelimit==4.1.0
 dj-database-url==2.1.0
 
+whitenoise==6.6.0
+
 Jinja2==3.1.2
 
 firebase-admin==6.2.0
