@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.utils.deprecation import MiddlewareMixin
 
 from django_ratelimit.middleware import RatelimitMiddleware
+from django.utils import timezone
 
 
 ALLOWED_FILE_TYPES =  ['pdf', 'xlsx', 'xls', 'csv', 'json', 'pdf', 'png', 'jpg', 'jpeg', 'gif']
@@ -31,3 +32,21 @@ class RateLimitJsonResponseMiddleware(RatelimitMiddleware):
             data = {'error': 'Rate limit exceeded'}
             return JsonResponse(data, status=429)  # 429 is the status code for "Too Many Requests"
         return super().process_response(request, response)
+    
+
+# class TimezoneMiddleware:
+#     def __init__(self, get_response):
+#         self.get_response = get_response
+
+#     def __call__(self, request):
+#         try:
+#             # get django_timezone from cookie
+#             tzname = request.COOKIES.get("user_timezone", "UTC")
+#             if tzname:
+#                 timezone.activate(timezone.zoneinfo.ZoneInfo(tzname))
+#             else:
+#                 timezone.deactivate()
+#         except Exception as e:
+#             timezone.deactivate()
+
+#         return self.get_response(request)

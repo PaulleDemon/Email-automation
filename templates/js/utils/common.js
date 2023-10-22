@@ -166,7 +166,7 @@ function toLocalTime(datetime){
 /**
  * Makes the string input value format usable
  */
-function UTCStringToInputString(utcDateString){
+function UTCToUTCInputString(utcDateString){
 
     const utcDate = new Date(utcDateString)
 

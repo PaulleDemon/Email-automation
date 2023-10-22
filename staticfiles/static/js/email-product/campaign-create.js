@@ -218,7 +218,9 @@ function checkFields(){
                 toastAlert(null, "scheduled time must be greater than now!")
                 return false
             }
-            x.value = new Date(x.value).toUTCString()
+            console.log("value1: ", x.value)
+            x.value = new Date(x.value).toLocaleString()
+            console.log("value: ", x.value)
         }
 
     }
@@ -273,5 +275,5 @@ function checkFields(){
     }
 
     hiddenFollowup.value =  JSON.stringify(followup_data)
-    return true
+    return false
 }

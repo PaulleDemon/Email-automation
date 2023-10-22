@@ -1,6 +1,6 @@
 import json
+import pytz
 import jinja2
-
 
 from django.db import models
 from django.urls import reverse
@@ -114,7 +114,6 @@ def email_template_create(request):
         return render(request, 'email-template-create.html', context=context)
     
     if request.method == 'POST':
-        print("request: ", request.POST)
        
         if edit:
             try:
@@ -234,6 +233,15 @@ def email_templates(request):
                                                             })
 
 
+def convert_local(user_time, user_timezone):
+    local_timezone = pytz.timezone(user_timezone)
+
+    # Convert the UTC datetime to the user's local timezone
+    local_datetime = user_time.astimezone(local_timezone)
+
+    return local_datetime.astimezone(pytz.UTC)
+
+
 @login_required_for_post
 def campaign_create_view(request):
 
@@ -241,7 +249,7 @@ def campaign_create_view(request):
     emails = EmailConfiguration.objects.filter(user__id=request.user.id)
     rules  = EMAIL_SEND_RULES.choices
 
-    user_timezone = request.session.get('user_timezone', 'UTC')
+    user_timezone = request.COOKIES.get('user_timezone', 'UTC')
 
     context = {
             'templates': list(templates.values('name', 'id')),
@@ -326,7 +334,7 @@ def campaign_create_view(request):
                         campaign.delete()
                         error = follow_up_form.errors.as_data()
                         errors = [f'{list(error[x][0])[0]}' for x in error] 
-                        context['error'] = errors
+                        context['errors'] = errors
                         break
                 
                 return redirect('email-campaigns')
@@ -335,12 +343,12 @@ def campaign_create_view(request):
                 campaign.delete()
                 error = email_form.errors.as_data()
                 errors = [f'{list(error[x][0])[0]}' for x in error] 
-                context['error'] = errors
+                context['errors'] = errors
 
         else:
             error = campaign_form.errors.as_data()
             errors = [f'{list(error[x][0])[0]}' for x in error] 
-            context['error'] = errors
+            context['errors'] = errors
 
     context['edit'] = edit
             

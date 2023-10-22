@@ -124,8 +124,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     "django_browser_reload.middleware.BrowserReloadMiddleware", # reload
-    'email_automation.middlewares.RateLimitJsonResponseMiddleware',
+    
     'django_ratelimit.middleware.RatelimitMiddleware',
+    'email_automation.middlewares.RateLimitJsonResponseMiddleware',
+    # 'email_automation.middlewares.TimezoneMiddleware',
 
     'email_automation.middlewares.FileUploadMiddleware',
 
@@ -270,18 +272,18 @@ MEDIA_ROOT = BASE_DIR.joinpath('media')
 
 if DEBUG:
     MEDIA_URL = '/media/'
-    # MEDIA_DOMAIN = 'http://localhost:8000'
+    MEDIA_DOMAIN = 'http://localhost:8000'
    
-    DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+    # DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
-    DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
-    GS_BUCKET_NAME = env("BUCKET_NAME")
-    GS_PROJECT_ID = env("PROJECT_ID")
-    GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-        BASE_DIR.joinpath(env("FIREBASE_CRED_PATH"))
-    )
-    GS_DEFAULT_ACL = "publicRead"  # Optional: Set ACL for public access
-    GS_QUERYSTRING_AUTH = True  # Optional: Enable querystring authentication
+    # DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+    # GS_BUCKET_NAME = env("BUCKET_NAME")
+    # GS_PROJECT_ID = env("PROJECT_ID")
+    # GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    #     BASE_DIR.joinpath(env("FIREBASE_CRED_PATH"))
+    # )
+    # GS_DEFAULT_ACL = "publicRead"  # Optional: Set ACL for public access
+    # GS_QUERYSTRING_AUTH = True  # Optional: Enable querystring authentication
 
 
 else:

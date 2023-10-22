@@ -7,8 +7,8 @@
     <div class="tw-text-3xl tw-font-semibold tw-text-center tw-mt-[2%]">
         Create Email Campaign
     </div>
-
-    <div class="alert alert-danger tw-hidden" id="template-alert">
+    
+    <div class="alert alert-danger {% if not errors %}tw-hidden{% endif %}" id="template-alert">
         {% for x in errors %}
             {{x}}
         {% endfor %}
@@ -56,7 +56,7 @@
         
             <div class="tw-mt-[2%] tw-font-medium">Select From address</div>
             <select class="form-select" value="{{campaign.emailcampaigntemplate_set.first.email.id}}" name="from_email">
-                <option selected>From address</option>
+                <option selected value="">From address</option>
                 {% for e in emails %}
                     <option {% if campaign.emailcampaigntemplate_set.first.email.id == e.id %}selected{% endif %} value="{{e.id}}">{{e.email}}</option>
                 {% endfor %}
@@ -81,9 +81,10 @@
             </div>
             <div class="input-group mb-3 tw-mt-2">
                 <span class="input-group-text" id="">Schedule (UTC time)</span>
+                {% utc_to_local campaign.emailcampaigntemplate_set.first.schedule request.COOKIES.user_timezone '%Y-%m-%dT%H:%M' as local_time %}
                 <input type="datetime-local" class="form-control" name="schedule" id="schedule_time" required 
-                        value="{{campaign.emailcampaigntemplate_set.first.schedule|date:'Y-m-d\TH:i'}}" 
-                        placeholder="default email address column" onchange="updateLocalTime()">
+                    value="{{ local_time }}" 
+                    placeholder="default email address column" onchange="updateLocalTime()">  
             </div>  
             <div class="tw-text-sm" id="local-time">
             </div>

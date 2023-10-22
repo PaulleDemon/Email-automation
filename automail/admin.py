@@ -54,11 +54,11 @@ class EmailCampaignAdmin(admin.ModelAdmin):
 @admin.register(EmailCampaignTemplate)
 class EmailCampaignTemplatedmin(admin.ModelAdmin):
 
-    list_display = ['id', 'campaign', 'template', 'scheduled', 'completed']
+    list_display = ['id', 'campaign', 'template', 'scheduled', 'schedule', 'completed']
     list_filter = ['scheduled', 'created_datetime', 'completed']
     autocomplete_fields = ['template', 'campaign', 'email', ]
 
-
+    list_editable = ['schedule']
 @admin.register(BlacklistedEmailDomains)
 class BlackListDomainAdmin(admin.ModelAdmin):
 

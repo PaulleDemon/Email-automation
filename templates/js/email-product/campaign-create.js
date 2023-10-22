@@ -223,7 +223,7 @@ function checkFields(){
                 return false
             }
             console.log("valie: ", new Date(x.value).toUTCString())
-            // x.value = UTCStringToInputString(x.value)
+            x.value = UTCToUTCInputString(x.value)
             console.log("valie: ", x.value)
         }
 
@@ -259,7 +259,7 @@ function checkFields(){
                     toastAlert(null, `Follow up ${x+1} date has to be greater than the campaign schedule`)
                     return false
                 }
-                // y.value = UTCStringToInputString(value) // convert to UTC string before upload
+                y.value = UTCToUTCInputString(value) // convert to UTC string before upload
             }
             
             if (name == 'followup-scheduled')
