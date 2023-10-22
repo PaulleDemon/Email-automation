@@ -81,10 +81,12 @@
             </div>
             <div class="input-group mb-3 tw-mt-2">
                 <span class="input-group-text" id="">Schedule (UTC time)</span>
-                {% utc_to_local campaign.emailcampaigntemplate_set.first.schedule request.COOKIES.user_timezone '%Y-%m-%dT%H:%M' as local_time %}
-                <input type="datetime-local" class="form-control" name="schedule" id="schedule_time" required 
-                    value="{{ local_time }}" 
-                    placeholder="default email address column" onchange="updateLocalTime()">  
+                {% with campaign.emailcampaigntemplate_set.first.schedule as utc_time %}
+                    {% utc_to_local utc_time request.COOKIES.user_timezone '%Y-%m-%dT%H:%M' as local_time %}
+                    <input type="datetime-local" class="form-control" name="schedule" id="schedule_time" required 
+                        value="{{ local_time }}" 
+                        placeholder="default email address column" onchange="updateLocalTime()">
+                {% endwith %}
             </div>  
             <div class="tw-text-sm" id="local-time">
             </div>
@@ -146,9 +148,15 @@
 
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="">Schedule</span>
-                            <input type="datetime-local" class="form-control" name="followup-schedule" id="basic-url" autofocus 
-                                    value="{{followup.schedule|date:'Y-m-d\TH:i'}}" 
+                            {% with followup.schedule as utc_time %}
+                                {% utc_to_local utc_time request.COOKIES.user_timezone "%Y-%m-%dT%H:%M" as schedule%}
+                                <input type="datetime-local" class="form-control" name="followup-schedule" id="basic-url" autofocus 
+                                    value="{{ schedule }}" 
                                     placeholder="Schedule">
+                            {% endwith %}
+                            {% comment %} <input type="datetime-local" class="form-control" name="followup-schedule" id="basic-url" autofocus 
+                                        value="{{followup.schedule|date:'Y-m-d\TH:i'}}" 
+                                        placeholder="Schedule"> {% endcomment %}
                         </div>  
 
                         <div class="form-check !tw-w-full tw-mt-2 tw-text-lg !tw-place-items-center !tw-flex">

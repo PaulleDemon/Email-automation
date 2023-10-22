@@ -87,7 +87,9 @@
                     </tr>
                     <tr>
                         <td><b>Start time</b></td>
-                        <td id="start-time-{{ forloop.counter }}">{{ campaign.first_template_schedule|utc_to_local:request.COOKIES.user_timezone  }}</td>
+                            <td id="start-time-{{ forloop.counter }}">
+                                {%utc_to_local campaign.first_template_schedule request.COOKIES.user_timezone  %}
+                            </td>
                         <td>&nbsp;</td>
                     </tr>
                 </table>
