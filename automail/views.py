@@ -36,7 +36,6 @@ jinja_env = jinja2.Environment()
 @require_http_methods(['GET', 'POST'])
 def email_template_create(request):
 
-    print("HSE: ", request.POST.get('edit'))
     edit = request.GET.get('edit')
 
     if request.method == 'GET':
@@ -137,15 +136,12 @@ def email_template_create(request):
 
         if template_form.is_valid():
 
-            print("Attachments existing: ", request.POST.get("existing-attachments"))
-
             file_form = AttachmentForm(request.POST, request.FILES)
             template = template_form.save(commit=False)
 
             if edit:
                 attachment_ids = request.POST.get('existing-attachments') or []
                 attachments = EmailTemplateAttachment.objects.filter(template=template).exclude(id__in=attachment_ids).delete()
-                print("attachment ids: ", attachments)
 
             if request.FILES:
                 # if there are attachment check if the form is valid before
@@ -157,14 +153,13 @@ def email_template_create(request):
                     EmailTemplateAttachment.objects.filter(template=template).delete()
 
                     for f in request.FILES.getlist('attachment'):
-                        print("Files: ", f)
                         EmailTemplateAttachment.objects.create(template=template, attachment=f)
 
                 else:
                     error = file_form.errors.as_data()
                     errors = [f'{list(error[x][0])[0]}' for x in error]
 
-                    print("error2: ", error)
+                    # print("error2: ", error)
                     return render(request, 
                                     'email-template-create.html', 
                                     {'error': ['error with file'], 
@@ -187,7 +182,7 @@ def email_template_create(request):
 
         else:
             error = template_form.errors.as_data()
-            print("error2: ", error)
+            # print("error2: ", error)
             errors = [f'{list(error[x][0])[0]}' for x in error]
             return render(request, 'email-template-create.html', {'error': errors, 'template': request.POST})
 

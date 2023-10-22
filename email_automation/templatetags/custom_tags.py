@@ -37,6 +37,6 @@ def utc_to_local(utc_datetime, user_timezone, date_format="%b. %d, %Y, %I:%M %p"
     utc_datetime_obj = utc_datetime_obj.replace(tzinfo=pytz.UTC)
     
     specific_datetime = utc_datetime_obj.astimezone(user_timezone)
-    print("date: ", specific_datetime, specific_datetime.strftime(date_format), date_format)
+    # print("date: ", specific_datetime, specific_datetime.strftime(date_format), date_format)
     return specific_datetime.strftime(date_format)
     

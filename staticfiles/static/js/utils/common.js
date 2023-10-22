@@ -205,7 +205,6 @@ function isValidVariableFormat(inputString){
  * @returns 
  */
 function renderTemplate(template, context){
-    console.log("Context: ", context)
     const copyContext = JSON5.parse(context || '{}');
     
     copyContext['from_email'] = copyContext['from_email'] || "paul@mail.com";
@@ -219,7 +218,6 @@ function parseTemplateModalVariables(){
     const alertWarning = document.getElementById("templateModalAlert")
     const testVariables = document.getElementById("templateModal-variables")
 
-    console.log("variables: ", JSON.parse(JSON.stringify(testVariables.value, null, 4))  )
     if(!isValidVariableFormat(testVariables.value)){
         alertError(alertWarning, "Cannot parse variables, Please use JS object model eg: {name: 'hellp', id: 2}")
     }else{
@@ -240,7 +238,6 @@ async function viewTemplate(id){
     
     const alertWarning = document.getElementById("templateModalAlert")
 
-    console.log("sending request")
 
     // fetches the full template.
     templateModalLoader?.classList.remove("!tw-hidden")
@@ -279,7 +276,6 @@ async function viewTemplate(id){
     }
 
     if (res.status == 200){
-        console.log("data: ", data.subject, templateModalBody, templateModalSubject)
         templateModalTitle.innerText = data.name
         templateModalSubject.innerText = data.subject
         templateModalBody.innerText = data.body
@@ -309,7 +305,7 @@ function templateModalRenderPreview(){
         hideAlertError(alertWarning)
     }catch(e){
         alertError(alertWarning, "error with the template or variables.")
-        console.log("Error :", e)
+        // console.log("Error :", e)
     }
 }
 

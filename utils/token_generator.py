@@ -25,7 +25,7 @@ def send_token(email):
     name = get_name_from_email(email)
 
     subject = f"Email confirmation link"
-    message = f"""Hi {name},\n Follow the link to confirm your email {settings.DOMAIN}/user/email/verify/?token={token} \n\n regards, AtMailWin Team"""
+    message = f"""Hi {name},\nThanks for signing up. Follow the link to confirm your email {settings.DOMAIN}/user/email/verify/?token={token} \n\nregards, AtMailWin Team"""
 
     send_mail_celery.delay(subject, message, recipient_list=[email])
 

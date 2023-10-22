@@ -119,7 +119,7 @@ def run_schedule_email(id):
         # Remove rows with invalid email addresses (where 'Email' is None)
         data = data.dropna(subset=[email_lookup])
 
-        print("data: ", data)
+        # print("data: ", data)
        
         first_schedule = EmailCampaignTemplate.objects.filter(campaign=campaign.campaign).first().schedule.strftime("%d-%b-%Y")
         now_time = timezone.now().strftime("%d-%b-%Y")
