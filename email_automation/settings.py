@@ -225,6 +225,19 @@ else:
     DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
 
 
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': f"{env('REDIS_PROD_HOST')}/0" if not DEBUG else "redis://127.0.0.1:6379/0",
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        },
+        'TIMEOUT': 300,  # Set the cache timeout in seconds
+    }
+}
+
+
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
