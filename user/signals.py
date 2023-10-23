@@ -8,4 +8,6 @@ from .models import User
 def save_name(sender, instance, *args, **kwargs):
 
     name, domain = instance.email.split('@')
-    instance.name = name.replace('.', ' ').strip().capitalize()[:25] #eg: paul@email.com -> Paul
+    
+    if not instance.name:
+        instance.name = name.replace('.', ' ').strip().capitalize()[:25] #eg: paul@email.com -> Paul
