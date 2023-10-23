@@ -277,7 +277,7 @@ STATICFILES_DIRS = [
 ]
 
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR.joinpath('staticfiles', 'static')
 
 if not DEBUG:
