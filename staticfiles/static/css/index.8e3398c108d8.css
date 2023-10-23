@@ -1,0 +1,29 @@
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+
+    /* text-decoration: none; */
+    list-style: inherit;
+    /* font-size: 18px; */
+    /* font-family: sans-serif; */
+    scroll-behavior: smooth;
+}
+
+
+body{
+    height: 100%;
+}
+
+a{
+    text-decoration: none;
+    color: inherit;
+}
+
+.trix-button-group.trix-button-group--file-tools {
+    display: none !important;
+}
+
+#trix-editor a {
+    color: blue !important; 
+  }

@@ -1,0 +1,179 @@
+{% extends './html/base.html' %}
+{% load static %}
+{% load custom_tags %}
+
+{% block content %}
+
+    <div class="tw-flex tw-flex-col tw--min-h-[100vh] tw-p-3 tw-place-items-center tw-gap-4">
+        <div class="tw-max-w-[800px] tw-flex tw-flex-col">
+            <div class="tw-text-3xl tw-font-semibold tw-text-center tw-mt-[5%]">
+                Create email template
+            </div>
+
+            <div id="error-toast" class="toast tw-h-max tw-z-[5000] tw-fixed tw-top-[2%] tw-left-[50%] tw-translate-x-[-50%] align-items-center text-bg-danger border-0" 
+                role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body" id="error-toast-body">
+                    
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+           
+            <form action="{% url "email-template-create" %}{% if edit %}?edit={{edit}}{% endif %}" id="template-create" enctype="multipart/form-data" onsubmit="return validateTemplate()"
+                    method="POST" class="tw-flex tw-flex-col tw-gap-3 tw-mt-[5%]">
+                {% csrf_token %}
+
+                <div class="alert alert-danger tw-hidden" id="template-alert">
+                    {% for x in errors %}
+                        {{x}}
+                    {% endfor %}
+                </div>
+
+                
+                <input type="text" class="tw-appearance-none tw-bg-transparent tw-border-solid
+                                            tw-border-b-2 tw-border-0 tw-w-full tw-text-gray-700 tw-leading-tight 
+                                            focus:tw-border-0 focus:tw-border-b-2
+                                            tw-mb-[2%]
+                                            "
+                         name="name" value="{% if template.name %}{{template.name}}{% else %}Sample Template{% endif %}" placeholder="Template name" required maxlength="35">
+
+
+                <div class="tw-flex tw-flex-col tw-gap-3 tw-z-[1]">
+                    <input type="text" class="form-control" name="subject" 
+                            placeholder="subject" value="{{template.subject}}" required maxlength="200" autofocus>
+                    
+                    <div class="editor-container tw-relative">
+                        <input id="content" value="{{template.body}}" placeholder="write your draft" 
+                                type="hidden" name="body" required>
+                    
+                        <trix-editor input="content" required id="trix-editor" class="form-control tw-max-h-[450px] tw-overflow-auto [&>a]:tw-text-blue-700" 
+                                                        placeholder="Enter the mail body"></trix-editor>
+                        <div id="autoCompleteDropDown"></div>
+                    </div>
+
+                    <div id="file-previewContainer" class="tw-flex tw-flex-wrap tw-gap-2 tw-grid-cols-2">
+                        {% for attachment in template.emailtemplateattachment_set.all %}
+                            <div class="tw-shadow-lg tw-p-1 !tw-w-fit tw-border-solid
+                                        tw-border-[0.2px] tw-border-gray-700 tw-max-w-[150px] 
+                                        tw-flex tw-gap-2 tw-place-items-center"
+                                        id="attachment-{{attachment.id}}"
+                                        >
+                                <input type="hidden" name="existing-attachments" value="{{attachment.id}}">
+                                <span>{{ attachment.attachment|filename }}</span>
+                                <a href="{{ attachment.attachment.url }}" 
+                                        class="tw-text-xl tw-font-semibold bi bi-download"
+                                     target="_blank">
+                                </a>
+                                <button type="button" class="btn btn-close" onclick="removeFileAttachment('attachment-{{attachment.id}}')">
+
+                                </button>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="tw-flex tw-mt-[2%] tw-place-content-end ">
+                        <label class="btn btn-warning tw-ml-auto ">
+                            <input type="file" name="attachment" multiple class="tw-hidden" id="file-upload" />
+                            <span>Attach file</span>  
+                            <i class="bi bi-paperclip" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add attachments max 10MB"></i>
+                        </label>
+                    </div>
+
+                    <div class="form-check tw-ml-auto tw-mt-[5%]">
+                        <input class="form-check-input" type="checkbox" onclick="warnUserOnPublic()" name="public" value="public" {% if template.public %}checked{% endif %} id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Public template
+                        </label>
+                        <i class="bi bi-info-circle-fill" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Make this template public for anyone on the internet"></i>
+                    </div>
+
+                    <div class="tw-flex tw-mt-[2%] tw-gap-2">
+                        <button onclick="templateRenderPreview()" type="button" class="btn btn-dark !tw-max-w-fit" 
+                        data-bs-placement="bottom" title="View template"
+                        data-bs-toggle="modal" data-bs-target="#templateViewModel"
+                        >
+                            <span>Rendered Preview</span>
+                        </button>
+                        <button type="button" id="test-mail-btn" class="btn btn-primary">Send Test mail</button>
+                        <button type="submit" class="btn btn-success tw-ml-auto">Save Template</button>
+                    </div>
+                </div>
+                <div class="width-1700:tw-absolute width-1700:tw-top-[20%] width-1700:tw-max-w-[350px] width-1700:tw-right-[5%] tw-z-[0] tw-mt-[4%] tw-flex-col tw-flex tw-gap-2">
+                    <div class="tw-text-sm">
+                        Add fields structured in the following format {name: "sample name", age: "30"}
+                    </div>
+                    <textarea name="variables" class="form-control !tw-max-h-[250px]" placeholder="Add email variables" 
+                                id="variables" oninput="validateVariables()" value="{{template.variables}}" cols="30" rows="10">{{template.variables}}</textarea>
+                    
+                    <div class="tw-flex tw-mt-[2%] tw-place-content-end ">
+                        <label class="btn btn-warning tw-ml-auto ">
+                            <input type="file" class="tw-hidden" accept=".xlsx, .xls, .csv" id="variables-upload" />
+                            <span>Upload Excel file</span>  
+                            <i class="bi bi-upload" data-bs-toggle="tooltip" data-bs-placement="bottom" title="upload variables"></i>
+                        </label>
+                    </div>
+                    
+                </div>
+            </form>
+            <hr class="tw-mt-[5%]">
+
+            <div class="tw-flex tw-flex-col tw-place-items-center tw-leading-8 tw-gap-2 tw-p-3">
+
+                <div class="tw-font-medium tw-text-2xl">
+                    Usage guide
+                </div>
+
+                {% verbatim %}
+                    <div class="tw-text-md tw-mt-2 tw-text-justify">
+                        Creating templates is quite simple. Once you create a template,
+                        you can use the same in many different Email campaigns. 
+
+                        Here are some of the things that will help you working with templates.
+
+                        <ul>
+                            <li>
+                                Template body and subjects can have variables represented by <code>{{variable_name}}</code>.
+                                These variables will be replaced by actual values when you upoad the excel file during the campaign creation.
+                            </li>
+                            <li>Templates can have if else statements <code>{% if condition %} statement {% endif %}</code>. </li>
+                            <li>
+                                Templates have predefiend variables such as <code>{{from_name}}</code>, 
+                                <code>{{from_email}}</code>, <code>{{from_signature}}</code>. These variables will be 
+                                replaced by the values you provided in the email configuration.
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tw-font-medium tw-text-xl">
+                        Sample usage
+                    </div>
+
+                    <div class="tw-mt-3 tw-text-md">
+                        Hello {{name}},<br>
+                        Hope you are doing well. I am {{from_name}} reaching out to you to 
+                        inquire about your experience using this automation platform. It looks like your experience with us is 
+                        {% if feedback == "positive" %} positive {% else %} negative {% endif %}. We would be greatful,
+                        if you could explain a little more about your feed back.
+                        <br>
+                        <br>
+                        {{from_signature}}
+                    </div>
+                {% endverbatim %}
+            </div>
+
+        </div>
+    </div>
+
+    <style>
+        trix-toolbar .trix-button {
+            background: #fff !important;
+          }
+    </style>
+
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.0/dist/trix.css">
+    <script type="text/javascript" src="https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"></script>
+
+    <script src="{% static "./js/utils/trix-autocomplete.js" %}"></script>
+    <script src="{% static "./js/email-product/email-template-create.js" %}"></script>
+
+{% endblock content %}

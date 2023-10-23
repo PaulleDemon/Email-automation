@@ -1,0 +1,49 @@
+{% extends './base.html' %} 
+{% load static %} 
+{% block fullpage %}
+    <div class="tw-bg-white tw-fixed tw-top-0 tw-z-[5000] 
+                    tw-flex max-md:tw-place-content-center 
+                    tw-items-center tw-h-full tw-w-full">
+        
+        <div class="max-md:tw-hidden tw-max-w-[30%] tw-flex 
+                    tw-h-[80%] tw-p-4 tw-rounded-3xl
+                        lg:tw-ml-[20%]
+                        tw-overflow-hidden ">
+            <img src="{% static "./assets/images/login-illustration.svg" %}" class="tw-w-full" alt="" srcset="">
+        </div>
+
+        <form action="{% url "login" %}" class="tw-w-[350px] tw-min-h-[250px] tw-h-max tw-bg-white
+                        tw-rounded-lg tw-p-3 tw-text-center tw-flex tw-flex-col tw-gap-3 max-md:tw-shadow-lg
+                        lg:tw-ml-auto lg:tw-mr-[20%]
+                        "
+                    id="login-form"
+                    method="POST"
+            >   
+                {% comment %} <a type="button" class="btn-close" aria-label="Close"  href="{% url "home" %}"></a> {% endcomment %}
+                {% csrf_token %}
+                <div class="tw-text-3xl tw-mb-[5%] tw-m-2">
+                    Login
+                </div>
+                <div id="login-alert" class="{% if not error%} tw-hidden {% endif %}
+                                    alert alert-danger" role="alert" >
+                    {{error}}
+                </div>
+                <input type="text" class="form-control" id="email"
+                    placeholder="email" name="email" on maxlength="3500" oninput="checkLogin()" autofocus>
+                <div class="input-group mb-3">
+                <input type="password" class="form-control" id="password"
+                    placeholder="password" name="password" maxlength="30" oninput="checkLogin()">
+                </div>
+                
+                <button type="submit" id="login-btn" disabled class="btn btn-success tw-m-3">
+                    Login
+                </button>
+
+                <div>
+                    New here? <a href="{% url "signup" %}" class="tw-underline tw-text-blue-500">Create account</a>
+                </div>
+        </form>
+
+    </div>
+    <script src="{% static "./js/authentication/authentication.js" %}"></script>
+{% endblock fullpage %}
