@@ -15,7 +15,7 @@ function AutoComplete(editor, editorElement, dropDownContainer, strategies) {
     this.documentString = this.editor.getDocument().toString();
     const position = this.editor.getPosition();
       
-    // console.log("editor: ", this.dropDownContainer)
+    console.log("editor: ", this.dropDownContainer)
     this.dropDownContainer.style.display = 'none';
   
     if (position === 0) {

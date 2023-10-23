@@ -350,7 +350,7 @@ async function sendTestMail(){
             responseBody = data; // Store the text response body
         }
     } catch (e) {
-        // console.log("response: ", res);
+        console.log("response: ", res);
         data = await res;
         return
     }

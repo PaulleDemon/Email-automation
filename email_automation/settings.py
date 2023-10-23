@@ -279,6 +279,13 @@ STATICFILES_DIRS = [
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR.joinpath('staticfiles', 'static')
+STATICFILES_DIRS = [
+                        BASE_DIR.joinpath('templates'),
+                        BASE_DIR.joinpath('templates', 'js'),
+                        BASE_DIR.joinpath('templates', 'css'),
+                        BASE_DIR.joinpath('templates', 'assets'),
+                    ]
+
 
 if not DEBUG:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

@@ -23,7 +23,7 @@ const datetime = setDatetimeToLocal(campaignSchedule, 10 * 60 * 1000) // add 10 
 
 if (!campaignSchedule.value){
     new Date().toLocaleString()
-    
+    console.log("DATetime: ", datetime.toLocaleString())
     campaignSchedule.value = `${datetime.getFullYear()}-${(datetime.getMonth() + 1).toString().padStart(2, '0')}-${datetime.getDate().toString().padStart(2, '0')}T${datetime.getHours().toString().padStart(2, '0')}:${datetime.getMinutes().toString().padStart(2, '0')}`;
 
     localTime.innerText = toLocalTime(datetime)
@@ -54,10 +54,14 @@ function setMinFollowUpDatetime(){
 
     const minDatetime = new Date(datetime.getTime() + 20 * 60 *1000)
 
+    console.log("Datetime: ", minDatetime.toISOString().slice(0, 16))
+
     followUp.forEach(e => {
         // set min datetime for each follow up
+        console.log("YAA: ",  minDatetime.toISOString().slice(0, 16))
         e.setAttribute("min", minDatetime.toISOString().slice(0, 16))
     })
+    console.log("followup: ", )
     followUp.forEach(e => console.log("Stay: ", e))
 
     return minDatetime
@@ -66,6 +70,7 @@ function setMinFollowUpDatetime(){
 
 if (fileInput.value){
     fileInput.value = fileInput.value
+    console.log("FILE: ", fileInput.value)
 }
 
 fileInput.addEventListener("change", function () {
@@ -73,7 +78,7 @@ fileInput.addEventListener("change", function () {
 
         const file = fileInput.files[0]
         const file_extension = file.name.split('.').at(-1)
-  
+        console.log("extension: ", file_extension)
         if (!['xlsx', 'xls', 'csv'].includes(file_extension)){
             toastAlert(null, `Invalid file`)
             fileInput.value = ''
@@ -217,7 +222,9 @@ function checkFields(){
                 toastAlert(null, "scheduled time must be greater than now!")
                 return false
             }
+            console.log("valie: ", new Date(x.value).toUTCString())
             x.value = UTCToUTCInputString(x.value)
+            console.log("valie: ", x.value)
         }
 
     }
@@ -266,6 +273,7 @@ function checkFields(){
 
         }
         followup_data.push(data)
+        console.log("follow up", followup_data, followUpFields, followUpSection)
 
     }
 
