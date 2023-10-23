@@ -128,67 +128,32 @@ variableUpload.addEventListener('change', function(e) {
             return
         }
 
-        reader.onload = function(e) {
-            const data = e.target.result;
+        // ... Your existing code ...
 
-            if (!['csv', 'xlsx', 'xls'].includes(ext)){
-                toastAlert(alertToast, "Incorrect file")
-                variableUpload.value = null
-                return
-            }
+reader.onload = function(e) {
+    const data = e.target.result;
 
-            if (ext === 'csv') {
-                // Use PapaParse for CSV
-                Papa.parse(data, {
-                    header: true,
-                    complete: function(results) {
-                        // Extract column names
-                        const columnNames = results.meta.fields;
-                        displayColumnNames(columnNames);
-                        
-                        // Extract the first row values
-                        const firstRowValues = results.data[0];
+    if (!['csv', 'xlsx', 'xls'].includes(ext)){
+        toastAlert(alertToast, "Incorrect file")
+        variableUpload.value = null
+        return
+    }
 
-                        // Create key-value pairs
-                        const keyValues = {};
-                        columnNames.forEach((columnName, index) => {
-                            keyValues[columnName] = firstRowValues[index];
-                        });
+    if (ext === 'xls' || ext === 'xlsx' || ext == 'csv') {
+        // Use SheetJS (XLSX) for XLS and XLSX
+        const workbook = XLSX.read(data, { type: 'binary' });
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
 
-                        // Set the key-value pairs as an object
-                        variablesInput.value = JSON.stringify(keyValues);
+        // Extract the first row as JSON
+        const firstRowJSON = XLSX.utils.sheet_to_json(firstSheet, {range: 1})[0];
 
-                    }
-                });
-            } else if (ext === 'xls' || ext === 'xlsx') {
-                // Use SheetJS (XLSX) for XLS and XLSX
-                const workbook = XLSX.read(data, { type: 'binary' });
-                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                const header = [];
-                for (const key in firstSheet) {
-                    if (key[0] === 'A') {
-                        header.push(firstSheet[key].v);
-                    }
-                }
+        // Convert the first row JSON to JSON5
+        const firstRowJSON5 = JSON5.stringify(firstRowJSON, null, 4);
+        variablesInput.value = firstRowJSON5;
 
-                // Extract the first row values
-                const firstRowValues = [];
-                for (const key in firstSheet) {
-                    if (key[0] === 'B') {
-                        firstRowValues.push(firstSheet[key].v);
-                    }
-                }
+    }
+};
 
-                // Create key-value pairs
-                const keyValues = {};
-                header.forEach((columnName, index) => {
-                    keyValues[columnName] = firstRowValues[index];
-                });
-
-                // Set the key-value pairs as an object
-                variablesInput.value = JSON.stringify(keyValues, null, 4);
-            }
-        };
 
         if (ext === 'csv') {
             reader.readAsText(file);
@@ -396,14 +361,14 @@ function templateRenderPreview(){
     }
 
     const templateModalSubject = document.getElementById("templateModalSubject")
-    
     const templateModalBody = document.getElementById("templateViewModel-body")
-    const templateModalLoader = document.getElementById("templateViewModel-loader")
     const testVariables = document.getElementById("templateModal-variables")
+    const templateModalLoader = document.getElementById("templateViewModel-loader")
 
     templateModalLoader?.classList.add("!tw-hidden")
 
     const alertWarning = document.getElementById("templateModalAlert")
+    console.log("value: ", data)
 
     try{
         testVariables.innerText = variablesInput.value
@@ -411,8 +376,8 @@ function templateRenderPreview(){
         const body = renderTemplate(data.body, variablesInput.value)
         const subject = renderTemplate(data.subject, variablesInput.value)
 
-        templateModalBody.innerHTML =`<b>subject: </b>${subject} <br/><br/>${body}`
-        templateModalSubject.innerText = data.name
+        templateModalBody.innerText = body
+        templateModalSubject.innerText = subject
         hideAlertError(alertWarning)
     }catch(e){
         alertError(alertWarning, "error with the template or variables.")
