@@ -297,7 +297,6 @@ if DEBUG:
     MEDIA_URL = '/media/'
     MEDIA_DOMAIN = 'http://localhost:8000'
    
-    # DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
     # DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
     # GS_BUCKET_NAME = env("BUCKET_NAME")
