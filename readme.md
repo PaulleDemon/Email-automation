@@ -85,7 +85,7 @@ Developing and maintaining open-source and free projects requires a significant 
 
 [<img src="https://github.com/PaulleDemon/PaulleDemon/blob/main/images/buy-me-coffee.png?raw=true" height="100px" width="350px">](https://www.buymeacoffee.com/ArtPaul)
 
-**Other ways to support oepn-source**
+**Other ways to support open-source**
 
 * To dedicate more time to open-source I am also giving a non-GPL/commercial code license that can be used in a closed source project. Send a mail to paul@adostrings.com
 
