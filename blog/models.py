@@ -28,7 +28,7 @@ class Blog(models.Model):
     description = models.TextField()
     datetime = models.DateTimeField(auto_now=True)
 
-    blog_type = models.PositiveSmallIntegerField(choices=BLOG_TYPE.choices, default=BLOG_TYPE.PRIVACY)
+    blog_type = models.PositiveSmallIntegerField(choices=BLOG_TYPE.choices, default=BLOG_TYPE.BLOG)
 
     removed = models.BooleanField(default=False)
 
