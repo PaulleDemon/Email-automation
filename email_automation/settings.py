@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os
+import json
 import base64
 import environ
 import dj_database_url
@@ -29,6 +30,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(env('DEBUG')))
+
+cloud_platform = os.environ.setdefault('CLOUD_PLATFORM', '')
+
+if cloud_platform == 'DIGITAL_OCEAN':
+    # since the firebase_cred cannot be uploaded manually 
+    # https://www.digitalocean.com/community/questions/how-to-upload-a-secret-credential-file
+    firebase_cred = env('FIREBASE_ENCODED')
+    decoded_bytes = base64.b64decode(firebase_cred)
+    decoded_json = json.loads(decoded_bytes.decode('utf-8'))
+  
+    with open(env('FIREBASE_CRED_PATH'), 'w') as f:
+        json.dump(decoded_json, f, indent=4)
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
