@@ -245,6 +245,7 @@ CACHES = {
         'LOCATION': f"{env('REDIS_PROD_HOST')}/0" if not DEBUG else "redis://127.0.0.1:6379/0",
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'PASSWORD': env('REDIS_PASSWORD')
         },
         'TIMEOUT': 300,  # Set the cache timeout in seconds
     }
