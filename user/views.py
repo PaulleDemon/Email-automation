@@ -16,6 +16,9 @@ from utils.token_generator import send_token
 
 def login_view(request):
 
+    if request.user.is_authenticated:
+        return redirect('email-templates')
+
     if request.method == "GET":
         return render(request, 'login.html')
 
