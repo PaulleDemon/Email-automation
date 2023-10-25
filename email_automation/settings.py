@@ -33,7 +33,7 @@ DEBUG = bool(int(env('DEBUG')))
 
 cloud_platform = os.environ.setdefault('CLOUD_PLATFORM', '')
 
-if cloud_platform == 'DIGITAL_OCEAN':
+if cloud_platform in ['DIGITAL_OCEAN', 'VERCEL']:
     # since the firebase_cred cannot be uploaded manually 
     # https://www.digitalocean.com/community/questions/how-to-upload-a-secret-credential-file
     firebase_cred = env('FIREBASE_ENCODED')

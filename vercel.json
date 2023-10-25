@@ -11,7 +11,7 @@
             "config": { "maxLambdaSize": "15mb", "runtime": "python3.8" }
           },
           {
-            "src": "build.sh",
+            "src": "build_file.sh",
             "use": "@vercel/static-build",
             "config": {
               "distDir": "staticfiles"
