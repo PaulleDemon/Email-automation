@@ -390,7 +390,7 @@ LOGGING = {
     'loggers': {
         # This is the "catch all" logger
         '': {
-            'handlers': ['console', 'mail_admins'],
+            'handlers': ['console', 'mail_admins', 'celery'],
             'level': 'DEBUG',
             'propagate': False,
         },
