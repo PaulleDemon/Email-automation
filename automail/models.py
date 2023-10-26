@@ -106,7 +106,7 @@ class EmailCampaignTemplate(models.Model):
     sent_count = models.PositiveIntegerField(default=0)
 
     failed_count = models.PositiveIntegerField(default=0)
-    failed_emails = models.TextField(max_length=4000, null=True, blank=True) 
+    failed_emails = models.TextField(max_length=4000, default='', null=True, blank=True) 
     error = models.TextField(max_length=4000, null=True, blank=True)
     smtp_error_count = models.PositiveIntegerField(default=0) 
 

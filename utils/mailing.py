@@ -2,6 +2,7 @@ import time
 import random
 import smtplib
 import imaplib
+import mimetypes
 
 import jinja2
 
@@ -79,7 +80,11 @@ def send_email_with_attachments(subject, text_message, html_message, html_contex
     if attachments:
         # Attach multiple files to the email
         for attachment in attachments:
-            email.attach(attachment.name, attachment.read(), attachment.content_type)
+            content_type, _ = mimetypes.guess_type(attachment.name)
+            if content_type is None:
+                content_type = 'application/octet-stream'  # Fallback content type
+
+            email.attach(attachment.name, attachment.read(), content_type)
     
     
     return email.send()

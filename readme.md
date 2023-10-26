@@ -69,6 +69,11 @@ The project uses tailwind so, when running locally use
 python manage.py tailwind start
 ```
 
+Run celery worker:
+```
+celery -A email_automation worker -l info -B --scheduler django_celery_beat.schedulers:DatabaseScheduler 
+```
+
 Once you are satisfied you can build the tailwind using
 ```
 python manage.py tailwind build
@@ -78,7 +83,18 @@ python manage.py tailwind build
 
 > You can use any valid Jinja syntax in the email template you are creating.
 
-**Support Opensource**
+### Deployment:
+
+If you are deploying on Render, Railway, Digital Ocean, You will be required to fire up different services. One for web other for celery.
+
+You can make use of Railway to deploy your own instance.
+
+<a href="https://railway.app?referralCode=BfMDHP">
+  <img src="logos/railway.png" alt="railway icon" height="50px"/>
+</a>
+
+
+### **Support Opensource**
 
 Developing and maintaining open-source and free projects requires a significant commitment of time and effort. My goal is to transition to working on open-source projects on a full-time basis. If you'd like to support me and the open-source community consider making a small donation. You can have your logo/name on this [page](https://atmailwin.com/support/) .
 

@@ -14,6 +14,7 @@ from celery.utils.log import get_task_logger
 from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
+from django.core.files.storage import default_storage
 from django.core.mail import send_mass_mail, send_mail
 from django.core.mail.backends.smtp import EmailBackend
 
@@ -84,7 +85,7 @@ def run_schedule_email(id):
         if campaign.schedule == False:
              return
 
-        if settings.DEBUG:
+        if False and settings.DEBUG:
             url = settings.MEDIA_DOMAIN + sheet.url
 
         else:
@@ -164,6 +165,25 @@ def run_schedule_email(id):
                 'password': campaign.email.password,
         }
 
+        attachments = []
+        attachment_names = EmailTemplateAttachment.objects.filter(template=campaign.template).values_list('attachment', flat=True)
+        # for attachment_path in attachment_paths:
+        #     # Read the file content from the attachment_path (you might need to adapt this)
+        #     with open(attachment_path, 'rb') as attachment_file:
+        #         file_content = attachment_file.read()
+            
+        #     # Extract the filename from the attachment_path or use a desired filename
+        #     filename = attachment_path.split('/')[-1]
+
+        #     # Create a ContentFile from the file content
+        #     attachment = ContentFile(file_content, name=filename)
+        #     attachments.append(attachment)
+        for attachment_name in attachment_names:
+            attachment = default_storage.open(attachment_name)
+            attachments.append(attachment)
+
+
+
         for _, row_dict in data.iterrows():
             email_address = row_dict[campaign.campaign.email_lookup]
             recipient_list = [email_address]
@@ -187,10 +207,12 @@ def run_schedule_email(id):
                     html_context=html_context,
                     from_email=campaign.email.email,
                     recipient_list=recipient_list,
-                    attachments=list(EmailTemplateAttachment.objects.filter(template=campaign.template)),
+                    #FIXME: problem sending attachment
+                    attachments=attachments,
                     connection=connection,
                     imap_client=imap_client
                 )
+                # logger.info(f"mail sent")
 
                 campaign.sent_count += 1
                 campaign.save()
