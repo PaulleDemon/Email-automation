@@ -91,7 +91,7 @@ def run_schedule_email(id):
             url = sheet.url
 
         response = requests.get(url, timeout=20)  # Fetch CSV data from the URL
-        logger.info(f"media url {settings.MEDIA_DOMAIN + sheet.url}")
+        # logger.info(f"media url {settings.MEDIA_DOMAIN + sheet.url}")
 
         if response.status_code not in [200, 201]:
             logger.info(f"request exited with status {response.status_code}")
