@@ -49,6 +49,16 @@
     <script src="{% static "./js/utils/common.js" %}"></script>
     <script src="{% static "./js/utils/constants.js" %}"></script>
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YTC044J07"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '{{gtag}}');
+    </script>
+
     </head>
 {% comment %} <body class="tw-min-h-[100vh]" data-bs-theme="dark"> {% endcomment %}
 <body class="tw-min-h-[100vh]" >

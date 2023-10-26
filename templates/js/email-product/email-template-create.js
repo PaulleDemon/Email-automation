@@ -292,7 +292,11 @@ async function sendTestMail(){
     }
     
     for (let x of elements){
-        data.append(x.name, x.value)
+        let [name, value] = [x.name, x.value]
+        if (name == "variables"){
+            value = JSON.stringify(JSON5.parse(value))
+        }
+        data.append(name, value)
     }
 
     const res = await fetch("/email/send-test-mail/", {

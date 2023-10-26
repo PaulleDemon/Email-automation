@@ -192,6 +192,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+               
+                'email_automation.context_processors.secrets',
+                
             ],
         'libraries':{
             'custom_tags': 'email_automation.templatetags.custom_tags',
@@ -245,7 +248,7 @@ CACHES = {
         'LOCATION': f"{env('REDIS_PROD_HOST')}/0" if not DEBUG else "redis://127.0.0.1:6379/0",
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            'PASSWORD': env('REDIS_PASSWORD')
+            'PASSWORD': env('REDIS_PASSWORD') if not DEBUG else ""
         },
         'TIMEOUT': 300,  # Set the cache timeout in seconds
     }
