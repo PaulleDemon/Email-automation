@@ -222,9 +222,9 @@ function checkFields(){
                 toastAlert(null, "scheduled time must be greater than now!")
                 return false
             }
-            console.log("valie: ", new Date(x.value).toUTCString())
+            // console.log("valie: ", new Date(x.value).toUTCString())
             x.value = UTCToUTCInputString(x.value)
-            console.log("valie: ", x.value)
+            // console.log("valie: ", x.value)
         }
 
     }
@@ -255,25 +255,28 @@ function checkFields(){
             }
 
             if (name == "followup-schedule"){
-                if (!value || new Date(value) < new Date(campaignSchedule.value)){
+                const date1 = new Date(new Date(value).toUTCString()).getTime()/1000;
+                const date2 = new Date(campaignSchedule.value).getTime()/1000;
+
+                if (!value || date1 < date2){
                     toastAlert(null, `Follow up ${x+1} date has to be greater than the campaign schedule`)
                     return false
                 }
                 y.value = UTCToUTCInputString(value) // convert to UTC string before upload
             }
             
-            if (name == 'followup-scheduled')
+            if (name == 'followup-scheduled'){
                 if (y.checked)
                     data['followup-scheduled'] = value
                 else
                     data['followup-scheduled'] = ''
-
+            }
             else
-                data[name] = value
+                data[name] = y.value
 
         }
         followup_data.push(data)
-        console.log("follow up", followup_data, followUpFields, followUpSection)
+        // console.log("follow up", followup_data, followUpFields, followUpSection)
 
     }
 
