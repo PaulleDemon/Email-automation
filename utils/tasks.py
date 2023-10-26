@@ -207,7 +207,6 @@ def run_schedule_email(id):
                     html_context=html_context,
                     from_email=campaign.email.email,
                     recipient_list=recipient_list,
-                    #FIXME: problem sending attachment
                     attachments=attachments,
                     connection=connection,
                     imap_client=imap_client
@@ -217,14 +216,15 @@ def run_schedule_email(id):
                 campaign.sent_count += 1
                 campaign.save()
 
-            except (smtplib.SMTPAuthenticationError):
-                logger.info(f"Auth error")
+            except (smtplib.SMTPAuthenticationError) as e:
+                logger.info(f"Auth error {e}")
                 campaign.campaign.discontinued = True
                 campaign.error += '\nAuthentication error'
                 campaign.save()
                 return
 
-            except (smtplib.SMTPSenderRefused, smtplib.SMTPRecipientsRefused):
+            except (smtplib.SMTPSenderRefused, smtplib.SMTPRecipientsRefused) as e:
+                logger.info(f"sender refused {e}")
                 campaign.smtp_error_count += 1
                 campaign.failed_emails += f"{email_address}, "
                 campaign.save()         
