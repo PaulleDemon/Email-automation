@@ -17,13 +17,14 @@ def deletePeriodicTask(id):
 @receiver(pre_save, sender=EmailCampaignTemplate)
 def preprocess(instance, sender, *args, **kwargs):
 
-    try:
-        email_campaign_template = EmailCampaignTemplate.objects.get(id=instance.id)
-        if instance.schedule != email_campaign_template.schedule:
-            instance.completed = False
-            # Your code here
-    except EmailCampaignTemplate.DoesNotExist:
-        pass
+    if instance.id:
+        try:
+            email_campaign_template = EmailCampaignTemplate.objects.get(id=instance.id)
+            if instance.schedule != email_campaign_template.schedule:
+                instance.completed = False
+                # Your code here
+        except EmailCampaignTemplate.DoesNotExist:
+            pass
 
 
 @receiver(post_save, sender=EmailCampaignTemplate)
