@@ -70,10 +70,11 @@ def disable_periodic_task(taskid):
                 
                 
 @transaction.atomic
-@shared_task(name='run_schedule_email', max_retries=3, bind=True)
+@shared_task(name='run_schedule_email')
 def run_schedule_email(self, id):
 
-    logger.info(f"working {id}")
+    if settings.DEBUG:
+        logger.info(f"working {id}")
     imap_client = None
 
     try:
@@ -92,12 +93,8 @@ def run_schedule_email(self, id):
         else:
             url = sheet.url
 
-        try:
-            response = requests.get(url, timeout=20)  # Fetch CSV data from the URL
+        response = requests.get(url, timeout=20)  # Fetch CSV data from the URL
         # logger.info(f"media url {settings.MEDIA_DOMAIN + sheet.url}")
-
-        except Exception as e:
-            raise self.retry(exc=e, countdown=2 ** self.request.retries)
 
         if response.status_code not in [200, 201]:
             logger.info(f"request exited with status {response.status_code}")

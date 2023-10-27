@@ -1,16 +1,35 @@
-# Email Automation tool- AtMailWin
+# Email/Cold mail Automation tool- AtMailWin
 
 <p align="center">
-  <img src="logos/atmailwin-logo.svg" alt="CupidCues icon" width="300px" height="300px"/>
+  <img src="logos/atmailwin-logo.svg" alt="CupidCues icon" width="200px" height="200px"/>
 </p>
 
 A free and open-source email automation tool. Schedule, personalize and send!
 <br/>
 <br/>
+Have you ever meticulously crafted a personalized email to a potential employer or business and waited eagerly for a response that never arrived? It's a common scenario, and the disappointment is palpable. Creating highly personalized emails is time-consuming and often doesn't yield the desired results. AtMailWin offers a workaround - the ability to create semi-personalized emails, schedule them send them in bulk to multiple recipients.
 
 You can use the site at [https://atmailwin.com](https://atmailwin.com) 
 
-or if you want to self host it.
+
+## Features
+
+* Create dynamic email templates.
+* Use variables, if statements in your email template.
+* Schedule email.
+* Schedule Follow-ups (follow-ups increases the chance of receiving response from recipient).
+* Specify follow up rule. 
+* Use existing [templates](https://atmailwin.com/email/templates/?public=True).
+
+>**Note**: Don't use this service to send marketing emails or spams. It can result in your email's being sent to spam or locked.
+
+Read this [article](https://atmailwin.com/blog/9/making-the-most-of-atmailwin-for-effective-cold-mailing/) 
+to make most out of this tool
+
+> This tool makes use if Jinja2 to render the emails, so any valid jinja syntax is acceptable
+
+## Self hosting
+If you want to self host it.
 
 clone the repo
 ```

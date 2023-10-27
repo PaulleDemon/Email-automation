@@ -62,7 +62,8 @@
                 
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="">Imap host</span>
-                    <input type="text" class="form-control" maxlength="200" name="imap_host" id="imap-host-input" value="{{configuration.host}}" 
+                    <input type="text" class="form-control" maxlength="200" name="imap_host" id="imap-host-input" 
+                            value="{{configuration.imap_host}}" 
                             placeholder="Host">
                     <select class="form-select" onchange="updateImapHost()">
                         <option value="">Select host</option>
@@ -104,6 +105,15 @@
             <li>
                 If you are unaware of host, port and Imap host, please select one of the dropdown 
                 or ask your email provider.
+            </li>
+        </ol>
+
+        <ol>
+            <li>
+                Though the email and passwords are encrypted. Its recommended to use a secondary mail id.
+            </li>
+            <li>
+                If you are using Outlook or Gmail you might be asked to authorize sending mail. Regularly check your inbox.
             </li>
         </ol>
 
