@@ -31,12 +31,12 @@ def preprocess(instance, sender, *args, **kwargs):
 @receiver(post_save, sender=EmailCampaignTemplate)
 def schedule_email(instance, sender, created, *args, **kwargs):
 
+    if not instance.schedule:
+        raise ValidationError("Schedule not found", code=400)
+
     if instance.scheduled and not instance.completed and timezone.now() < instance.schedule:
         
         deletePeriodicTask(instance.id)
-
-        if not instance.schedule:
-            raise ValidationError("Schedule not found", code=400)
 
         schedule_start = ClockedSchedule.objects.create(clocked_time=instance.schedule)
 
