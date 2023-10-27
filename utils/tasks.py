@@ -71,7 +71,7 @@ def disable_periodic_task(taskid):
                 
 @transaction.atomic
 @shared_task(name='run_schedule_email')
-def run_schedule_email(self, id):
+def run_schedule_email(id):
 
     if settings.DEBUG:
         logger.info(f"working {id}")
@@ -98,8 +98,9 @@ def run_schedule_email(self, id):
 
         if response.status_code not in [200, 201]:
             logger.info(f"request exited with status {response.status_code}")
-            
-            raise self.retry(exc=Exception(f"request exited with status {response.status_code}"), countdown=2 ** self.request.retries)
+            campaign = EmailCampaignTemplate.objects.filter(id=id).update(error="request error {response.status_code}")
+
+            return
             
 
         if extension.lower() == 'csv':
@@ -113,7 +114,6 @@ def run_schedule_email(self, id):
              
         else:
             logger.info(f"File doesn't have proper extension")
-
             raise Exception("File doesn't have a csv, xls, or xlsx extension")
 
         email_lookup = campaign.campaign.email_lookup
