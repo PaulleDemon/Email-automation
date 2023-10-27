@@ -16,20 +16,16 @@ def deletePeriodicTask(id):
 @receiver(post_save, sender=EmailCampaignTemplate)
 def schedule_email(instance, sender, created, *args, **kwargs):
 
-    
-
     if instance.scheduled:
         
-        tasks = PeriodicTask.objects.filter(name=f'email_{instance.id}')
-        tasks.update(enabled=False)      
-        tasks.delete()
+        deletePeriodicTask(instance.id)
 
         if not instance.schedule:
             raise ValidationError("Schedule not found", code=400)
 
         schedule_start = ClockedSchedule.objects.create(clocked_time=instance.schedule)
 
-        PeriodicTask.objects.create(name=f'email_{instance.id}', clocked=schedule_start, one_off=True, 
+        PeriodicTask.objects.create(name=f'email_{instance.id}', clocked=schedule_start, one_off=True,
                                         kwargs=json.dumps({'id': instance.id}), 
                                         task='run_schedule_email')
 

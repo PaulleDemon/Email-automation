@@ -71,14 +71,14 @@ def disable_periodic_task(taskid):
 
 @transaction.atomic
 @shared_task(name='run_schedule_email')
-def run_schedule_email(id):
+def run_schedule_email(campaign_id):
 
     if settings.DEBUG:
-        logger.info(f"working {id}")
+        logger.info(f"working {campaign_id}")
     imap_client = None
 
     try:
-        campaign = EmailCampaignTemplate.objects.get(id=id)
+        campaign = EmailCampaignTemplate.objects.get(id=campaign_id)
         subject = campaign.template.subject
         body = campaign.template.body
         sheet = campaign.campaign.file
@@ -98,7 +98,7 @@ def run_schedule_email(id):
 
         if response.status_code not in [200, 201]:
             logger.info(f"request exited with status {response.status_code}")
-            campaign = EmailCampaignTemplate.objects.filter(id=id).update(error="request error {response.status_code}")
+            campaign = EmailCampaignTemplate.objects.filter(id=campaign_id).update(error="request error {response.status_code}")
 
             return
             
@@ -235,13 +235,14 @@ def run_schedule_email(id):
                 time.sleep(0.5) # sleep half a second to allow other processes to continue
 
         campaign.completed = True
+        campaign.scheduled = False
         campaign.save()
 
     except EmailCampaignTemplate.DoesNotExist as e:
         pass
 
     except (requests.RequestException) as e:
-        campaign = EmailCampaignTemplate.objects.filter(id=id).update(error="request error occured")
+        campaign = EmailCampaignTemplate.objects.filter(id=campaign_id).update(error="request error occured")
         logger.info(f"request error: {e}")
 
     # except Exception as e:
@@ -251,7 +252,7 @@ def run_schedule_email(id):
 
     finally:
 
-        disable_periodic_task(f'email_{id}')
+        disable_periodic_task(f'email_{campaign_id}')
 
         if imap_client:
             imap_client.logout() 
