@@ -126,7 +126,8 @@
         <div class="tw-flex tw-flex-wrap tw-gap-2 tw-w-full tw-place-content-center" id="followup-section">
             
             {% for followup in campaign.emailcampaigntemplate_set.all %}
-                {% if not forloop.first %}
+                {% if not forloop.first and followup.followup %}
+                    {{followup.id}}
                     <div class="tw-min-h-[150px] tw-min-w-[200px] tw-shadow-lg tw-rounded-lg tw-mt-[2%] tw-p-4
                         tw-flex tw-flex-col tw-gap-2" id="{{followup.id}}" title="follow-up">
                         <select class="form-select" value="{{followup.template.id}}" name="followup-template" onchange="viewTemplate({{template.id}})">
