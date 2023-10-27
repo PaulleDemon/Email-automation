@@ -75,10 +75,12 @@ def run_schedule_email(campaign_id):
 
     if settings.DEBUG:
         logger.info(f"working {campaign_id}")
-    imap_client = None
 
+    imap_client = None
+    sent_count = None
     try:
         campaign = EmailCampaignTemplate.objects.get(id=campaign_id)
+        sent_count = campaign.sent_count
         subject = campaign.template.subject
         body = campaign.template.body
         sheet = campaign.campaign.file
@@ -186,6 +188,7 @@ def run_schedule_email(campaign_id):
             if campaign.smtp_error_count > 10:
                 campaign.error += "\nToo many failed failed emails"
                 campaign.campaign.discontinued = True
+                campaign.scheduled = False
                 campaign.save()         
                 return
 
@@ -208,8 +211,8 @@ def run_schedule_email(campaign_id):
                 )
                 # logger.info(f"mail sent")
 
-                campaign.sent_count += 1
-                campaign.save()
+                sent_count += 1
+                
 
             except (smtplib.SMTPAuthenticationError) as e:
                 logger.info(f"Auth error {e}")
@@ -236,6 +239,7 @@ def run_schedule_email(campaign_id):
 
         campaign.completed = True
         campaign.scheduled = False
+        campaign.sent_count = sent_count
         campaign.save()
 
     except EmailCampaignTemplate.DoesNotExist as e:
@@ -256,3 +260,7 @@ def run_schedule_email(campaign_id):
 
         if imap_client:
             imap_client.logout() 
+            imap_client.close()
+        
+        if sent_count:
+            EmailCampaignTemplate.objects.filter(id=campaign_id).update(sent_count=sent_count)
