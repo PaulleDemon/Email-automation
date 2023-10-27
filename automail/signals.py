@@ -1,4 +1,5 @@
 import json
+from django.utils import timezone
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save, pre_delete, pre_save, post_delete
@@ -30,7 +31,7 @@ def preprocess(instance, sender, *args, **kwargs):
 @receiver(post_save, sender=EmailCampaignTemplate)
 def schedule_email(instance, sender, created, *args, **kwargs):
 
-    if instance.scheduled and not instance.completed:
+    if instance.scheduled and not instance.completed and timezone.now() < instance.schedule:
         
         deletePeriodicTask(instance.id)
 
