@@ -60,7 +60,7 @@ def disable_periodic_task(taskid):
 
 	with transaction.atomic():
 		try:
-			task = PeriodicTask.objects.get(id=taskid)
+			task = PeriodicTask.objects.get(name=taskid)
 
 		except PeriodicTask.DoesNotExist:
 			return
