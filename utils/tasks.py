@@ -143,13 +143,15 @@ def run_schedule_email(self, id):
             pass
 
         elif campaign.email_send_rule == EMAIL_SEND_RULES.NOT_RESPONDED:
-            data['has_responded'] = data[email_lookup].apply(check_recipient_responded, args=(first_schedule, now_time, imap_client)).dropna(subset=[email_lookup]) # remove invalid email
+            data['has_responded'] = data[email_lookup].apply(check_recipient_responded, args=(first_schedule, now_time, imap_client))
+            data = data.dropna(subset=[email_lookup]) # remove invalid email
             # Remove rows where the recipient has not responded
             data = data[~data['has_responded']]
             data = data.drop(columns='has_responded')
 
         elif campaign.email_send_rule == EMAIL_SEND_RULES.RESPONDED:
-            data['has_responded'] = data[email_lookup].apply(check_recipient_responded, args=(first_schedule, now_time, imap_client)).dropna(subset=[email_lookup]) # remove invalid email
+            data['has_responded'] = data[email_lookup].apply(check_recipient_responded, args=(first_schedule, now_time, imap_client))
+            data = data.dropna(subset=[email_lookup]) # remove invalid email
             # Remove rows where the recipient has responded
             data = data[data['has_responded']]
             data = data.drop(columns='has_responded')
