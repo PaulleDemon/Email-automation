@@ -1,7 +1,7 @@
 import json
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
-from django.db.models.signals import post_save, pre_delete, post_delete
+from django.db.models.signals import post_save, pre_delete, pre_save, post_delete
 from django_celery_beat.models import PeriodicTask, ClockedSchedule, IntervalSchedule
 
 from utils.tasks import send_html_mail_celery
@@ -13,10 +13,18 @@ def deletePeriodicTask(id):
     tasks.update(enabled=False)      
     tasks.delete()
 
+
+@receiver(pre_save, sender=EmailCampaignTemplate)
+def preprocess(instance, sender, *args, **kwargs):
+
+    if instance.schedule != EmailCampaignTemplate.objects.get(id=instance.id).schedule:
+        instance.completed = False
+
+
 @receiver(post_save, sender=EmailCampaignTemplate)
 def schedule_email(instance, sender, created, *args, **kwargs):
 
-    if instance.scheduled:
+    if instance.scheduled and not instance.completed:
         
         deletePeriodicTask(instance.id)
 
