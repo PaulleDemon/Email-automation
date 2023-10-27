@@ -4,6 +4,7 @@ import time
 import imaplib
 import smtplib
 import requests
+import traceback
 import pandas as pd
 
 from email.mime.text import MIMEText
@@ -69,8 +70,8 @@ def disable_periodic_task(taskid):
                 
                 
 @transaction.atomic
-@shared_task(name='run_schedule_email')
-def run_schedule_email(id):
+@shared_task(name='run_schedule_email', max_retries=3, bind=True)
+def run_schedule_email(self, id):
 
     logger.info(f"working {id}")
     imap_client = None
@@ -85,18 +86,24 @@ def run_schedule_email(id):
         if campaign.schedule == False:
              return
 
-        if False and settings.DEBUG:
+        if settings.DEBUG:
             url = settings.MEDIA_DOMAIN + sheet.url
 
         else:
             url = sheet.url
 
-        response = requests.get(url, timeout=20)  # Fetch CSV data from the URL
+        try:
+            response = requests.get(url, timeout=20)  # Fetch CSV data from the URL
         # logger.info(f"media url {settings.MEDIA_DOMAIN + sheet.url}")
+
+        except Exception as e:
+            raise self.retry(exc=e, countdown=2 ** self.request.retries)
 
         if response.status_code not in [200, 201]:
             logger.info(f"request exited with status {response.status_code}")
-            raise Exception(f"request exited with status {response.status_code}")
+            
+            raise self.retry(exc=Exception(f"request exited with status {response.status_code}"), countdown=2 ** self.request.retries)
+            
 
         if extension.lower() == 'csv':
             data = pd.read_csv(io.StringIO(response.text))
@@ -167,21 +174,10 @@ def run_schedule_email(id):
 
         attachments = []
         attachment_names = EmailTemplateAttachment.objects.filter(template=campaign.template).values_list('attachment', flat=True)
-        # for attachment_path in attachment_paths:
-        #     # Read the file content from the attachment_path (you might need to adapt this)
-        #     with open(attachment_path, 'rb') as attachment_file:
-        #         file_content = attachment_file.read()
-            
-        #     # Extract the filename from the attachment_path or use a desired filename
-        #     filename = attachment_path.split('/')[-1]
-
-        #     # Create a ContentFile from the file content
-        #     attachment = ContentFile(file_content, name=filename)
-        #     attachments.append(attachment)
+        
         for attachment_name in attachment_names:
             attachment = default_storage.open(attachment_name)
             attachments.append(attachment)
-
 
 
         for _, row_dict in data.iterrows():
@@ -252,6 +248,7 @@ def run_schedule_email(id):
     except Exception as e:
         campaign = EmailCampaignTemplate.objects.filter(id=id).update(error=f"An error occurred on our end {e}")
         logger.info(f"Campaign error: {e}")
+        traceback.format_exc()
 
     finally:
         if imap_client:
