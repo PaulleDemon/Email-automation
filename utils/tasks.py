@@ -245,10 +245,10 @@ def run_schedule_email(self, id):
         campaign = EmailCampaignTemplate.objects.filter(id=id).update(error="request error occured")
         logger.info(f"request error: {e}")
 
-    except Exception as e:
-        campaign = EmailCampaignTemplate.objects.filter(id=id).update(error=f"An error occurred on our end {e}")
-        logger.info(f"Campaign error: {e}")
-        traceback.format_exc()
+    # except Exception as e:
+    #     campaign = EmailCampaignTemplate.objects.filter(id=id).update(error=f"An error occurred on our end {e}")
+    #     logger.info(f"Campaign error: {e}")
+    #     traceback.format_exc()
 
     finally:
         if imap_client:
