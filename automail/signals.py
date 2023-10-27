@@ -8,8 +8,15 @@ from utils.tasks import send_html_mail_celery
 from .models import EmailCampaignTemplate, EmailConfiguration, EmailCampaign
 
 
+def deletePeriodicTask(id):
+    tasks = PeriodicTask.objects.filter(name=f'email_{id}')
+    tasks.update(enabled=False)      
+    tasks.delete()
+
 @receiver(post_save, sender=EmailCampaignTemplate)
 def schedule_email(instance, sender, created, *args, **kwargs):
+
+    
 
     if instance.scheduled:
         
@@ -26,10 +33,13 @@ def schedule_email(instance, sender, created, *args, **kwargs):
                                         kwargs=json.dumps({'id': instance.id}), 
                                         task='run_schedule_email')
 
+
     else:
-        tasks = PeriodicTask.objects.filter(name=f'email_{instance.id}')
-        tasks.update(enabled=False)      
-        tasks.delete()
+        deletePeriodicTask(instance.id)
+
+    if instance.completed:
+        deletePeriodicTask(instance.id)
+
 
 
 @receiver(post_save, sender=EmailCampaign)

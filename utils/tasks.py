@@ -68,7 +68,7 @@ def disable_periodic_task(taskid):
 		task.enabled = False
 		task.save()
                 
-                
+
 @transaction.atomic
 @shared_task(name='run_schedule_email')
 def run_schedule_email(id):
@@ -250,5 +250,8 @@ def run_schedule_email(id):
     #     traceback.format_exc()
 
     finally:
+
+        disable_periodic_task(f'email_{id}')
+
         if imap_client:
             imap_client.logout() 
