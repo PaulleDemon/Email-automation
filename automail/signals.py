@@ -34,7 +34,7 @@ def schedule_email(instance, sender, created, *args, **kwargs):
         schedule_start = ClockedSchedule.objects.create(clocked_time=instance.schedule)
 
         PeriodicTask.objects.create(name=f'email_{instance.id}', clocked=schedule_start, one_off=True,
-                                        kwargs=json.dumps({'id': instance.id}), 
+                                        kwargs=json.dumps({'campaign_id': instance.id}), 
                                         task='run_schedule_email')
 
 
