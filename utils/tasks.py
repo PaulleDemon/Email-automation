@@ -260,7 +260,7 @@ def run_schedule_email(campaign_id):
 
         if imap_client:
             imap_client.logout() 
-            imap_client.close()
+            # imap_client.close()
         
         if sent_count:
             EmailCampaignTemplate.objects.filter(id=campaign_id).update(sent_count=sent_count)
