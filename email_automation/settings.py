@@ -337,6 +337,7 @@ else:
     )
     GS_DEFAULT_ACL = "publicRead"  # Optional: Set ACL for public access
     GS_QUERYSTRING_AUTH = True  # Optional: Enable querystring authentication
+    GS_FILE_OVERWRITE = False # prevent overwriting
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
