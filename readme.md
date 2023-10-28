@@ -39,7 +39,11 @@ Feedback on AtMailWin
 Body
 ```
 Hello {{name}},
-Hope you are doing well. I am {{from_name}} reaching out to you to inquire about your experience using this automation platform. It looks like your experience with us is {% if feedback == "positive" %} positive {% else %} negative {% endif %}. We would be grateful, if you could explain a little more about your feed back.
+Hope you are doing well. I am {{from_name}} reaching out to you to
+inquire about your experience using this automation platform. It 
+looks like your experience with us is {% if feedback == "positive" %} 
+positive {% else %} negative {% endif %}. We would be grateful, if you 
+could explain a little more about your feed back.
 
 {{from_signature}}
 ```
