@@ -29,6 +29,32 @@ to make most out of this tool
 > This tool makes use if Jinja2 to render the emails, so any valid jinja syntax is acceptable
 
 
+## Example Usage
+
+Subject
+```
+Feedback on AtMailWin
+```
+
+Body
+```
+Hello {{name}},
+Hope you are doing well. I am {{from_name}} reaching out to you to inquire about your experience using this automation platform. It looks like your experience with us is {% if feedback == "positive" %} positive {% else %} negative {% endif %}. We would be grateful, if you could explain a little more about your feed back.
+
+{{from_signature}}
+```
+
+<details>
+
+<summary>Output</summary>
+Hello Rob,
+
+Hope you are doing well. I am Paul reaching out to you to inquire about your experience using this automation platform. It looks like your experience with us is positive . We would be grateful if you could explain a little more about your feedback.
+
+Best regards, Paul
+
+</details>
+
 ## How it works?
 
  1. Configure a email id by clicking on email configuration link.
