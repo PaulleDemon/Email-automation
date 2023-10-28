@@ -128,8 +128,8 @@ def run_schedule_email(campaign_id):
 
         # print("data: ", data)
        
-        first_schedule = EmailCampaignTemplate.objects.filter(campaign=campaign.campaign).first().schedule.strftime("%d-%b-%Y")
-        now_time = timezone.now().strftime("%d-%b-%Y")
+        first_schedule = EmailCampaignTemplate.objects.filter(campaign=campaign.campaign).first().schedule
+        now_time = timezone.now()
 
         try:
             imap_client = imaplib.IMAP4_SSL(campaign.email.imap_host)
