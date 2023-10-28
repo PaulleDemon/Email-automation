@@ -28,6 +28,14 @@ to make most out of this tool
 
 > This tool makes use if Jinja2 to render the emails, so any valid jinja syntax is acceptable
 
+
+## How it works?
+
+ 1. Configure a email id by clicking on email configuration link.
+ 2. Create a email template. Use Variables within enclosed brackets `{{}}` to personalize the email.
+ 3. Schedule the email, create followups.
+
+
 ## Self hosting
 If you want to self host it.
 
