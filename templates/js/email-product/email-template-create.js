@@ -128,31 +128,30 @@ variableUpload.addEventListener('change', function(e) {
             return
         }
 
-        // ... Your existing code ...
 
-reader.onload = function(e) {
-    const data = e.target.result;
+        reader.onload = function(e) {
+            const data = e.target.result;
 
-    if (!['csv', 'xlsx', 'xls'].includes(ext)){
-        toastAlert(alertToast, "Incorrect file")
-        variableUpload.value = null
-        return
-    }
+            if (!['csv', 'xlsx', 'xls'].includes(ext)){
+                toastAlert(alertToast, "Incorrect file")
+                variableUpload.value = null
+                return
+            }
 
-    if (ext === 'xls' || ext === 'xlsx' || ext == 'csv') {
-        // Use SheetJS (XLSX) for XLS and XLSX
-        const workbook = XLSX.read(data, { type: 'binary' });
-        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            if (ext === 'xls' || ext === 'xlsx' || ext == 'csv') {
+                // Use SheetJS (XLSX) for XLS and XLSX
+                const workbook = XLSX.read(data, { type: 'binary' });
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
 
-        // Extract the first row as JSON
-        const firstRowJSON = XLSX.utils.sheet_to_json(firstSheet, {range: 1})[0];
+                // Extract the first row as JSON
+                const firstRowJSON = XLSX.utils.sheet_to_json(firstSheet, {range: 1})[0];
 
-        // Convert the first row JSON to JSON5
-        const firstRowJSON5 = JSON5.stringify(firstRowJSON, null, 4);
-        variablesInput.value = firstRowJSON5;
+                // Convert the first row JSON to JSON5
+                const firstRowJSON5 = JSON5.stringify(firstRowJSON, null, 4);
+                variablesInput.value = firstRowJSON5;
 
-    }
-};
+            }
+        };
 
 
         if (ext === 'csv') {
