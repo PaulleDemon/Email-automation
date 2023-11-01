@@ -115,7 +115,7 @@ if DEBUG:
     CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
 
 else: 
-    CELERY_BROKER_URL = env('REDIS_PROD_HOST')
+    CELERY_BROKER_URL = env('REDIS_PROD_HOST').strip()
 
 
 CELERY_ACCEPT_CONTENT = ['application/json']
