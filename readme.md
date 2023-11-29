@@ -142,7 +142,7 @@ python manage.py tailwind build
 
 ### Deployment:
 
-If you are deploying on Render, Railway, Digital Ocean, You will be required to fire up different services. One for web other for celery.
+If you are deploying on Render, Railway, or Digital Ocean, You will be required to fire up different services. One for web other for celery.
 
 You can make use of Railway to deploy your own instance.
 
@@ -150,6 +150,8 @@ You can make use of Railway to deploy your own instance.
   <img src="logos/railway.png" alt="railway icon" height="50px"/>
 </a>
 
+### Non-GPL version:
+To support this project and my open-source endeavor a non-GPL commercial version of this software(including code) can be purchased via [gumroad](https://paulfreeman.gumroad.com/l/cold-mailing-tool)
 
 ### **Support Opensource**
 
