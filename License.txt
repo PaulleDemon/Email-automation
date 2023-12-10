@@ -1,4 +1,4 @@
-Please read the exception clauses to the license at the bottom.
+Please read the additional clauses to the license at the bottom.
 
 Note: every copy of this software and modifications must include the same license.
 
@@ -664,7 +664,7 @@ if any, to sign a "copyright disclaimer" for the program, if necessary.
 For more information on this, and how to apply and follow the GNU AGPL, see
 <https://www.gnu.org/licenses/>.
 
-Exception clauses:
+Additional clauses:
 * You may not distribute the source code or the service for any sort of price.
 * If you would like to provide the software as a service please purchase the license here:  https://paulfreeman.gumroad.com/l/cold-mailing-too
 
