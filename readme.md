@@ -151,7 +151,14 @@ You can make use of Railway to deploy your own instance.
 </a>
 
 ### Non-GPL version:
-To support this project and my open-source endeavor a non-GPL commercial version of this software(including code) can be purchased via [gumroad](https://paulfreeman.gumroad.com/l/cold-mailing-tool)
+To support this project and my open-source endeavor a non-GPL commercial version of this software(including code) can be purchased via [gumroad](https://foxcraft.gumroad.com/l/cold-mailing-tool)
+
+
+Try my production scale software products on [Gumroad](https://foxcraft.gumroad.com/)
+
+[<img src="https://github.com/PaulleDemon/PaulleDemon/blob/main/images/gumroad.png" height="150px" width="150px">](https://foxcraft.gumroad.com/)
+
+
 
 ### **Support Opensource**
 
