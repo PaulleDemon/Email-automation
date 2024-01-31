@@ -4,12 +4,12 @@
   <img src="logos/atmailwin-logo.svg" alt="CupidCues icon" width="200px" height="200px"/>
 </p>
 
-A free and open-source email automation tool. Schedule, personalize and send!
+An open-source email automation tool. Schedule, personalize and send!
 <br/>
 <br/>
 Have you ever meticulously crafted a personalized email to a potential employer or business and waited eagerly for a response that never arrived? It's a common scenario, and the disappointment is palpable. Creating highly personalized emails is time-consuming and often doesn't yield the desired results. AtMailWin offers a workaround - the ability to create semi-personalized emails, schedule them send them in bulk to multiple recipients.
 
-You can use the site at [https://atmailwin.com](https://atmailwin.com) 
+You can use the site at [https://foxcraft.tech](https://foxcraft.tech) 
 
 
 ## Features
