@@ -9,6 +9,9 @@ An open-source email automation tool. Schedule, personalize and send!
 <br/>
 Have you ever meticulously crafted a personalized email to a potential employer or business and waited eagerly for a response that never arrived? It's a common scenario, and the disappointment is palpable. Creating highly personalized emails is time-consuming and often doesn't yield the desired results. AtMailWin offers a workaround - the ability to create semi-personalized emails, schedule them send them in bulk to multiple recipients.
 
+Note: 
+if you are using this for commercial purposes such as sending emails to potential clients, consider buying a one time commerical license: https://foxcraft.gumroad.com/l/cold-mailing-tool
+
 You can use the site at [https://foxcraft.tech](https://foxcraft.tech) 
 
 
@@ -151,10 +154,7 @@ You can make use of Railway to deploy your own instance.
 </a>
 
 ### Non-GPL version:
-To support this project and my open-source endeavor a non-GPL commercial version of this software(including code) can be purchased via [gumroad](https://foxcraft.gumroad.com/l/cold-mailing-tool)
-
-
-Try my production scale software products on [Gumroad](https://foxcraft.gumroad.com/)
+To support this project and other open-source you can try some of the products on [Gumroad](https://foxcraft.gumroad.com/)
 
 [<img src="https://github.com/PaulleDemon/PaulleDemon/blob/main/images/gumroad.png" height="150px" width="150px">](https://foxcraft.gumroad.com/)
 
@@ -162,13 +162,11 @@ Try my production scale software products on [Gumroad](https://foxcraft.gumroad.
 
 ### **Support Opensource**
 
-Developing and maintaining open-source and free projects requires a significant commitment of time and effort. My goal is to transition to working on open-source projects on a full-time basis. If you'd like to support me and the open-source community consider making a small donation. You can have your logo/name on this [page](https://atmailwin.com/support/) .
+Developing and maintaining open-source and free projects requires a significant commitment of time and effort. My goal is to transition to working on open-source projects on a full-time basis. If you'd like to support me and the open-source community consider making a small donation.
 
 
 [<img src="https://github.com/PaulleDemon/PaulleDemon/blob/main/images/buy-me-coffee.png?raw=true" height="100px" width="350px">](https://www.buymeacoffee.com/ArtPaul)
 
 **Other ways to support open-source**
-
-* To dedicate more time to open-source I am also giving a non-GPL/commercial code license that can be used in a closed source project. Send a mail to paul@adostrings.com
 
 * I also have production scale private projects (dating app, Social media, food delivery and more.), If you are interested in purchase, send a mail to paul@adostrings.com. 
