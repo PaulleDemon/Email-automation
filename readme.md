@@ -12,7 +12,7 @@ Have you ever meticulously crafted a personalized email to a potential employer 
 
 **Note:**
 
-If you are using this for commercial purposes such as sending emails to potential clients, consider buying a one time subscription free commerical license: https://foxcraft.gumroad.com/l/cold-mailing-tool
+If you are using this for commercial purposes such as sending emails to potential clients, consider buying a one time subscription free commerical license to support open-source developments: https://foxcraft.gumroad.com/l/cold-mailing-tool
 
 You can view the demo site at [https://foxcraft.tech](https://foxcraft.tech) 
 
