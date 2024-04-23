@@ -9,10 +9,12 @@ An open-source email automation tool. Schedule, personalize and send!
 <br/>
 Have you ever meticulously crafted a personalized email to a potential employer or business and waited eagerly for a response that never arrived? It's a common scenario, and the disappointment is palpable. Creating highly personalized emails is time-consuming and often doesn't yield the desired results. AtMailWin offers a workaround - the ability to create semi-personalized emails, schedule them send them in bulk to multiple recipients.
 
-Note: 
-if you are using this for commercial purposes such as sending emails to potential clients, consider buying a one time commerical license: https://foxcraft.gumroad.com/l/cold-mailing-tool
 
-You can use the site at [https://foxcraft.tech](https://foxcraft.tech) 
+**Note:**
+
+If you are using this for commercial purposes such as sending emails to potential clients, consider buying a one time subscription free commerical license: https://foxcraft.gumroad.com/l/cold-mailing-tool
+
+You can view the demo site at [https://foxcraft.tech](https://foxcraft.tech) 
 
 
 ## Features
@@ -26,8 +28,6 @@ You can use the site at [https://foxcraft.tech](https://foxcraft.tech)
 
 >**Note**: Don't use this service to send marketing emails or spams. It can result in your email's being sent to spam or locked.
 
-Read this [article](https://atmailwin.com/blog/9/making-the-most-of-atmailwin-for-effective-cold-mailing/) 
-to make most out of this tool
 
 > This tool makes use if Jinja2 to render the emails, so any valid jinja syntax is acceptable
 
