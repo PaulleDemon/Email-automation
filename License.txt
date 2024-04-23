@@ -666,5 +666,5 @@ For more information on this, and how to apply and follow the GNU AGPL, see
 
 Additional clauses:
 * You may not distribute the source code or the service for any sort of price.
-* If you would like to provide the software as a service please purchase the license here:  https://paulfreeman.gumroad.com/l/cold-mailing-too
+* If you would like to use for commercial purposes such as sending emails to clients, please purchase the license here:  https://foxcraft.gumroad.com/l/cold-mailing-too
 
