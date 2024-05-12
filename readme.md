@@ -4,7 +4,7 @@
   <img src="logos/atmailwin-logo.svg" alt="CupidCues icon" width="200px" height="200px"/>
 </p>
 
-An open-source email automation tool. Schedule, personalize and send!
+An open-source email automation tool. Schedule, personalize, and send!
 <br/>
 <br/>
 Have you ever meticulously crafted a personalized email to a potential employer or business and waited eagerly for a response that never arrived? It's a common scenario, and the disappointment is palpable. Creating highly personalized emails is time-consuming and often doesn't yield the desired results. AtMailWin offers a workaround - the ability to create semi-personalized emails, schedule them send them in bulk to multiple recipients.
@@ -12,24 +12,37 @@ Have you ever meticulously crafted a personalized email to a potential employer 
 
 **Note:**
 
-If you are using this for commercial purposes such as sending emails to potential clients, consider buying a one time subscription free commerical license to support open-source developments: https://foxcraft.gumroad.com/l/cold-mailing-tool
+If you are using this for commercial purposes such as sending emails to potential clients, consider buying a one-time subscription free commercial license to support open-source developments: [https://foxcraft.gumroad.com/l/cold-mailing-tool](https://foxcraft.gumroad.com/l/cold-mailing-tool/seasons)
 
-You can view the demo site at [https://foxcraft.tech](https://foxcraft.tech) 
 
 
 ## Features
 
 * Create dynamic email templates.
-* Use variables, if statements in your email template.
+* Use variables, and if statements in your email template.
 * Schedule email.
-* Schedule Follow-ups (follow-ups increases the chance of receiving response from recipient).
-* Specify follow up rule. 
-* Use existing [templates](https://atmailwin.com/email/templates/?public=True).
+* Schedule Follow-ups (follow-ups increase the chance of receiving a response from the recipient).
+* Specify follow-up rule. 
+* Use existing templates.
 
->**Note**: Don't use this service to send marketing emails or spams. It can result in your email's being sent to spam or locked.
+>**Note**: Don't use this service to send marketing emails or spam. It can result in your email being sent to spam or locked.
 
 
-> This tool makes use if Jinja2 to render the emails, so any valid jinja syntax is acceptable
+> This tool makes use if Jinja2 to render the emails, so any valid Jinja syntax is acceptable
+
+### screenshots
+
+1. **Create unlimited email templates**
+![Cold emailing tool](https://public-files.gumroad.com/wk2jt2o9mp9mp70zrglta2jidlkf)
+
+2. **Use variables and if conditions**
+![email automation tool](https://public-files.gumroad.com/jq2jpuftl5jc10oop92ji1v8gc6b)
+
+3. **Create campaigns and follow-ups**
+![Emailing tool](https://public-files.gumroad.com/r08c2gb3f33wg6zcprenqa7qfyg3)
+
+You can view the demo site at [https://foxcraft.tech](https://foxcraft.tech) 
+
 
 
 ## Example Usage
