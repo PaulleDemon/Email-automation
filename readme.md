@@ -14,7 +14,8 @@ Have you ever meticulously crafted a personalized email to a potential employer 
 
 If you are using this for commercial purposes such as sending emails to potential clients, consider buying a one-time subscription free commercial license to support open-source developments: [https://foxcraft.gumroad.com/l/cold-mailing-tool](https://foxcraft.gumroad.com/l/cold-mailing-tool/seasons)
 
-
+## Django development
+If you are looking for django website templates to speed up your development check out these [website templates](https://templates.foxcraft.tech/django-website-templates)
 
 ## Features
 
