@@ -42,9 +42,6 @@ If you are looking for django website templates to speed up your development che
 3. **Create campaigns and follow-ups**
 ![Emailing tool](https://public-files.gumroad.com/r08c2gb3f33wg6zcprenqa7qfyg3)
 
-You can view the demo site at [https://foxcraft.tech](https://foxcraft.tech) 
-
-
 
 ## Example Usage
 
@@ -167,12 +164,6 @@ You can make use of Railway to deploy your own instance.
   <img src="logos/railway.png" alt="railway icon" height="50px"/>
 </a>
 
-### Non-GPL version:
-To support this project and other open-source you can try some of the products on [Gumroad](https://foxcraft.gumroad.com/)
-
-[<img src="https://github.com/PaulleDemon/PaulleDemon/blob/main/images/gumroad.png" height="150px" width="150px">](https://foxcraft.gumroad.com/)
-
-
 
 ### **Support Opensource**
 
@@ -181,6 +172,3 @@ Developing and maintaining open-source and free projects requires a significant 
 
 [<img src="https://github.com/PaulleDemon/PaulleDemon/blob/main/images/buy-me-coffee.png?raw=true" height="100px" width="350px">](https://www.buymeacoffee.com/ArtPaul)
 
-**Other ways to support open-source**
-
-* I also have production scale private projects (dating app, Social media, food delivery and more.), If you are interested in purchase, send a mail to paul@adostrings.com. 
