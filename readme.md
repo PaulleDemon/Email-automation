@@ -1,21 +1,10 @@
-# Email/Cold mail Automation tool- AtMailWin
+# Email/Cold mail Automation tool
 
-<p align="center">
-  <img src="logos/atmailwin-logo.svg" alt="CupidCues icon" width="200px" height="200px"/>
-</p>
-
-An open-source email automation tool. Schedule, personalize, and send!
+An open-source email automation tool/ cold outreach tool. Schedule, personalize, and send!
 <br/>
 <br/>
-Have you ever meticulously crafted a personalized email to a potential employer or business and waited eagerly for a response that never arrived? It's a common scenario, and the disappointment is palpable. Creating highly personalized emails is time-consuming and often doesn't yield the desired results. AtMailWin offers a workaround - the ability to create semi-personalized emails, schedule them send them in bulk to multiple recipients.
+Have you ever meticulously crafted a personalized email to a potential employer or potenial collabrator and waited eagerly for a response that never arrived? It's a common scenario, and the disappointment is palpable. Creating highly personalized emails is time-consuming and often doesn't yield the desired results. Email automation offers a workaround - the ability to create semi-personalized emails, schedule them send them to multiple recipients.
 
-
-**Note:**
-
-If you are using this for commercial purposes such as sending emails to potential clients, consider buying a one-time subscription free commercial license to support open-source developments: [https://foxcraft.gumroad.com/l/cold-mailing-tool](https://foxcraft.gumroad.com/l/cold-mailing-tool/seasons)
-
-## Django development
-If you are looking for django website templates to speed up your development check out these [website templates](https://templates.foxcraft.tech/django-website-templates)
 
 ## Features
 
@@ -26,10 +15,14 @@ If you are looking for django website templates to speed up your development che
 * Specify follow-up rule. 
 * Use existing templates.
 
->**Note**: Don't use this service to send marketing emails or spam. It can result in your email being sent to spam or locked.
+> [!WARNING]  
+Don't use this service to send marketing emails or spam. It can result in your email being sent to spam or locked.
 
+> [!NOTE]  
+Stop using gmail or yahoo mail for cold outreach , both Google and yahoo actively prevents automation. Use your own domain or hotmail/outlook
 
 > This tool makes use if Jinja2 to render the emails, so any valid Jinja syntax is acceptable
+
 
 ### screenshots
 
@@ -47,7 +40,7 @@ If you are looking for django website templates to speed up your development che
 
 Subject
 ```
-Feedback on AtMailWin
+Feedback on Cold outreach
 ```
 
 Body
@@ -79,6 +72,12 @@ Best regards, Paul
  2. Create a email template. Use Variables within enclosed brackets `{{}}` to personalize the email.
  3. Schedule the email, create followups.
 
+## How to use
+1. Follow the below steps and get it running locally or on cloud. 
+2. Once done, run the app and configure your email from the dashboard.
+3. create a template from template section.
+4. Schedue and send
+
 
 ## Self hosting
 If you want to self host it.
@@ -105,9 +104,9 @@ REDIS_PROD_HOST=""
 FIELD_ENCRYPTION_KEY=""
 PROD_FIELD_ENCRYPTION_KEY=""
 
-EMAIL_HOST=""
-EMAIL_HOST_USER=""
-EMAIL_HOST_PASSWORD=""
+EMAIL_HOST="" #optional
+EMAIL_HOST_USER=""#optional
+EMAIL_HOST_PASSWORD="" #optional
 
 POSTGRES_DATABASE=""
 POSTGRES_USER=""
@@ -164,11 +163,4 @@ You can make use of Railway to deploy your own instance.
   <img src="logos/railway.png" alt="railway icon" height="50px"/>
 </a>
 
-
-### **Support Opensource**
-
-Developing and maintaining open-source and free projects requires a significant commitment of time and effort. My goal is to transition to working on open-source projects on a full-time basis. If you'd like to support me and the open-source community consider making a small donation.
-
-
-[<img src="https://github.com/PaulleDemon/PaulleDemon/blob/main/images/buy-me-coffee.png?raw=true" height="100px" width="350px">](https://www.buymeacoffee.com/ArtPaul)
 
