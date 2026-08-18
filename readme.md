@@ -18,7 +18,7 @@ Explore Zapply’s website and check out:
 - Job application tracking with streaks and commitment awards.
 Experience an advanced career journey with us! 🚀
 <p align="center">
-<a href=" https://app.zapply.jobs/onboarding?ref=github-cta-paulledemon ">
+<a href=" https://app.zapply.jobs/onboarding?ref=github-cta-paulledemon">
 <img src="./sponsor/get-started-button.png" alt="Visit Zapply" width="700">
 </a>
 </p>
