@@ -5,6 +5,26 @@ An open-source email automation tool/ cold outreach tool. Schedule, personalize,
 <br/>
 Have you ever meticulously crafted a personalized email to a potential employer or potenial collabrator and waited eagerly for a response that never arrived? It's a common scenario, and the disappointment is palpable. Creating highly personalized emails is time-consuming and often doesn't yield the desired results. Email automation offers a workaround - the ability to create semi-personalized emails, schedule them send them to multiple recipients.
 
+----
+
+## **Website & Autofill Extension**
+
+![Apply to jobs in seconds with Zapply.](./sponsor/apply-faster-banner.png)
+Explore Zapply’s website and check out:
+
+- Our Chrome extension, which autofills job applications in seconds.
+- A dedicated job board featuring the latest openings across various roles.
+- User accounts with multiple profiles for different resume types and roles.
+- Job application tracking with streaks and commitment awards.
+Experience an advanced career journey with us! 🚀
+<p align="center">
+<a href=" https://app.zapply.jobs/onboarding?ref=github-cta-paulledemon ">
+<img src="./sponsor/get-started-button.png" alt="Visit Zapply" width="700">
+</a>
+</p>
+<p align="right"><sub>Sponsored by Zapply</sub></p>
+
+----
 
 ## Features
 
