@@ -9,7 +9,8 @@ Have you ever meticulously crafted a personalized email to a potential employer 
 
 ## **Website & Autofill Extension**
 
-![Apply to jobs in seconds with Zapply.](./sponsor/apply-faster-banner.png)
+[![Apply to jobs in seconds with Zapply.](./sponsor/apply-faster-banner.png)](https://app.zapply.jobs/onboarding?ref=github-cta-paulledemon)
+
 Explore Zapply’s website and check out:
 
 - Our Chrome extension, which autofills job applications in seconds.
